@@ -1,0 +1,293 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 2rem;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px) scale(0.95); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.header {
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--text-main);
+}
+
+.closeBtn {
+  color: var(--text-muted);
+  transition: var(--transition);
+  padding: 0.5rem;
+  border-radius: 50%;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.closeBtn:hover {
+  background: var(--border);
+  color: var(--text-main);
+}
+
+.content {
+  padding: 3rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Mic Button Styles */
+.micContainer {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.micBtn {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(5, 150, 105, 0.4);
+}
+
+.micBtn:hover {
+  transform: scale(1.05);
+  background: var(--primary-dark);
+}
+
+.micBtn.listening {
+  background: var(--accent-red);
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+  animation: pulseButton 1.5s infinite;
+}
+
+@keyframes pulseButton {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.ripple {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(239, 68, 68, 0.3);
+  z-index: 1;
+  animation: rippleEffect 1.5s infinite ease-out;
+}
+
+@keyframes rippleEffect {
+  0% { width: 80px; height: 80px; opacity: 1; }
+  100% { width: 160px; height: 160px; opacity: 0; }
+}
+
+.statusText {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--text-main);
+  margin-bottom: 1rem;
+}
+
+.transcriptBox {
+  width: 100%;
+  min-height: 100px;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  color: var(--text-main);
+  font-size: 1.1rem;
+  line-height: 1.6;
+  text-align: center;
+  font-style: italic;
+}
+
+.placeholder {
+  color: var(--text-muted);
+}
+
+.submitBtn {
+  width: 100%;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-top: 2rem;
+  transition: var(--transition);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  border: none;
+  cursor: pointer;
+}
+
+.submitBtn:hover {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+}
+
+.submitBtn:disabled {
+  background: var(--border);
+  color: var(--text-muted);
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Loading & Result Styles */
+.loadingState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 0;
+  text-align: center;
+  width: 100%;
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid var(--border);
+  border-left-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1.5rem;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.resultContainer {
+  width: 100%;
+  animation: fadeIn 0.4s ease-out;
+  text-align: left;
+}
+
+.dataGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.dataItem {
+  background: var(--background);
+  border: 1px solid var(--border);
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.dataLabel {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.25rem;
+}
+
+.dataValue {
+  font-size: 1rem;
+  color: var(--primary-dark);
+  font-weight: 600;
+}
+
+.dataItemFull {
+  grid-column: 1 / -1;
+}
+
+.planBox {
+  background: var(--primary-glow);
+  border: 1px solid rgba(5, 150, 105, 0.2);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.planBox h4 {
+  color: var(--primary-dark);
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.planList {
+  list-style-type: none;
+}
+
+.planList li {
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  color: var(--text-main);
+  line-height: 1.5;
+}
+
+.planList li::before {
+  content: "•";
+  color: var(--primary);
+  font-weight: bold;
+}
