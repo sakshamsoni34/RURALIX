@@ -1,11 +1,20 @@
 'use client';
 
-import { Search, Mic, MapPin, Bell } from 'lucide-react';
+import { useState } from 'react';
+import { Search, Mic, MapPin, Bell, LogOut, Briefcase, IndianRupee } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import styles from '../../app/dashboard/page.module.css';
 import { useDashboard } from '../../context/DashboardContext';
 
 export default function Header() {
-  const { setIsVoiceModalOpen } = useDashboard();
+  const { setIsVoiceModalOpen, userProfile } = useDashboard();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const router = useRouter();
+
+  const handleSignOut = () => {
+    // Basic redirect for now
+    router.push('/login');
+  };
 
   return (
     <header className={styles.header}>
@@ -25,20 +34,86 @@ export default function Header() {
       </div>
       <div className={styles.headerActions}>
         <div className={styles.locationBadge}>
-          <MapPin size={16} /> Bhind, Madhya Pradesh
+          <MapPin size={16} /> {userProfile.location || 'Location Not Set'}
         </div>
         <div className={styles.notification}>
           <Bell size={20} />
           <span className={styles.badge}>3</span>
         </div>
-        <div className={styles.profile}>
-          <div className={styles.avatarInfo}>
+        
+        <div className={styles.profile} style={{ position: 'relative' }}>
+          <div 
+            className={styles.avatarInfo} 
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            style={{ cursor: 'pointer' }}
+          >
             <div className={styles.avatarText} style={{textAlign: 'right'}}>
-              <h4>Ramesh Kumar</h4>
-              <p>Dairy Business</p>
+              <h4>User Profile</h4>
+              <p>{userProfile.businessIdea || 'No Idea Selected'}</p>
             </div>
-            <div className={styles.avatar}>R</div>
+            <div className={styles.avatar}>U</div>
           </div>
+
+          {isDropdownOpen && (
+            <div style={{
+              position: 'absolute',
+              top: '110%',
+              right: 0,
+              background: 'var(--surface)',
+              border: '1px solid var(--border)',
+              borderRadius: '12px',
+              boxShadow: '0 10px 25px rgba(0,0,0,0.2)',
+              width: '280px',
+              padding: '1rem',
+              zIndex: 100,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '0.75rem'
+            }}>
+              <div style={{ borderBottom: '1px solid var(--border)', paddingBottom: '0.75rem', marginBottom: '0.25rem' }}>
+                <h4 style={{ color: 'var(--text-main)', fontSize: '1rem', marginBottom: '0.25rem' }}>Your Business Profile</h4>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>View and manage your startup details.</p>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', color: 'var(--text-main)' }}>
+                <Briefcase size={16} color="var(--primary)" />
+                <strong>Idea:</strong> {userProfile.businessIdea || 'N/A'}
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', color: 'var(--text-main)' }}>
+                <MapPin size={16} color="var(--primary)" />
+                <strong>Location:</strong> {userProfile.location || 'N/A'}
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', color: 'var(--text-main)' }}>
+                <IndianRupee size={16} color="var(--primary)" />
+                <strong>Capital:</strong> ₹{userProfile.capital || '0'}
+              </div>
+
+              <button 
+                onClick={handleSignOut}
+                style={{
+                  marginTop: '0.5rem',
+                  width: '100%',
+                  padding: '0.75rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.5rem',
+                  background: 'rgba(239, 68, 68, 0.1)',
+                  color: 'var(--accent-red)',
+                  border: 'none',
+                  borderRadius: '8px',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  transition: 'background 0.2s'
+                }}
+                onMouseOver={(e) => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.2)'}
+                onMouseOut={(e) => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)'}
+              >
+                <LogOut size={16} />
+                Sign Out
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </header>

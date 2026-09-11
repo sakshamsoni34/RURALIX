@@ -19,10 +19,13 @@ import VoiceAssistantModal from '../../components/VoiceAssistantModal';
 import DemandPredictorModal from '../../components/DemandPredictorModal';
 import OpportunityMap from '../../components/OpportunityMap';
 import AIBusinessMentorModal from '../../components/AIBusinessMentorModal';
+import OnboardingModal from '../../components/OnboardingModal';
+import ChatbotWidget from '../../components/ChatbotWidget';
 
 function DashboardContent() {
   const { 
     activeTab, 
+    userProfile,
     isVoiceModalOpen, setIsVoiceModalOpen,
     setSchemes,
     setTrendingItems,
@@ -44,8 +47,10 @@ function DashboardContent() {
               </div>
               <div className={styles.heroOverlay}></div>
               <div className={styles.heroContent}>
-                <p>Welcome back,</p>
-                <h1>Ramesh ji!</h1>
+                <p>{userProfile.hasBusiness ? "Welcome to your dashboard!" : "Welcome back,"}</p>
+                <h1 style={{ fontSize: userProfile.businessIdea ? '2rem' : '2.5rem' }}>
+                  {userProfile.businessIdea ? `Your ${userProfile.businessIdea} Journey` : "Entrepreneur!"}
+                </h1>
                 <div className={styles.heroQuote}>
                   "छोटे कदम, बड़ी सफलता की ओर"
                 </div>
@@ -67,7 +72,7 @@ function DashboardContent() {
               </div>
             </div>
 
-            <OpportunityMap location="Bhind, Madhya Pradesh" />
+            <OpportunityMap location={userProfile.location || "Bhind, Madhya Pradesh"} />
           </div>
 
           <div style={{ display: activeTab === 'ai-recommendation' ? 'block' : 'none' }}>
@@ -76,7 +81,7 @@ function DashboardContent() {
           <div style={{ display: activeTab === 'reality-check' ? 'block' : 'none' }}>
             <RealityCheckModal isOpen={true} onClose={() => {}} onCheckComplete={setRealityScores} inline={true} />
           </div>
-          <div style={{ display: activeTab === 'schemes' ? 'block' : 'none' }}>
+          <div style={{ display: activeTab === 'schemes' ? 'block' : 'none', height: '100%' }}>
             <SchemeMatcherModal isOpen={true} onClose={() => {}} onMatchComplete={setSchemes} inline={true} />
           </div>
           <div style={{ display: activeTab === 'demand' ? 'block' : 'none' }}>
@@ -93,6 +98,8 @@ function DashboardContent() {
         isOpen={isVoiceModalOpen}
         onClose={() => setIsVoiceModalOpen(false)}
       />
+      <OnboardingModal />
+      <ChatbotWidget />
     </div>
   );
 }

@@ -1,11 +1,13 @@
 'use client';
 
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { Scheme, TrendingItem, RealityCheckScores } from '../types';
+import { Scheme, TrendingItem, RealityCheckScores, UserProfile } from '../types';
 
 interface DashboardContextType {
   activeTab: string;
   setActiveTab: (tab: string) => void;
+  userProfile: UserProfile;
+  setUserProfile: React.Dispatch<React.SetStateAction<UserProfile>>;
   customers: number;
   setCustomers: (customers: number) => void;
   isVoiceModalOpen: boolean;
@@ -22,7 +24,15 @@ const DashboardContext = createContext<DashboardContextType | undefined>(undefin
 
 export function DashboardProvider({ children }: { children: ReactNode }) {
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [customers, setCustomers] = useState(50);
+  const [userProfile, setUserProfile] = useState<UserProfile>({
+    hasBusiness: null,
+    businessIdea: '',
+    location: '',
+    capital: '',
+    infrastructure: '',
+    experience: ''
+  });
+  const [customers, setCustomers] = useState(25);
   const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
   
   const [schemes, setSchemes] = useState<Scheme[]>([
@@ -45,20 +55,22 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
   ]);
   
   const [trendingItems, setTrendingItems] = useState<TrendingItem[]>([
-    { name: "Sweets & Dairy", trend: "UP", reason: "Upcoming local festival" },
-    { name: "Summer Clothes", trend: "UP", reason: "Seasonal change approaching" }
+    { name: "Packaging & Supplies", trend: "UP", reason: "Rising local commercial demand" },
+    { name: "Seasonal Goods", trend: "UP", reason: "Approaching market cycle" }
   ]);
   
   const [realityScores, setRealityScores] = useState<RealityCheckScores>({
     demand: 82,
     competition: 65,
     infra: 88,
-    risk: 32
+    risk: 32,
+    overall: 78
   });
 
   return (
     <DashboardContext.Provider value={{
       activeTab, setActiveTab,
+      userProfile, setUserProfile,
       customers, setCustomers,
       isVoiceModalOpen, setIsVoiceModalOpen,
       schemes, setSchemes,

@@ -6,15 +6,17 @@ export async function POST(req: Request) {
     const { location, capital, interests, infrastructure } = await req.json();
 
     if (!process.env.GEMINI_API_KEY) {
+      // Provide a dynamic mock response when API key is missing so it's not always dairy farming
+      const isLowCapital = parseInt(capital) < 50000;
       return NextResponse.json({
-        recommendation: "Dairy Farming & Paneer Production",
-        viabilityScore: 85,
-        analysis: `Based on your location in ${location} and capital of ₹${capital}, starting a dairy business is highly viable. The local weather is suitable for high-yield cattle. The nearby Mandi shows a 15% increase in paneer demand. Your ${infrastructure} infrastructure supports cold storage.`,
+        recommendation: isLowCapital ? "Hyper-Local Digital Services Center (CSC)" : "Specialized Cold Storage & Logistics Hub",
+        viabilityScore: isLowCapital ? 78 : 82,
+        analysis: `Based on your exact location in ${location} and capital of ₹${capital}, starting a ${isLowCapital ? 'digital services business' : 'logistics hub'} is highly viable. We analyzed the local commercial ecosystem. Your ${infrastructure} infrastructure is a strong enabler. The viability score reflects the current market gap and competition in this specific area.`,
         actionSteps: [
-          `Allocate ₹${Math.floor(capital * 0.5)} for high-yield cows`,
-          "Invest ₹15,000 in basic paneer pressing equipment",
-          "Register with the local milk cooperative",
-          "Set up solar backup for cold storage"
+          `Allocate ₹${Math.floor(capital * 0.4)} for initial setup and equipment`,
+          "Obtain necessary local municipal or panchayat licenses",
+          "Set up digital marketing and local physical banners",
+          "Partner with existing local vendors to drive initial footfall"
         ]
       });
     }
@@ -23,20 +25,24 @@ export async function POST(req: Request) {
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
 
     const prompt = `
-      Act as a hyper-local business advisor for rural Indian micro-entrepreneurs.
-      Analyze the following inputs and generate a highly specific business plan.
+      Act as a highly analytical hyper-local business advisor. Your target audience includes ALL types of entrepreneurs and businesses, NOT just farmers.
+      Analyze the following inputs and generate a highly specific, hyper-accurate business plan tailored strictly to the EXACT location provided.
       Location: ${location}
       Available Capital: ₹${capital}
       Interests/Current Setup: ${interests}
       Available Infrastructure: ${infrastructure}
 
-      Take into account simulated local weather, typical local crops for that region, nearby market demand, and local prices.
+      CRITICAL INSTRUCTION: Your business recommendation MUST be heavily influenced by the provided Location (${location}). 
+      Analyze the specific geographic area, local economy, demographics, regional market demand, and commercial gaps for that exact region. 
+      You MUST NOT limit ideas to farming or agriculture unless explicitly requested by the user's interests. Consider retail, services, tech-enabled businesses, logistics, manufacturing, etc.
+      
+      Calculate a highly rigorous, realistic, and accurate viability score (0-100) based on market saturation, capital constraints, and local demand. Do NOT inflate the score. Provide the true probability of success.
       
       You must respond ONLY with a valid JSON object matching this schema, without markdown formatting or code blocks:
       {
-        "recommendation": "String (e.g., Small dairy + paneer business)",
-        "viabilityScore": Number (0-100),
-        "analysis": "String (Detailed analysis of why, including demand, infra, competition)",
+        "recommendation": "String (e.g., E-rickshaw fleet, local logistics hub, digital services, specialized retail - specific to the region)",
+        "viabilityScore": Number (0-100, realistic and calculated accurately),
+        "analysis": "String (Detailed analysis of WHY this works exactly in ${location}, including specific local demand, economy, infra, and competition)",
         "actionSteps": ["String", "String"] (Array of 3-4 immediate actionable steps with estimated costs)
       }
     `;

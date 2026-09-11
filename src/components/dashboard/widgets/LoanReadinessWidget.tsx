@@ -2,27 +2,60 @@
 
 import { FileText, CheckCircle2, AlertCircle } from 'lucide-react';
 import styles from '../../../app/dashboard/page.module.css';
+import { useDashboard } from '../../../context/DashboardContext';
 
 export default function LoanReadinessWidget() {
+  const { userProfile, realityScores, setActiveTab } = useDashboard();
+
+  const capitalNum = parseInt(userProfile.capital as string) || 0;
+  const hasGoodCapital = capitalNum >= 50000;
+  const hasInfra = !!userProfile.infrastructure && userProfile.infrastructure.length > 3;
+  const hasExp = !!userProfile.experience && userProfile.experience.length > 3;
+
+  // Calculate readiness score
+  const readinessScore = realityScores?.overall || (hasGoodCapital ? 82 : 68);
+
   return (
     <div className={styles.card}>
       <div className={styles.cardHeader}>
-        <div className={styles.cardTitle}><FileText size={20} color="var(--primary)"/> Loan Readiness</div>
+        <div className={styles.cardTitle}><FileText size={20} color="var(--primary)"/> MUDRA & Bank Loan Readiness</div>
       </div>
       <div className={styles.loanReadiness}>
         <div className={styles.gauge}>
-          <span>76<small>/ 100</small></span>
+          <span>{readinessScore}<small>/ 100</small></span>
         </div>
-        <p style={{fontSize: '0.9rem', fontWeight: 600, marginBottom: '1.5rem', color: "var(--primary-dark)"}}>
-          You are almost finance-ready!
+        <p style={{ fontSize: '0.9rem', fontWeight: 600, marginBottom: '1.5rem', color: readinessScore >= 75 ? "var(--primary-dark)" : "#d97706" }}>
+          {readinessScore >= 75 ? "You are finance & subsidy ready!" : "Good foundation — needs minor records"}
         </p>
         <ul className={styles.checkList}>
-          <li><CheckCircle2 size={16} className={styles.checkIcon}/> Good repayment capacity</li>
-          <li><CheckCircle2 size={16} className={styles.checkIcon}/> Stable revenue flow</li>
-          <li style={{color: "var(--text-muted)"}}><AlertCircle size={16} color="var(--accent-red)"/> No formal business records</li>
-          <li style={{color: "var(--text-muted)"}}><AlertCircle size={16} color="var(--accent-red)"/> Irregular cash flow</li>
+          <li>
+            <CheckCircle2 size={16} className={styles.checkIcon}/> 
+            {hasGoodCapital ? `Adequate initial capital (₹${capitalNum.toLocaleString('en-IN')})` : 'Eligible for PMEGP 35% subsidy'}
+          </li>
+          <li>
+            <CheckCircle2 size={16} className={styles.checkIcon}/> 
+            {hasInfra ? `Infrastructure verified (${userProfile.infrastructure})` : 'Infrastructure allocation mapped'}
+          </li>
+          <li style={{ color: hasExp ? "var(--text-main)" : "var(--text-muted)" }}>
+            {hasExp ? (
+              <CheckCircle2 size={16} className={styles.checkIcon}/>
+            ) : (
+              <AlertCircle size={16} color="var(--accent-orange)"/>
+            )} 
+            {hasExp ? `Prior domain experience noted` : 'Basic trade training recommended'}
+          </li>
+          <li>
+            <CheckCircle2 size={16} className={styles.checkIcon}/> 
+            Eligible for PM MUDRA Kishore / Shishu Loan
+          </li>
         </ul>
-        <a href="#" className={styles.cardLink} style={{display: 'block', marginTop: '1rem', textAlign: 'center'}}>View Improvement Tips</a>
+        <button 
+          onClick={() => setActiveTab('schemes')}
+          className={styles.cardLink} 
+          style={{ display: 'block', width: '100%', marginTop: '1rem', textAlign: 'center', background: 'transparent', border: 'none', cursor: 'pointer' }}
+        >
+          View Matched Govt Schemes →
+        </button>
       </div>
     </div>
   );

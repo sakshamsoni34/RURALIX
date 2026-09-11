@@ -18,4 +18,14 @@ export interface RealityCheckScores {
   competition: number;
   infra: number;
   risk: number;
+  overall?: number;
+}
+
+export interface UserProfile {
+  hasBusiness: boolean | null;
+  businessIdea: string;
+  location: string;
+  capital: string;
+  infrastructure: string;
+  experience: string;
 }

@@ -1,7 +1,20 @@
 'use client';
 
 import { useState } from 'react';
-import { X, Search, CheckCircle2, FileText, AlertTriangle, Landmark } from 'lucide-react';
+import { 
+  Landmark, 
+  ExternalLink, 
+  Calendar, 
+  IndianRupee, 
+  FileText, 
+  CheckCircle2, 
+  X, 
+  Sparkles, 
+  ChevronRight,
+  ShieldCheck,
+  Building2
+} from 'lucide-react';
+import Image from 'next/image';
 import styles from './SchemeMatcherModal.module.css';
 
 export interface Scheme {
@@ -20,152 +33,278 @@ interface SchemeMatcherModalProps {
   inline?: boolean;
 }
 
-export default function SchemeMatcherModal({ isOpen, onClose, onMatchComplete, inline = false }: SchemeMatcherModalProps) {
-  const [step, setStep] = useState<'input' | 'loading' | 'result'>('input');
-  const [query, setQuery] = useState('');
-  const [schemes, setSchemes] = useState<Scheme[]>([]);
+type SchemeCategory = 'active' | 'upcoming' | 'applied' | 'closed';
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!query.trim()) return;
-    
-    setStep('loading');
+interface GovtScheme {
+  id: string;
+  name: string;
+  description: string;
+  category: SchemeCategory;
+  url: string;
+  imageUrl: string;
+  amount?: string;
+  deadline?: string;
+  documents: string[];
+  eligibility: string[];
+}
 
-    try {
-      const response = await fetch('/api/schemes', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query }),
-      });
+const mockSchemes: GovtScheme[] = [
+  {
+    id: '1',
+    name: 'PM-Kisan Samman Nidhi',
+    description: 'Direct income support of ₹6,000/- per year in three equal installments provided directly to all landholding farmer families.',
+    category: 'active',
+    url: 'https://pmkisan.gov.in/',
+    imageUrl: '/pm-kisan.jpg',
+    amount: '₹6,000 / year',
+    deadline: 'Ongoing',
+    documents: ['Aadhaar Card', 'Land holding papers / Khasra', 'Bank account details'],
+    eligibility: ['Small and marginal farmer families', 'Cultivable landholding ownership in India']
+  },
+  {
+    id: '2',
+    name: 'Pradhan Mantri Mudra Yojana (PMMY)',
+    description: 'Collateral-free business loans up to ₹10 Lakh for non-corporate, non-farm small and micro enterprises (Shishu, Kishore, Tarun).',
+    category: 'active',
+    url: 'https://www.mudra.org.in/',
+    imageUrl: '/mudra-loan.jpg',
+    amount: 'Up to ₹10 Lakh',
+    deadline: 'Ongoing',
+    documents: ['Identity & Address Proof', 'Business Registration Proof', '6-Month Bank Statement'],
+    eligibility: ['Non-Corporate Small Business', 'Micro Enterprise & Shopkeepers', 'Manufacturing & Retail Units']
+  },
+  {
+    id: '3',
+    name: 'PM Formalisation of Micro Food Processing (PMFME)',
+    description: 'Capital subsidy up to 35% with financial, technical, and business incubation support for micro food and agro processing enterprises.',
+    category: 'upcoming',
+    url: 'https://pmfme.mofpi.gov.in/',
+    imageUrl: '/pmfme.jpg',
+    amount: '35% Subsidy (Up to ₹10L)',
+    deadline: 'Opens 1st of Next Month',
+    documents: ['Detailed Project Report (DPR)', 'Aadhaar & PAN Card', 'Quotation of Machinery & Equipments'],
+    eligibility: ['Individual micro food processing units', 'FPOs / Farmer Producer Groups', 'Self Help Groups (SHGs)']
+  },
+  {
+    id: '4',
+    name: 'Kisan Credit Card (KCC)',
+    description: 'Institutional credit support with highly subsidized interest rates (4%) for agricultural operational needs and farm machinery.',
+    category: 'applied',
+    url: 'https://sbi.co.in/web/agri-rural/agriculture-banking/crop-loan/kisan-credit-card',
+    imageUrl: '/kcc.jpg',
+    amount: 'Credit up to ₹3 Lakh',
+    deadline: 'Submitted on 12 Aug 2026',
+    documents: ['Duly Filled Application Form', 'ID & Residence Proof', 'Land Revenue Records'],
+    eligibility: ['Individual / Joint Borrowers', 'Owner Cultivators & Dairy Farmers', 'Tenant Farmers & SHGs']
+  },
+  {
+    id: '5',
+    name: 'Pradhan Mantri Fasal Bima Yojana (PMFBY)',
+    description: 'Comprehensive nationwide crop insurance coverage against non-preventable natural risks from pre-sowing to post-harvest.',
+    category: 'closed',
+    url: 'https://pmfby.gov.in/',
+    imageUrl: '/pmfby.jpg',
+    amount: 'Full Crop Loss Coverage',
+    deadline: 'Cycle Closed on 31 Jul 2026',
+    documents: ['Bank Passbook', 'Land Revenue Record / RoR', 'Sowing Certificate from Panchayat'],
+    eligibility: ['Farmers growing notified crops in notified areas', 'Sharecroppers and tenant farmers']
+  }
+];
 
-      if (!response.ok) throw new Error('Failed to fetch');
-
-      const data = await response.json();
-      setSchemes(data.schemes);
-      onMatchComplete(data.schemes);
-      setStep('result');
-    } catch (error) {
-      setStep('input');
-      alert('Failed to find schemes. Please try again.');
-    }
-  };
+export default function SchemeMatcherModal({ isOpen, onClose, inline = false }: SchemeMatcherModalProps) {
+  const [activeTab, setActiveTab] = useState<SchemeCategory>('active');
+  const [selectedScheme, setSelectedScheme] = useState<GovtScheme | null>(null);
 
   if (!isOpen && !inline) return null;
 
+  const filteredSchemes = mockSchemes.filter(s => s.category === activeTab);
+
+  const handleApply = (url: string) => {
+    window.open(url, '_blank');
+  };
+
   const content = (
-    <div className={`${styles.modal} ${inline ? styles.inlineModal : ''}`}>
+    <div className={`${styles.container} ${inline ? styles.inlineModal : ''}`}>
+      {/* Header */}
       <div className={styles.header}>
-        <h2 className={styles.title}>
-          <Landmark className={styles.icon} size={24} color="var(--primary)" />
-          Government Scheme Matcher
-        </h2>
-        {!inline && (
-          <button onClick={onClose} className={styles.closeBtn}>
-            <X size={20} />
-          </button>
-        )}
-      </div>
-
-      <div className={styles.content}>
-        {step === 'input' && (
-          <form onSubmit={handleSubmit}>
-            <p style={{marginBottom: '1rem', color: 'var(--text-muted)'}}>
-              Tell us about yourself, your business, and what you need. Our AI will find the best government schemes for you.
-            </p>
-              <textarea 
-                className={styles.textArea}
-                placeholder="e.g., I am a woman running a tailoring business in Uttar Pradesh and I need ₹2 lakh for buying new sewing machines..."
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                required
-              />
-              <button type="submit" className={styles.submitBtn}>
-                <Search size={20} />
-                Find My Schemes
-              </button>
-            </form>
-          )}
-
-          {step === 'loading' && (
-            <div className={styles.loadingState}>
-              <div className={styles.spinner}></div>
-              <h3 style={{color: 'var(--text-main)', marginBottom: '0.5rem', fontSize: '1.25rem'}}>
-                Scanning Government Databases...
-              </h3>
-              <p className={styles.loadingText}>
-                Matching your profile against 100+ active schemes...
-              </p>
-            </div>
-          )}
-
-          {step === 'result' && (
-            <div className={styles.resultContainer}>
-              <p style={{color: 'var(--text-main)', fontWeight: 500}}>We found these tailored recommendations for you:</p>
-              
-              {schemes.map((scheme, idx) => (
-                <div key={idx} className={styles.schemeCard}>
-                  <div className={styles.schemeHeader}>
-                    <h3>{scheme.name}</h3>
-                    <div className={styles.matchBadge}>{scheme.matchPercentage}% Match</div>
-                  </div>
-                  <p className={styles.schemeDescription}>{scheme.description}</p>
-                  
-                  <div className={styles.sectionTitle}>Why it matches:</div>
-                  <ul className={styles.list}>
-                    {scheme.eligibilityFactors.map((factor, i) => (
-                      <li key={i} className={styles.listItem}>
-                        <CheckCircle2 size={16} className={styles.checkIcon} />
-                        {factor}
-                      </li>
-                    ))}
-                  </ul>
-
-                  <div className={styles.sectionTitle} style={{marginTop: '1.5rem'}}>Documents Required:</div>
-                  <ul className={styles.list}>
-                    {scheme.documents.map((doc, i) => (
-                      <li key={i} className={styles.listItem}>
-                        <FileText size={16} className={styles.docIcon} />
-                        {doc}
-                      </li>
-                    ))}
-                  </ul>
-
-                  {scheme.missingRequirements && scheme.missingRequirements.length > 0 && (
-                    <div className={styles.warningBox}>
-                      <div className={styles.warningTitle}>
-                        <AlertTriangle size={16} />
-                        Missing Requirements
-                      </div>
-                      {scheme.missingRequirements.map((req, i) => (
-                        <div key={i} className={styles.warningItem}>• {req}</div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
-
-              <button 
-                onClick={() => {
-                  setStep('input');
-                  setQuery('');
-                  onClose();
-                }} 
-                className={styles.submitBtn} 
-                style={{background: 'var(--surface-hover)', color: 'var(--text-main)', border: '1px solid var(--border)', marginTop: '1rem'}}
-              >
-                Close & Update Dashboard
-              </button>
-            </div>
-          )}
+        <div className={styles.titleArea}>
+          <div className={styles.badge}>
+            <Sparkles size={13} /> Official Govt Portals
+          </div>
+          <h2 className={styles.title}>
+            <Landmark size={26} color="#059669" />
+            Central & State Government Schemes
+          </h2>
+          <p className={styles.subtitle}>
+            Verified national subsidies, collateral-free credit programs, and direct benefit transfer portals for your enterprise.
+          </p>
         </div>
       </div>
-  );
 
-  if (inline) return content;
+      {/* Tabs */}
+      <div className={styles.tabs}>
+        <button 
+          className={`${styles.tabBtn} ${activeTab === 'active' ? styles.activeTab : ''}`}
+          onClick={() => setActiveTab('active')}
+        >
+          Active Schemes ({mockSchemes.filter(s => s.category === 'active').length})
+        </button>
+        <button 
+          className={`${styles.tabBtn} ${activeTab === 'upcoming' ? styles.activeTab : ''}`}
+          onClick={() => setActiveTab('upcoming')}
+        >
+          Upcoming ({mockSchemes.filter(s => s.category === 'upcoming').length})
+        </button>
+        <button 
+          className={`${styles.tabBtn} ${activeTab === 'applied' ? styles.activeTab : ''}`}
+          onClick={() => setActiveTab('applied')}
+        >
+          Applied ({mockSchemes.filter(s => s.category === 'applied').length})
+        </button>
+        <button 
+          className={`${styles.tabBtn} ${activeTab === 'closed' ? styles.activeTab : ''}`}
+          onClick={() => setActiveTab('closed')}
+        >
+          Closed ({mockSchemes.filter(s => s.category === 'closed').length})
+        </button>
+      </div>
 
-  return (
-    <div className={styles.overlay}>
-      {content}
+      {/* Grid of Scheme Cards with Images */}
+      <div className={styles.content}>
+        {filteredSchemes.length === 0 && (
+          <p style={{ color: 'var(--text-muted)', gridColumn: '1 / -1', textAlign: 'center', marginTop: '2rem' }}>
+            No schemes found in this category.
+          </p>
+        )}
+        {filteredSchemes.map(scheme => (
+          <div key={scheme.id} className={styles.schemeCard} onClick={() => setSelectedScheme(scheme)}>
+            {/* Scheme Image Banner */}
+            <div className={styles.imageWrapper}>
+              <img 
+                src={scheme.imageUrl} 
+                alt={scheme.name} 
+                className={styles.schemeImage}
+              />
+              <div className={styles.imageOverlay} />
+              <span className={`${styles.statusBadge} ${
+                scheme.category === 'active' ? styles.statusActive : 
+                scheme.category === 'upcoming' ? styles.statusUpcoming : 
+                scheme.category === 'applied' ? styles.statusApplied : styles.statusClosed
+              }`}>
+                {scheme.category}
+              </span>
+            </div>
+
+            {/* Scheme Card Body */}
+            <div className={styles.cardBody}>
+              <h3 className={styles.cardTitle}>{scheme.name}</h3>
+              <p className={styles.cardDesc}>{scheme.description}</p>
+              
+              <div className={styles.cardMeta}>
+                {scheme.amount && (
+                  <div className={styles.metaItem}>
+                    <IndianRupee size={14} color="#059669" /> {scheme.amount}
+                  </div>
+                )}
+                {scheme.deadline && (
+                  <div className={styles.metaItem}>
+                    <Calendar size={14} color="#d97706" /> {scheme.deadline}
+                  </div>
+                )}
+              </div>
+
+              <div className={styles.viewDetailsHint}>
+                View Full Scheme Details & Apply <ChevronRight size={14} />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Scheme Detail Modal */}
+      {selectedScheme && (
+        <div className={styles.modalOverlay} onClick={() => setSelectedScheme(null)}>
+          <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
+            {/* Banner Image in Modal Header */}
+            <div className={styles.modalImageBanner}>
+              <img 
+                src={selectedScheme.imageUrl} 
+                alt={selectedScheme.name} 
+                className={styles.modalImage}
+              />
+              <div className={styles.modalImageOverlay} />
+              <button className={styles.closeBtn} onClick={() => setSelectedScheme(null)} aria-label="Close">
+                <X size={18} />
+              </button>
+              <div className={styles.modalHeaderContent}>
+                <span className={`${styles.statusBadge} ${
+                  selectedScheme.category === 'active' ? styles.statusActive : 
+                  selectedScheme.category === 'upcoming' ? styles.statusUpcoming : 
+                  selectedScheme.category === 'applied' ? styles.statusApplied : styles.statusClosed
+                }`} style={{ position: 'static', display: 'inline-block', marginBottom: '0.4rem' }}>
+                  {selectedScheme.category}
+                </span>
+                <h3 className={styles.modalTitle}>{selectedScheme.name}</h3>
+              </div>
+            </div>
+
+            <div className={styles.modalBody}>
+              <p style={{ color: 'var(--text-main)', fontSize: '0.95rem', lineHeight: '1.6', margin: 0 }}>
+                {selectedScheme.description}
+              </p>
+
+              {/* Key Highlights */}
+              <div className={styles.metaGrid}>
+                {selectedScheme.amount && (
+                  <div className={styles.metaBox}>
+                    <label>Financial Benefit / Subsidy</label>
+                    <span>
+                      <IndianRupee size={16} color="#059669" /> {selectedScheme.amount}
+                    </span>
+                  </div>
+                )}
+                {selectedScheme.deadline && (
+                  <div className={styles.metaBox}>
+                    <label>Application Timeline</label>
+                    <span>
+                      <Calendar size={16} color="#d97706" /> {selectedScheme.deadline}
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {/* Eligibility */}
+              <div className={styles.detailSection}>
+                <h4><CheckCircle2 size={18} color="#059669" /> Who is Eligible</h4>
+                <ul>
+                  {selectedScheme.eligibility.map((item, i) => <li key={i}>{item}</li>)}
+                </ul>
+              </div>
+
+              {/* Documents */}
+              <div className={styles.detailSection}>
+                <h4><FileText size={18} color="#2563eb" /> Mandatory Documents Required</h4>
+                <ul>
+                  {selectedScheme.documents.map((item, i) => <li key={i}>{item}</li>)}
+                </ul>
+              </div>
+            </div>
+
+            <div className={styles.modalFooter}>
+              <button 
+                className={styles.applyBtn} 
+                onClick={() => handleApply(selectedScheme.url)}
+                disabled={selectedScheme.category === 'closed'}
+              >
+                {selectedScheme.category === 'applied' ? 'Track Application on Portal' : 'Apply on Official Govt Portal'}
+                <ExternalLink size={18} />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
+
+  return content;
 }
