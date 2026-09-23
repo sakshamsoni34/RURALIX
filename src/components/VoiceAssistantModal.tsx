@@ -4,8 +4,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { 
   X, Mic, BrainCircuit, CheckCircle2, Volume2, VolumeX, 
   RotateCcw, Play, Pause, Sparkles, TrendingUp, IndianRupee, 
-  Clock, Award, ArrowRight, Save, Check, HelpCircle, Layers,
-  AlertCircle, RefreshCw, Radio
+  Clock, Award, ArrowRight, Save, Check, HelpCircle, Layers
 } from 'lucide-react';
 import styles from './VoiceAssistantModal.module.css';
 import { useDashboard } from '../context/DashboardContext';
@@ -13,7 +12,6 @@ import { useDashboard } from '../context/DashboardContext';
 interface VoiceAssistantModalProps {
   isOpen: boolean;
   onClose: () => void;
-  initialQuery?: string;
 }
 
 interface ExtractedData {
@@ -47,12 +45,10 @@ const QUICK_VOICE_PROMPTS = [
   { label: '🏛️ PMEGP & Mudra Subsidy', query: 'Which government schemes provide subsidy for rural businesses?' },
   { label: '🐔 Poultry Farming Cycle', query: 'Poultry farming ka setup aur 45 day cycle kaise chalayein?' },
   { label: '🌱 Vermicompost Low Capex', query: 'Kenchua khaad ya vermicompost unit kaise shuru karein?' },
-  { label: '🛢️ Cold Press Oil Mill', query: 'Cold press oil mill aur chakki setup cost aur margins kya hain?' },
-  { label: '🏪 Kirana & Grocery Store', query: 'Gaon mein kirana store shuru karne ka kharcha aur margin kya hai?' },
-  { label: '💻 CSC & Jan Seva Kendra', query: 'CSC Jan Seva Kendra aur Micro-ATM center kaise shuru karein?' }
+  { label: '🛢️ Cold Press Oil Mill', query: 'Cold press oil mill aur chakki setup cost aur margins kya hain?' }
 ];
 
-export default function VoiceAssistantModal({ isOpen, onClose, initialQuery }: VoiceAssistantModalProps) {
+export default function VoiceAssistantModal({ isOpen, onClose }: VoiceAssistantModalProps) {
   const { userProfile, setUserProfile } = useDashboard();
 
   const [language, setLanguage] = useState<'hi' | 'en'>('hi');
@@ -63,8 +59,6 @@ export default function VoiceAssistantModal({ isOpen, onClose, initialQuery }: V
   const [result, setResult] = useState<AIResult | null>(null);
   const [micError, setMicError] = useState<string | null>(null);
   const [isSynced, setIsSynced] = useState(false);
-  const [isSupported, setIsSupported] = useState(true);
-  const [audioLevel, setAudioLevel] = useState(0);
 
   // Speech Synthesis state
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -74,37 +68,8 @@ export default function VoiceAssistantModal({ isOpen, onClose, initialQuery }: V
 
   const recognitionRef = useRef<any>(null);
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
-  const silenceTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const transcriptRef = useRef('');
 
-  // Audio Context refs for volume visualizer
-  const audioContextRef = useRef<AudioContext | null>(null);
-  const analyserRef = useRef<AnalyserNode | null>(null);
-  const mediaStreamRef = useRef<MediaStream | null>(null);
-  const animationFrameRef = useRef<number | null>(null);
-
-  // Keep transcriptRef in sync
-  useEffect(() => {
-    transcriptRef.current = transcript;
-  }, [transcript]);
-
-  // Check speech recognition support
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-      setIsSupported(!!SpeechRecognition);
-    }
-  }, []);
-
-  // Handle initial query if passed
-  useEffect(() => {
-    if (isOpen && initialQuery && initialQuery.trim()) {
-      setTranscript(initialQuery.trim());
-      processQuery(initialQuery.trim());
-    }
-  }, [isOpen, initialQuery]);
-
-  // Stop active SpeechSynthesis
+  // Stop any active SpeechSynthesis
   const stopSpeech = useCallback(() => {
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       window.speechSynthesis.cancel();
@@ -113,79 +78,15 @@ export default function VoiceAssistantModal({ isOpen, onClose, initialQuery }: V
     }
   }, []);
 
-  // Live microphone audio visualizer
-  const startAudioVisualizer = async () => {
-    try {
-      if (typeof window === 'undefined' || !navigator.mediaDevices?.getUserMedia) return;
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      mediaStreamRef.current = stream;
-
-      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
-      if (!AudioContextClass) return;
-      
-      const audioContext = new AudioContextClass();
-      if (audioContext.state === 'suspended') {
-        await audioContext.resume();
-      }
-      audioContextRef.current = audioContext;
-
-      const analyser = audioContext.createAnalyser();
-      analyser.fftSize = 64;
-      analyserRef.current = analyser;
-
-      const source = audioContext.createMediaStreamSource(stream);
-      source.connect(analyser);
-
-      const dataArray = new Uint8Array(analyser.frequencyBinCount);
-
-      const updateLevel = () => {
-        if (!analyserRef.current) return;
-        analyserRef.current.getByteFrequencyData(dataArray);
-        let sum = 0;
-        for (let i = 0; i < dataArray.length; i++) {
-          sum += dataArray[i];
-        }
-        const avg = sum / dataArray.length;
-        setAudioLevel(Math.min(100, Math.round((avg / 128) * 100)));
-        animationFrameRef.current = requestAnimationFrame(updateLevel);
-      };
-
-      updateLevel();
-    } catch (err) {
-      console.warn('Audio visualizer not available:', err);
-    }
-  };
-
-  const stopAudioVisualizer = useCallback(() => {
-    if (animationFrameRef.current) {
-      cancelAnimationFrame(animationFrameRef.current);
-      animationFrameRef.current = null;
-    }
-    if (mediaStreamRef.current) {
-      mediaStreamRef.current.getTracks().forEach(track => track.stop());
-      mediaStreamRef.current = null;
-    }
-    if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
-      try {
-        audioContextRef.current.close();
-      } catch (e) {
-        // ignore
-      }
-      audioContextRef.current = null;
-    }
-    setAudioLevel(0);
-  }, []);
-
-  // Speak text out loud (TTS) with cleanup and garbage collection guard
+  // Speak text out loud (TTS)
   const speakText = useCallback((text: string, lang: 'hi' | 'en' = language, rate: number = speechRate) => {
     if (typeof window === 'undefined' || !('speechSynthesis' in window) || !text) return;
 
     window.speechSynthesis.cancel();
 
-    // Clean markdown formatting for speech
+    // Clean markdown stars/formatting for speech
     const cleanSpoken = text
       .replace(/[*_~`#]/g, '')
-      .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
       .replace(/\n+/g, ' ')
       .trim();
 
@@ -197,20 +98,11 @@ export default function VoiceAssistantModal({ isOpen, onClose, initialQuery }: V
 
     if (lang === 'hi') {
       utterance.lang = 'hi-IN';
-      const hindiVoice = voices.find(v => 
-        v.lang.toLowerCase().includes('hi') || 
-        v.name.toLowerCase().includes('hindi') || 
-        (v.name.toLowerCase().includes('india') && !v.lang.toLowerCase().includes('en-us'))
-      );
+      const hindiVoice = voices.find(v => v.lang.includes('hi') || v.name.toLowerCase().includes('hindi') || v.name.toLowerCase().includes('india'));
       if (hindiVoice) utterance.voice = hindiVoice;
     } else {
       utterance.lang = 'en-IN';
-      const englishVoice = voices.find(v => 
-        v.lang === 'en-IN' || 
-        v.name.toLowerCase().includes('indian') || 
-        v.name.toLowerCase().includes('india') || 
-        v.lang.startsWith('en')
-      );
+      const englishVoice = voices.find(v => v.lang === 'en-IN' || v.name.toLowerCase().includes('indian') || v.lang.includes('en'));
       if (englishVoice) utterance.voice = englishVoice;
     }
 
@@ -224,26 +116,52 @@ export default function VoiceAssistantModal({ isOpen, onClose, initialQuery }: V
       setIsPaused(false);
     };
 
-    utterance.onerror = (e) => {
-      if (e.error !== 'interrupted' && e.error !== 'canceled') {
-        console.warn('SpeechSynthesis error:', e);
-      }
+    utterance.onerror = () => {
       setIsSpeaking(false);
       setIsPaused(false);
     };
 
-    utterance.onpause = () => setIsPaused(true);
-    utterance.onresume = () => setIsPaused(false);
-
     utteranceRef.current = utterance;
-    (window as any).__ruralixUtterance = utterance;
-
-    if (window.speechSynthesis.paused) {
-      window.speechSynthesis.resume();
-    }
-
     window.speechSynthesis.speak(utterance);
   }, [language, speechRate]);
+
+  // Initialize Web Speech API Recognition
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      if (SpeechRecognition) {
+        const recognition = new SpeechRecognition();
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        recognition.lang = language === 'hi' ? 'hi-IN' : 'en-IN';
+
+        recognition.onresult = (event: any) => {
+          let currentTranscript = '';
+          for (let i = 0; i < event.results.length; i++) {
+            currentTranscript += event.results[i][0].transcript;
+          }
+          setTranscript(currentTranscript);
+        };
+
+        recognition.onerror = (event: any) => {
+          setIsListening(false);
+          if (event.error === 'not-allowed') {
+            setMicError('Microphone access denied. You can also type your question below.');
+          } else if (event.error === 'no-speech') {
+            // normal silence
+          } else {
+            setMicError('Speech recognition encountered an issue. You can type or tap again.');
+          }
+        };
+
+        recognition.onend = () => {
+          setIsListening(false);
+        };
+
+        recognitionRef.current = recognition;
+      }
+    }
+  }, [language]);
 
   // Load voices early
   useEffect(() => {
@@ -255,25 +173,47 @@ export default function VoiceAssistantModal({ isOpen, onClose, initialQuery }: V
     }
   }, []);
 
-  // Process voice query via API
-  const processQuery = async (queryText: string) => {
-    if (silenceTimerRef.current) {
-      clearTimeout(silenceTimerRef.current);
-      silenceTimerRef.current = null;
+  // Cleanup on unmount or close
+  useEffect(() => {
+    return () => {
+      stopSpeech();
+      if (recognitionRef.current && isListening) {
+        recognitionRef.current.stop();
+      }
+    };
+  }, [stopSpeech, isListening]);
+
+  const toggleListening = () => {
+    stopSpeech();
+
+    if (!recognitionRef.current) {
+      alert('Your browser does not support Web Speech Recognition. Please use Google Chrome or Microsoft Edge, or type your query in the box.');
+      return;
     }
 
-    stopAudioVisualizer();
-
-    if (recognitionRef.current) {
+    if (isListening) {
+      recognitionRef.current.stop();
+      setIsListening(false);
+    } else {
+      setTranscript('');
+      setMicError(null);
       try {
-        recognitionRef.current.stop();
+        recognitionRef.current.lang = language === 'hi' ? 'hi-IN' : 'en-IN';
+        recognitionRef.current.start();
+        setIsListening(true);
       } catch (err) {
-        // ignore
+        console.warn('Speech recognition start error:', err);
       }
+    }
+  };
+
+  const processQuery = async (queryText: string) => {
+    if (isListening && recognitionRef.current) {
+      recognitionRef.current.stop();
       setIsListening(false);
     }
 
-    const textToProcess = queryText.trim() || transcript.trim() || transcriptRef.current.trim();
+    const textToProcess = queryText.trim() || transcript.trim();
     if (!textToProcess) return;
 
     setLastQuery(textToProcess);
@@ -298,7 +238,7 @@ export default function VoiceAssistantModal({ isOpen, onClose, initialQuery }: V
       setResult(data);
       setStep('result');
 
-      // Speak response aloud
+      // Speak response aloud ("tell accordingly")
       if (autoSpeak && data.spokenText) {
         setTimeout(() => {
           speakText(data.spokenText, language, speechRate);
@@ -307,170 +247,9 @@ export default function VoiceAssistantModal({ isOpen, onClose, initialQuery }: V
     } catch (error) {
       console.error('Error in voice assistant:', error);
       setStep('record');
-      setMicError('Failed to get answer. Please check your query or try one of the suggested topics.');
+      alert('Failed to process voice query. Please try again.');
     }
   };
-
-  // Toggle Voice Recognition Start / Stop
-  const toggleListening = async () => {
-    stopSpeech();
-
-    if (silenceTimerRef.current) {
-      clearTimeout(silenceTimerRef.current);
-      silenceTimerRef.current = null;
-    }
-
-    const SpeechRecognition = typeof window !== 'undefined' 
-      ? ((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition)
-      : null;
-
-    // If currently listening, stop and process query
-    if (isListening) {
-      stopAudioVisualizer();
-
-      if (recognitionRef.current) {
-        try {
-          recognitionRef.current.stop();
-        } catch (e) {
-          // ignore
-        }
-      }
-      setIsListening(false);
-
-      const currentText = transcriptRef.current.trim();
-      if (currentText) {
-        processQuery(currentText);
-      }
-      return;
-    }
-
-    // Starting new listening session
-    setTranscript('');
-    setMicError(null);
-
-    // 1. First start visualizer & request browser mic permission
-    try {
-      await startAudioVisualizer();
-    } catch (e) {
-      console.warn('Could not initialize audio visualizer:', e);
-    }
-
-    // 2. Check SpeechRecognition availability
-    if (!SpeechRecognition) {
-      setIsListening(false);
-      stopAudioVisualizer();
-      setMicError('Speech recognition is not supported in this browser. Please type your query in the box below or use Google Chrome / Microsoft Edge.');
-      return;
-    }
-
-    try {
-      // Abort any lingering instance
-      if (recognitionRef.current) {
-        try {
-          recognitionRef.current.abort();
-        } catch (e) {
-          // ignore
-        }
-        recognitionRef.current = null;
-      }
-
-      const recognition = new SpeechRecognition();
-      recognition.continuous = true;
-      recognition.interimResults = true;
-      recognition.maxAlternatives = 1;
-      recognition.lang = language === 'hi' ? 'hi-IN' : 'en-IN';
-
-      recognition.onstart = () => {
-        setIsListening(true);
-        setMicError(null);
-      };
-
-      recognition.onresult = (event: any) => {
-        let currentTranscript = '';
-        for (let i = 0; i < event.results.length; i++) {
-          currentTranscript += event.results[i][0].transcript;
-        }
-
-        setTranscript(currentTranscript);
-        transcriptRef.current = currentTranscript;
-
-        // Auto-submit after 2.2 seconds of silence if user has spoken
-        if (silenceTimerRef.current) {
-          clearTimeout(silenceTimerRef.current);
-        }
-
-        if (currentTranscript.trim().split(/\s+/).length >= 2) {
-          silenceTimerRef.current = setTimeout(() => {
-            const finalQuery = transcriptRef.current.trim();
-            if (finalQuery) {
-              processQuery(finalQuery);
-            }
-          }, 2200);
-        }
-      };
-
-      recognition.onerror = (event: any) => {
-        console.warn('Speech recognition error event:', event.error);
-        stopAudioVisualizer();
-        setIsListening(false);
-
-        if (event.error === 'not-allowed' || event.error === 'permission-denied') {
-          setMicError('Microphone permission blocked. Please click the lock or camera icon in your browser address bar to allow microphone access, or type your query below.');
-        } else if (event.error === 'no-speech') {
-          // Normal silence, no scary error
-        } else if (event.error === 'aborted') {
-          // User aborted
-        } else if (event.error === 'network') {
-          setMicError('Speech cloud service network delay. You can tap the sample queries below or type directly.');
-        } else if (event.error === 'audio-capture') {
-          setMicError('No microphone hardware detected. You can type your query in the box below or choose a suggested topic.');
-        } else {
-          setMicError('Microphone connection was interrupted. Tap the mic to try again or choose a suggested topic below.');
-        }
-      };
-
-      recognition.onend = () => {
-        setIsListening(false);
-        stopAudioVisualizer();
-      };
-
-      recognitionRef.current = recognition;
-      recognition.start();
-    } catch (err) {
-      console.error('Error starting speech recognition:', err);
-      setIsListening(false);
-      stopAudioVisualizer();
-      setMicError('Could not start microphone. You can type your query or tap one of the suggested topics below.');
-    }
-  };
-
-  // Demo Query handler
-  const handleRunDemoQuery = (sampleText?: string) => {
-    const defaultQuery = language === 'hi'
-      ? 'Dairy business mein 1 lakh rupaye mein kitna munafa hoga?'
-      : 'What is the profit margin and setup cost in cold press oil business?';
-    const textToRun = sampleText || defaultQuery;
-    setTranscript(textToRun);
-    processQuery(textToRun);
-  };
-
-  // Cleanup on unmount or close
-  useEffect(() => {
-    return () => {
-      stopSpeech();
-      stopAudioVisualizer();
-      if (silenceTimerRef.current) {
-        clearTimeout(silenceTimerRef.current);
-      }
-      if (recognitionRef.current) {
-        try {
-          recognitionRef.current.stop();
-        } catch (e) {
-          // ignore
-        }
-      }
-    };
-  }, [stopSpeech, stopAudioVisualizer]);
 
   const handleToggleSpeechPlayback = () => {
     if (typeof window === 'undefined' || !('speechSynthesis' in window) || !result?.spokenText) return;
@@ -521,32 +300,20 @@ export default function VoiceAssistantModal({ isOpen, onClose, initialQuery }: V
 
   const handleClose = () => {
     stopSpeech();
-    stopAudioVisualizer();
-    if (silenceTimerRef.current) {
-      clearTimeout(silenceTimerRef.current);
-      silenceTimerRef.current = null;
-    }
-    if (recognitionRef.current) {
-      try {
-        recognitionRef.current.stop();
-      } catch (e) {
-        // ignore
-      }
+    if (isListening && recognitionRef.current) {
+      recognitionRef.current.stop();
       setIsListening(false);
     }
     setStep('record');
     setTranscript('');
     setResult(null);
-    setMicError(null);
     onClose();
   };
 
   const handleStartNewQuery = () => {
     stopSpeech();
-    stopAudioVisualizer();
     setStep('record');
     setTranscript('');
-    setMicError(null);
   };
 
   if (!isOpen) return null;
@@ -601,7 +368,7 @@ export default function VoiceAssistantModal({ isOpen, onClose, initialQuery }: V
               <div className={styles.micSection}>
                 <p className={styles.statusText}>
                   {isListening 
-                    ? (language === 'hi' ? "सुन रहा हूँ... बोलिए! (माइक दोबारा दबाकर उत्तर पाएं)" : "Listening... speak now! (Tap mic to get answer)")
+                    ? (language === 'hi' ? "सुन रहा हूँ... बोलिए!" : "Listening... speak your question!")
                     : (language === 'hi' ? "माइक दबाकर अपना सवाल या बिजनेस आइडिया बोलें" : "Tap the mic and ask any business question")}
                 </p>
                 <p className={styles.subStatusText}>
@@ -620,8 +387,7 @@ export default function VoiceAssistantModal({ isOpen, onClose, initialQuery }: V
                   <button 
                     className={`${styles.micBtn} ${isListening ? styles.listening : ''}`}
                     onClick={toggleListening}
-                    aria-label={isListening ? "Stop and submit voice query" : "Start speaking voice query"}
-                    title={isListening ? "Tap to finish and get answer" : "Tap to speak"}
+                    aria-label={isListening ? "Stop listening" : "Start speaking"}
                   >
                     <Mic size={38} />
                   </button>
@@ -629,66 +395,59 @@ export default function VoiceAssistantModal({ isOpen, onClose, initialQuery }: V
 
                 {isListening && (
                   <div className={styles.waveContainer}>
-                    {[1, 2, 3, 4, 5, 6].map((i) => {
-                      const dynamicHeight = audioLevel > 5 
-                        ? Math.max(8, Math.min(32, Math.round(audioLevel * (0.3 + (i % 3) * 0.3))))
-                        : undefined;
-                      return (
-                        <div 
-                          key={i} 
-                          className={styles.waveBar} 
-                          style={dynamicHeight ? { height: `${dynamicHeight}px` } : undefined}
-                        ></div>
-                      );
-                    })}
+                    <div className={styles.waveBar}></div>
+                    <div className={styles.waveBar}></div>
+                    <div className={styles.waveBar}></div>
+                    <div className={styles.waveBar}></div>
+                    <div className={styles.waveBar}></div>
+                    <div className={styles.waveBar}></div>
                   </div>
                 )}
               </div>
 
-              {/* Informative Diagnostic & Action Card on Mic Error */}
               {micError && (
-                <div style={{ 
-                  background: 'rgba(239, 68, 68, 0.06)',
-                  border: '1px solid rgba(239, 68, 68, 0.25)',
-                  borderRadius: '14px', padding: '1rem 1.25rem', marginBottom: '1.25rem',
-                  width: '100%', maxWidth: '620px', display: 'flex', flexDirection: 'column', gap: '0.75rem'
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: '#dc2626', fontSize: '0.92rem', fontWeight: 600 }}>
-                    <AlertCircle size={20} style={{ flexShrink: 0 }} />
-                    <span>{micError}</span>
-                  </div>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem', marginTop: '0.25rem' }}>
-                    <button 
-                      onClick={toggleListening}
-                      style={{ 
-                        display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
-                        background: 'var(--primary)', color: 'white', border: 'none',
-                        padding: '0.45rem 0.9rem', borderRadius: '8px', fontSize: '0.82rem',
-                        fontWeight: 600, cursor: 'pointer'
-                      }}
-                    >
-                      <RefreshCw size={14} /> Retry Microphone
-                    </button>
-                    <button 
-                      onClick={() => handleRunDemoQuery()}
-                      style={{ 
-                        display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
-                        background: '#ffffff', color: '#2563eb', border: '1px solid #bfdbfe',
-                        padding: '0.45rem 0.9rem', borderRadius: '8px', fontSize: '0.82rem',
-                        fontWeight: 600, cursor: 'pointer'
-                      }}
-                    >
-                      <Sparkles size={14} /> ⚡ Test with Voice Sample
-                    </button>
-                  </div>
+                <div style={{ color: 'var(--accent-red)', marginBottom: '1rem', fontSize: '0.88rem', textAlign: 'center' }}>
+                  {micError}
                 </div>
               )}
 
-              {/* Suggested Voice Prompts */}
+              {/* Transcript & Text Input */}
+              <div className={styles.transcriptWrapper}>
+                <textarea 
+                  className={styles.transcriptBox}
+                  value={transcript}
+                  onChange={(e) => setTranscript(e.target.value)}
+                  placeholder={language === 'hi'
+                    ? "उदा: 'डेयरी फार्मिंग में 1 लाख में कितना मुनाफा होगा?' या 'PMEGP योजना में 35% सब्सिडी कैसे मिलेगी?'"
+                    : "e.g. 'What is the profit margin in cold press oil business?' or 'How to apply for PMEGP subsidy?'"}
+                  rows={3}
+                />
+              </div>
+
+              <div className={styles.transcriptActions}>
+                {transcript && (
+                  <button 
+                    className={styles.clearBtn}
+                    onClick={() => setTranscript('')}
+                  >
+                    Clear
+                  </button>
+                )}
+                <button 
+                  className={styles.submitBtn} 
+                  onClick={() => processQuery(transcript)}
+                  disabled={!transcript.trim()}
+                >
+                  <BrainCircuit size={20} />
+                  Get AI Voice Answer
+                </button>
+              </div>
+
+              {/* Quick Prompts */}
               <div className={styles.quickPromptsSection}>
                 <div className={styles.quickPromptsTitle}>
-                  <Sparkles size={15} color="var(--primary)" />
-                  Suggested Voice Queries (Click to Ask Aloud):
+                  <Sparkles size={14} color="var(--primary)" />
+                  Suggested Voice Queries:
                 </div>
                 <div className={styles.quickPromptsGrid}>
                   {QUICK_VOICE_PROMPTS.map((qp, idx) => (
@@ -704,52 +463,6 @@ export default function VoiceAssistantModal({ isOpen, onClose, initialQuery }: V
                     </button>
                   ))}
                 </div>
-              </div>
-
-              {/* Transcript & Text Input */}
-              <div className={styles.transcriptWrapper}>
-                <textarea 
-                  className={styles.transcriptBox}
-                  value={transcript}
-                  onChange={(e) => {
-                    setTranscript(e.target.value);
-                    if (micError) setMicError(null);
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                      e.preventDefault();
-                      if (transcript.trim()) {
-                        processQuery(transcript);
-                      }
-                    }
-                  }}
-                  placeholder={language === 'hi'
-                    ? "उदा: 'डेयरी फार्मिंग में 1 लाख में कितना मुनाफा होगा?' या 'PMEGP योजना में 35% सब्सिडी कैसे मिलेगी?' (बोलें या यहाँ टाइप करके Enter दबाएं)"
-                    : "e.g. 'What is the profit margin in cold press oil business?' or 'How to apply for PMEGP subsidy?' (Speak or type & press Enter)"}
-                  rows={3}
-                />
-              </div>
-
-              <div className={styles.transcriptActions}>
-                {transcript && (
-                  <button 
-                    className={styles.clearBtn}
-                    onClick={() => {
-                      setTranscript('');
-                      setMicError(null);
-                    }}
-                  >
-                    Clear
-                  </button>
-                )}
-                <button 
-                  className={styles.submitBtn} 
-                  onClick={() => processQuery(transcript)}
-                  disabled={!transcript.trim()}
-                >
-                  <BrainCircuit size={20} />
-                  Get AI Voice Answer
-                </button>
               </div>
             </>
           )}
