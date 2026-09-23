@@ -22,6 +22,7 @@ interface VoiceAssistantResponse {
   directAnswer: string;
   keyPoints: string[];
   actionSteps: string[];
+  plan?: string[];
   metrics?: {
     estimatedMargin?: string;
     investmentRequired?: string;
@@ -29,11 +30,11 @@ interface VoiceAssistantResponse {
     subsidy?: string;
   };
   extracted?: {
-    capital?: string;
-    businessType?: string;
-    location?: string;
-    experience?: string;
-    requirements?: string;
+    capital?: string | null;
+    businessType?: string | null;
+    location?: string | null;
+    experience?: string | null;
+    requirements?: string | null;
   };
   suggestedFollowUps: string[];
 }
@@ -45,7 +46,8 @@ function detectIsHindiOrHinglish(text: string): boolean {
     'kya', 'kaise', 'kitna', 'hoga', 'mera', 'meri', 'mere', 'paas', 'chahiye',
     'batao', 'karna', 'hai', 'hain', 'mein', 'se', 'gaon', 'rupaye', 'rupay',
     'subsidy', 'munafa', 'kamai', 'kharch', 'dukaan', 'kheti', 'yojna', 'yojana',
-    'sarkari', 'madad', 'paisa', 'kharidna', 'bhechna', 'bataiye', 'kholna'
+    'sarkari', 'madad', 'paisa', 'kharidna', 'bhechna', 'bataiye', 'kholna',
+    'kirana', 'pashupalan', 'bakri', 'chalaun', 'lagat', 'paisa'
   ];
   const words = text.toLowerCase().split(/\s+/);
   return words.some(w => hinglishWords.includes(w));
@@ -116,9 +118,9 @@ function generateDynamicKnowledgeResponse(transcript: string, profile?: UserProf
         },
         extracted: {
           businessType: "Dairy Enterprise",
-          capital: profile?.capital?.toString() || "₹1,50,000",
-          location: profile?.location || "Local Rural Cluster",
-          experience: profile?.experience || "Practical farming knowledge",
+          capital: "₹1,50,000",
+          location: "Local Rural Cluster",
+          experience: "Practical farming knowledge",
           requirements: "Cattle shed, lactometer, deep freezer, stainless cans"
         },
         suggestedFollowUps: [
@@ -130,22 +132,22 @@ function generateDynamicKnowledgeResponse(transcript: string, profile?: UserProf
     }
   }
 
-  // 2. Poultry / Broiler / Layer / Eggs / Chicken
+  // 2. Poultry / Murgi Palan / Egg / Broiler
   if (query.includes('poultry') || query.includes('murgi') || query.includes('chicken') || query.includes('egg') || query.includes('anda') || query.includes('broiler') || query.includes('layer')) {
     if (isHindi) {
       return {
-        spokenText: "Poultry farming ek tezi se badhne wala vyavasay hai. Broiler farming mein 40 se 45 din ke cycle mein munafa milna shuru ho jata hai. 500 murgiyon ke batch ke liye lagbhag 70,000 se 1.2 lakh rupaye ki lagat aati hai, aur har batch par 25 se 35 percent munafa banta hai.",
-        headline: "Poultry Farming Setup & Profit Analysis",
-        directAnswer: "**Poultry Farming (Murgi Palan)** rural areas mein sabse fast turnover dene wala business hai. Broiler birds 42 din mein 2 kg vajan le lete hain. Local chicken meat vendors aur weekly haats mein inki barah maas maang rehti hai.",
+        spokenText: "Murgi palan ya poultry farming ek tezi se ghoomne wala business hai jisme 45 din ke ek broiler batch cycle mein 25 se 35 percent ka profit margin milta hai. 80,000 se 1.5 lakh rupaye mein aap 500 murgiyon ka batch shuru kar sakte hain.",
+        headline: "Poultry Farming Setup & Profit Dynamics",
+        directAnswer: "**Poultry Farming** mein Broiler (meat) aur Layer (anda) do pramukh vikalp hain. Broiler cycle sirf 40-45 din ka hota hai, jisse saal mein 6 se 7 baar profit ghumaya ja sakta hai. Sahi biosecurity aur saste local feed mix se kharch kam kiya ja sakta hai.",
         keyPoints: [
-          "**Fast Cycle:** Har 45 din mein naya batch tayyar aur cash return.",
-          "**FCR Target:** Feed Conversion Ratio 1.5–1.6 ke andar rakhne par munafa badhta hai.",
-          "**Layer Farming:** Kadaknath ya Desi murgi ke ande ₹10–₹15 prati nag bikte hain."
+          "**Fast Rotation:** Har 45 din mein batch bikri ke liye taiyar hota hai.",
+          "**B2B Tie-ups:** Local dhabas aur chicken retailers se direct supply contract karein.",
+          "**Manure Earnings:** Murgi ki khaad (poultry manure) high-nitrogen fertilizer ke roop mein ₹250/bori bikti hai."
         ],
         actionSteps: [
-          "Shed mein East-West hawa ki disha aur bio-security foot dip lagayein.",
-          "Certified hatchery se vaccinated Day-Old Chicks (DOC) book karein.",
-          "Local meat dukaandaron se batch bikri ka advance agreement karein."
+          "500 sq.ft ka ventilated shed banwayen jisme rice husk (dhan ki bhusi) ka bed ho.",
+          "Certified hatchery se DOC (Day Old Chicks) aur starter feed khareedein.",
+          "Newcastle (Ranikhet) disease aur IBD ka samay par teekakaran (vaccination) karein."
         ],
         metrics: {
           estimatedMargin: "25% - 35%",
@@ -187,6 +189,13 @@ function generateDynamicKnowledgeResponse(transcript: string, profile?: UserProf
           breakevenTimeline: "3 - 4 Months",
           subsidy: "National Livestock Mission (NLM 50% capital subsidy)"
         },
+        extracted: {
+          businessType: "Poultry Farming",
+          capital: "₹1,00,000",
+          location: profile?.location || "Rural/Semi-urban",
+          experience: "Livestock care",
+          requirements: "Shed, drinkers, feeders, heating lamp"
+        },
         suggestedFollowUps: [
           "What is the ideal vaccination schedule for poultry?",
           "How to apply for the National Livestock Mission grant?",
@@ -219,6 +228,13 @@ function generateDynamicKnowledgeResponse(transcript: string, profile?: UserProf
           breakevenTimeline: "Loan Approval: 15-30 Days",
           subsidy: "Up to 35% under PMEGP / PMFME"
         },
+        extracted: {
+          businessType: "Subsidized Rural Enterprise",
+          capital: "₹50,000 - ₹5,00,000",
+          location: profile?.location || "Rural Block",
+          experience: "Entrepreneurial intent",
+          requirements: "Aadhaar, PAN, Bank Statement, Project Proposal"
+        },
         suggestedFollowUps: [
           "PMEGP ke liye Project Report (DPR) kaise banayein?",
           "PM Mudra loan ke liye bank manager se kaise baat karein?",
@@ -246,101 +262,129 @@ function generateDynamicKnowledgeResponse(transcript: string, profile?: UserProf
           breakevenTimeline: "Processing time: 2 - 4 Weeks",
           subsidy: "25% to 35% Capital Grant"
         },
+        extracted: {
+          businessType: "MSME Grant",
+          capital: "₹1,00,000 - ₹5,00,000",
+          location: profile?.location || "Rural District",
+          experience: "Eligible borrower",
+          requirements: "KYC documents, project proposal"
+        },
         suggestedFollowUps: [
           "How to create a project report (DPR) for PMEGP?",
-          "What documents are needed for PM Mudra loan?",
-          "How to track loan application status on Jan Samarth?"
+          "What is the difference between Shishu and Kishore Mudra loans?",
+          "How to get PMFME 35% subsidy for food processing?"
         ]
       };
     }
   }
 
-  // 4. Cold Press Oil / Flour Mill / Chakki / Spices / Food Processing
-  if (query.includes('oil') || query.includes('tel') || query.includes('chakki') || query.includes('atta') || query.includes('flour') || query.includes('masala') || query.includes('spice') || query.includes('kachi ghani') || query.includes('cold press')) {
+  // 4. Cold Press Oil / Chakki / Atta / Spices / Masala
+  if (query.includes('oil') || query.includes('tel') || query.includes('chakki') || query.includes('atta') || query.includes('flour') || query.includes('masala') || query.includes('spice') || query.includes('expeller') || query.includes('mustard') || query.includes('sarson')) {
     if (isHindi) {
       return {
-        spokenText: "Cold-press oil aur mini flour chakki ka business gaon aur kasbon mein behad kamyab hai. Shuddh kachi ghani sarson ya moongfali ke tel par 35 se 45 percent tak ka gross profit margin milta hai. Sath hi tel nikalne ke baad bachi hui khali dairy kisano ko bechkar extra kamai hoti hai.",
-        headline: "Cold Press Oil & Agro-Processing Enterprise",
+        spokenText: "Cold press oil mill aur masala chakki unit gramin kshetra mein sabse tej bikne wala vyavasay hai. 1.5 se 3 lakh rupaye mein aap stainless steel automatic oil expeller machine laga sakte hain, jisme 35 se 50 percent ka shuddh munafa hota hai.",
+        headline: "Cold Press Oil & Spice Processing Unit",
         directAnswer: "**Cold-Press Oil & Spices Unit (Kachi Ghani Tel / Masala Udyog):** Chemical-free shuddh tel aur taze masalon ki maang tezi se badh rahi hai. Cold-press lakdi/steel expeller machine se sarson, moongfali ya til ka tel nikaal kar local bazaar mein premium daam par becha ja sakta hai.",
         keyPoints: [
-          "**Dual Earning:** Tel bikne ke sath sath tel ki khali (oil cake) dairy walo ko ₹25–₹35/kg bikti hai.",
-          "**High Margins:** Shuddh kachi ghani tel standard packaged tel se 30% zyada rate par bikta hai.",
-          "**Steady Demand:** Har parivar mein tel aur masale rozana ki zaroorat hain."
+          "**High Value Addition:** Sarson khareed kar tel aur khali (oil cake) bechne par 40% margin nikalta hai.",
+          "**Byproduct Demand:** Tel nikalne ke baad bachi hui Sarson Khali pashu aahar ke roop mein ₹28-₹35/kg bikti hai.",
+          "**PMFME Subsidy:** Khadya praskaran (Food Processing) par 35% credit-linked subsidy milti hai."
         ],
         actionSteps: [
-          "10 HP cold press expeller aur stainless steel filtration tank lagwayen.",
-          "Local kisano se seedhe harvest ke samay saste daam par sarson/moongfali kharidein.",
-          "FSSAI Basic registration aur clean bottle packaging ka intezam karein."
+          "1 HP se 3 HP ki single-phase / 3-phase cold press oil expeller machine khareedein.",
+          "FSSAI basic registration aur local vyapar licence lein.",
+          "1 litre aur 5 litre ki food-grade transparent bottles par apni local branding karein."
         ],
         metrics: {
-          estimatedMargin: "35% - 48%",
-          investmentRequired: "₹1,20,000 - ₹2,50,000",
+          estimatedMargin: "35% - 50%",
+          investmentRequired: "₹1,20,000 - ₹2,80,000",
           breakevenTimeline: "3 se 5 Mahine",
-          subsidy: "PMFME Scheme (35% Subsidy on Food Processing)"
+          subsidy: "PMFME (35% Credit Linked Subsidy)"
+        },
+        extracted: {
+          businessType: "Cold Press Oil & Spices Unit",
+          capital: "₹1,50,000 - ₹2,50,000",
+          location: profile?.location || "Rural / Semi-urban Mandi",
+          experience: "Basic machine operation",
+          requirements: "Oil expeller machine, filtering unit, packing bottles"
         },
         suggestedFollowUps: [
-          "Cold press tel machine ki kimat kitni hai?",
-          "FSSAI food license lene ki kya prakriya hai?",
-          "Sarson tel nikaalne par kitna percent tel aur kitni khali nikalti hai?"
+          "Sarson ke tel ke expeller machine ki kimat kitni hai?",
+          "PMFME scheme mein oil mill ke liye apply kaise karein?",
+          "Local market mein branding aur packing kaise karein?"
         ]
       };
     } else {
       return {
-        spokenText: "A cold-press oil or spice processing unit is highly profitable, delivering 35 to 48 percent margins. Pure wood-pressed mustard or groundnut oil commands premium local prices, and the leftover oil cake is sold directly to dairy farmers as high-protein cattle feed.",
-        headline: "Cold-Press Oil & Agro-Processing Feasibility",
-        directAnswer: "**Cold-Pressed Oil and Spice Processing** leverages the rising consumer preference for pure, unadulterated edible oils and freshly ground spices. By procuring seeds directly from farmers at harvest, you maximize margins.",
+        spokenText: "A cold press oil mill and spice grinding unit is a high-margin enterprise. With 1.5 to 3 lakh rupees, you can install an automatic expeller machine that delivers 35 to 50 percent gross margins and qualifies for a 35 percent PMFME subsidy.",
+        headline: "Cold Press Oil & Agro-Processing Blueprint",
+        directAnswer: "The **Cold Press Oil & Spice Processing Enterprise** addresses the booming demand for pure, unadulterated mustard, groundnut, and sesame oils. Selling cold-pressed oil along with nutrient-rich oil cake for cattle generates dual revenue streams.",
         keyPoints: [
-          "**Byproduct Monetization:** Oil cake (Khali) is liquidated immediately to local cattle owners.",
-          "**Premium Retail Pricing:** Cold-pressed oil sells at ₹180–₹240/litre vs. standard ₹140 refined oil.",
-          "**PMFME Support:** Eligible for 35% credit-linked capital subsidy up to ₹10 Lakhs."
+          "**Dual Revenue Model:** Revenue from premium cold-pressed oil + cattle feed oil cake (Khali).",
+          "**Strong Unit Economics:** Gross processing margin exceeds 35-48%.",
+          "**PMFME Support:** Eligible for 35% capital subsidy up to ₹10 Lakhs."
         ],
         actionSteps: [
-          "Procure a single-phase/three-phase cold-press expeller and oil settling tanks.",
-          "Source dry mustard or groundnut seeds with < 8% moisture content.",
-          "Establish monthly subscription orders with 40-50 local families."
+          "Procure a stainless steel Cold Press Expeller with commercial electric motor.",
+          "Obtain online FSSAI basic registration (Form A).",
+          "Distribute branded bottles through local retail grocery tie-ups and WhatsApp pre-orders."
         ],
         metrics: {
-          estimatedMargin: "35% - 45%",
-          investmentRequired: "₹1,20,000 - ₹2,50,000",
+          estimatedMargin: "35% - 50%",
+          investmentRequired: "₹1,50,000 - ₹3,00,000",
           breakevenTimeline: "4 - 5 Months",
-          subsidy: "PMFME (35% capital subsidy)"
+          subsidy: "PMFME (35% Capital Subsidy)"
+        },
+        extracted: {
+          businessType: "Agro Food Processing",
+          capital: "₹2,00,000",
+          location: profile?.location || "Town / Mandi Area",
+          experience: "Food processing / Retail",
+          requirements: "Cold press expeller, filter unit, bottles"
         },
         suggestedFollowUps: [
-          "What is the power consumption and machinery cost for cold-press expeller?",
-          "How to get basic FSSAI certification online?",
-          "What is the average oil extraction yield percentage?"
+          "What is the power consumption of a 3HP oil expeller?",
+          "How to apply for PMFME 35% subsidy?",
+          "What are the best packaging options for edible oils?"
         ]
       };
     }
   }
 
   // 5. Vermicompost / Organic Farming / Manure / Khaad
-  if (query.includes('vermicompost') || query.includes('khaad') || query.includes('manure') || query.includes('khechua') || query.includes('organic') || query.includes('fertilizer') || query.includes('jaivik')) {
+  if (query.includes('vermicompost') || query.includes('khaad') || query.includes('manure') || query.includes('khechua') || query.includes('kenchua') || query.includes('organic') || query.includes('fertilizer') || query.includes('jaivik')) {
     if (isHindi) {
       return {
         spokenText: "Vermicompost yaani kenchua khaad ka business sabse kam lagat aur sabse zyada munafe wala vyavasay hai. 40,000 se 70,000 rupaye mein aap 5 se 10 vermi-beds shuru kar sakte hain. Isme 60 percent se zyada ka gross margin hota hai kyunki gobar aur kheti ka kachra lagbhag muft milta hai.",
         headline: "Vermicompost & Organic Fertilizer Business",
         directAnswer: "**Vermicompost (Kenchua Khaad Nirman):** Gobar aur sukhe patton se Eisenia Foetida kenchuo ke zariye banai gayi jaivik khaad ₹8 se ₹12 prati kilo bikti hai. Sath hi har 60 din mein kenchuo ki sankhya double hoti hai, jinhe aap anya kisano ko ₹400/kg bech sakte hain.",
         keyPoints: [
-          "**Near-Zero Raw Material Cost:** Gobar aur fasal ke aavshesh local dairy aur kheton se asaani se milte hain.",
+          "**High Margin (60%+):** Gobar aur kheti ka avshesh bohot kam daam par mil jata hai.",
           "**Multiple Income Streams:** Vermicompost khaad + Vermiwash liquid tonic + Earthworms sales.",
-          "**Government Promotion:** Paramparagat Krishi Vikas Yojana (PKVY) ke tehat certified farmers ko high demand hai."
+          "**Growing Organic Demand:** Polyhouse kheti, fal-sabzi kisan aur nursery wale direct bulk khareedte hain."
         ],
         actionSteps: [
-          "12x4 ft ke HDPE vermi-beds lagayein aur 75% agro-shade net lagayein.",
-          "KVK ya certified farm se Eisenia Foetida kenchue procure karein.",
-          "Khaad ki chhannaai ke liye rotary drum sieve ka istemal karein."
+          "Chhavdar jagah par 5-10 HDPE UV-treated vermi-beds lagayein.",
+          "KVIC ya certified farm se *Eisenia Foetida* laal kenchua khareedein.",
+          "50-60 din baad jaali se chaan kar 5kg aur 50kg ke bags mein pack karein."
         ],
         metrics: {
           estimatedMargin: "60% - 75%",
-          investmentRequired: "₹35,000 - ₹80,000",
-          breakevenTimeline: "60 - 75 Din (1st Batch)",
-          subsidy: "National Project on Organic Farming & PKVY Grants"
+          investmentRequired: "₹35,000 - ₹75,000",
+          breakevenTimeline: "60 se 90 Din",
+          subsidy: "PKVY (Paramparagat Krishi Vikas Yojana) & NABARD Organic Grant"
+        },
+        extracted: {
+          businessType: "Vermicompost & Bio-Fertilizer",
+          capital: "₹40,000 - ₹80,000",
+          location: profile?.location || "Agricultural Land / Backyard",
+          experience: "Composting / Farming",
+          requirements: "HDPE vermi-beds, cow dung, Eisenia Foetida earthworms, water spray"
         },
         suggestedFollowUps: [
-          "Vermi-bed mein nami aur tapman kaise maintain karein?",
-          "Vermiwash liquid ko alag se kaise collect karein aur kitne me bechein?",
-          "Local nurseries aur bagwani walo ko khaad kaise supply karein?"
+          "Eisenia Foetida kenchua kahan se aur kitne me khareedein?",
+          "Vermiwash liquid spray kaise banayein aur bechein?",
+          "Nursery aur kisano ko bulk supply kaise karein?"
         ]
       };
     } else {
@@ -364,6 +408,13 @@ function generateDynamicKnowledgeResponse(transcript: string, profile?: UserProf
           breakevenTimeline: "60 - 75 Days",
           subsidy: "Paramparagat Krishi Vikas Yojana (PKVY) & State Organic Missions"
         },
+        extracted: {
+          businessType: "Bio-Fertilizer Unit",
+          capital: "₹50,000",
+          location: profile?.location || "Rural Plot",
+          experience: "Organic farming basics",
+          requirements: "HDPE beds, worms, green net"
+        },
         suggestedFollowUps: [
           "How to maintain moisture levels in hot summer months?",
           "How to package and brand organic vermicompost?",
@@ -373,7 +424,226 @@ function generateDynamicKnowledgeResponse(transcript: string, profile?: UserProf
     }
   }
 
-  // 6. Generic / Custom Business & General Guidance
+  // 6. Kirana / Grocery / General Store / Retail Shop / Dukan
+  if (query.includes('kirana') || query.includes('grocery') || query.includes('dukaan') || query.includes('dukan') || query.includes('shop') || query.includes('store') || query.includes('retail')) {
+    if (isHindi) {
+      return {
+        spokenText: "Kirana aur daily essentials ki dukan gaon aur kasbe mein lagatar bikri dene wala business hai. 60,000 se 1.5 lakh rupaye mein aap fast-moving grocery items, packaged spices aur daily needs ke saath shuru kar sakte hain, jisme 18 se 28 percent ka net margin milta hai.",
+        headline: "Kirana & General Store Setup Blueprint",
+        directAnswer: "**Kirana & Retail General Store:** Gaon aur semi-urban ilaqo mein FMCG, daalein, packaged tel, biscuit aur stationery ki regular demand rehti hai. Wholesaler se direct sourcing aur cash/UPI discount se margin badhaya ja sakta hai.",
+        keyPoints: [
+          "**Consistent Daily Turnover:** Daily cash turnover ₹2,500 se ₹8,000 tak rehta hai.",
+          "**Fast Moving Inventory:** Aata, tel, daalein, sabun aur masale tezi se bikte hain.",
+          "**Digital Credit Ledger:** Khatabook ya Vyapar app use karke udhaar recovery regular karein."
+        ],
+        actionSteps: [
+          "Bazaar ya colony ke pravesh dwar par 150-250 sq.ft ki dukan select karein.",
+          "Nearest main mandi ke top 2 wholesalers se bulk pricing contract karein.",
+          "QR code scanner aur basic digital POS billing set karein."
+        ],
+        metrics: {
+          estimatedMargin: "18% - 28%",
+          investmentRequired: "₹60,000 - ₹1,50,000",
+          breakevenTimeline: "1 se 2 Mahine",
+          subsidy: "PM MUDRA Shishu Loan (up to ₹50,000 without guarantee)"
+        },
+        extracted: {
+          businessType: "Kirana & General Store",
+          capital: "₹80,000 - ₹1,50,000",
+          location: profile?.location || "Village Main Chowk",
+          experience: "Retail customer handling",
+          requirements: "Wooden/steel racks, electronic weighing scale, initial stock"
+        },
+        suggestedFollowUps: [
+          "Kirana dukan ke liye wholesale maal kahan se khareedein?",
+          "Mudra Shishu loan kirana dukan ke liye kaise lein?",
+          "Udhaar khata kaise manage karein?"
+        ]
+      };
+    } else {
+      return {
+        spokenText: "A Kirana and general retail store provides stable daily cash flow with 18 to 28 percent gross margins. With an initial inventory budget of 60,000 to 1.5 lakh rupees, you can serve daily consumer goods in high-traffic rural spots.",
+        headline: "Kirana & Retail Store Setup Feasibility",
+        directAnswer: "**Kirana & FMCG Retail Store:** Daily essentials, grains, packaged cooking oils, toiletries, and confectionery have non-cyclical demand. Negotiating wholesale cash discounts and managing stock turnover optimizes working capital.",
+        keyPoints: [
+          "**High Velocity:** Fast turnover of essential staples ensures quick cash circulation.",
+          "**High-Margin Add-ons:** Snacks, cold drinks, recharge, and dairy products yield up to 30% margin.",
+          "**Low Default Risk:** Implementing instant UPI payments and digital ledgers."
+        ],
+        actionSteps: [
+          "Secure a 150-200 sq.ft shop at high-footfall village junctions.",
+          "Source directly from primary mandi distributors for FMCG staples.",
+          "Set up digital payments and digital inventory tracking."
+        ],
+        metrics: {
+          estimatedMargin: "18% - 28%",
+          investmentRequired: "₹70,000 - ₹1,50,000",
+          breakevenTimeline: "1 - 2 Months",
+          subsidy: "PM MUDRA Shishu Loan (up to ₹50,000)"
+        },
+        extracted: {
+          businessType: "Retail FMCG Store",
+          capital: "₹1,00,000",
+          location: profile?.location || "Main Bazaar",
+          experience: "Customer service",
+          requirements: "Display racks, digital scale, inventory stock"
+        },
+        suggestedFollowUps: [
+          "What are the top 10 fastest-selling grocery items in rural areas?",
+          "How to get Mudra loan for grocery shop?",
+          "How to reduce spoilage in grocery inventory?"
+        ]
+      };
+    }
+  }
+
+  // 7. CSC / Jan Seva Kendra / Cyber Cafe / Digital Seva / CSP
+  if (query.includes('csc') || query.includes('jan seva') || query.includes('cyber') || query.includes('digital') || query.includes('csp') || query.includes('banking') || query.includes('sewa')) {
+    if (isHindi) {
+      return {
+        spokenText: "CSC aur Jan Seva Kendra gaon mein bohot demand wala service business hai. 50,000 se 90,000 rupaye mein computer, printer aur biometric scanner lagakar aap government forms, Aadhaar banking aur money transfer se mahine ka 20,000 se 40,000 rupaye kama sakte hain.",
+        headline: "CSC Jan Seva Kendra & Digital Banking Point",
+        directAnswer: "**Jan Seva Kendra (CSC & Micro-ATM CSP):** Gaon ke logon ko sarkari yojana form, kisan registration, bijli bill, train ticket aur micro-ATM cash withdrawal ki suvidha pradan karke prati transaction commission kamaya ja sakta hai.",
+        keyPoints: [
+          "**Zero Raw Material Risk:** Service-based model hone ke karan stock kharab hone ka koi risk nahi hota.",
+          "**Multiple Income Streams:** Banking CSP commission + Online Form fees + Photostat/Lamination.",
+          "**High Customer Footfall:** Har mahine 300 se 800 log regular suvidhaon ke liye aate hain."
+        ],
+        actionSteps: [
+          "CSC VLE (register.csc.gov.in) par VLE registration aur TEC certificate complete karein.",
+          "Basic desktop/laptop, All-in-One printer aur Mantra/Morpho biometric device set karein.",
+          "Airtel Payments Bank, Spice Money ya Paynearby se Banking CSP id activate karein."
+        ],
+        metrics: {
+          estimatedMargin: "55% - 70%",
+          investmentRequired: "₹45,000 - ₹85,000",
+          breakevenTimeline: "2 se 3 Mahine",
+          subsidy: "Digital India VLE Support & Mudra Shishu"
+        },
+        extracted: {
+          businessType: "CSC Jan Seva Kendra & Digital Banking",
+          capital: "₹50,000 - ₹80,000",
+          location: profile?.location || "Gram Panchayat Office nearby",
+          experience: "Basic computer and internet knowledge",
+          requirements: "Computer/Laptop, Multi-function Printer, Biometric device, Internet"
+        },
+        suggestedFollowUps: [
+          "CSC VLE registration aur TEC certificate kaise milega?",
+          "Micro ATM aur cash withdrawal CSP kaise chalu karein?",
+          "Monthly 30,000 kamane ke liye kaun si services provide karein?"
+        ]
+      };
+    } else {
+      return {
+        spokenText: "Starting a CSC Jan Seva Kendra and Digital Banking Center requires 50,000 to 90,000 rupees for IT equipment. It delivers over 60 percent profit margins with zero inventory risk through citizen service commissions.",
+        headline: "CSC Jan Seva Kendra & Micro-Banking Hub",
+        directAnswer: "A **Common Service Center (CSC) & Banking Kiosk** offers essential digital government services, PM Kisan KYC, bill payments, and AEPS Aadhaar ATM cash withdrawals to rural citizens.",
+        keyPoints: [
+          "**Pure Service Margin:** 60-75% gross margins with negligible recurring cost.",
+          "**Recurring Footfall:** Steady stream of users for government registrations, tickets, and photocopies.",
+          "**Fintech Commission:** Earn ₹3–₹12 per cash withdrawal/deposit transaction."
+        ],
+        actionSteps: [
+          "Complete TEC certification and register at `register.csc.gov.in`.",
+          "Procure a PC, heavy-duty duplex printer, and UIDAI certified biometric scanner.",
+          "Partner with AEPS platforms (Spice Money, Paynearby, or bank BC)."
+        ],
+        metrics: {
+          estimatedMargin: "60% - 75%",
+          investmentRequired: "₹50,000 - ₹90,000",
+          breakevenTimeline: "2 - 3 Months",
+          subsidy: "Digital India MSME MUDRA Eligible"
+        },
+        extracted: {
+          businessType: "Digital Service Center (CSC)",
+          capital: "₹60,000",
+          location: profile?.location || "Panchayat Center",
+          experience: "Computer literacy",
+          requirements: "PC, Printer, Biometric scanner, Broadband"
+        },
+        suggestedFollowUps: [
+          "How to get TEC certification for CSC?",
+          "Which AEPS provider gives the highest commission?",
+          "How to add banking kiosk services to CSC?"
+        ]
+      };
+    }
+  }
+
+  // 8. Goat Farming / Bakri Palan
+  if (query.includes('goat') || query.includes('bakri') || query.includes('bakra') || query.includes('sheep') || query.includes('bhed')) {
+    if (isHindi) {
+      return {
+        spokenText: "Bakri palan ya goat farming gramin kshetra ke liye 'chhota ATM' mana jata hai. 70,000 se 1.3 lakh rupaye mein aap 10 bakri aur 1 bakra ke saath shuruat kar sakte hain, jisme 45 se 55 percent tak ka munafa hota hai aur NLM yojana mein 50 percent subsidy milti hai.",
+        headline: "Goat Farming Setup & Economics",
+        directAnswer: "**Bakri Palan (Commercial Goat Farming):** Sirohi, Barbari, ya Black Bengal jaise behtareen nasl chunne se har 8 mahine mein bachhe milte hain. Eid aur regional markets mein bakron ki bhaari maang hoti hai.",
+        keyPoints: [
+          "**High Reproduction:** Ek bakri saal mein 2 se 3 bachhe deti hai, tezi se herd size badhta hai.",
+          "**Low Feed Cost:** Neem, peepal, jhaadiyan aur kheti ka chara kha kar pal jati hain.",
+          "**50% Subsidy:** National Livestock Mission (NLM) ke tehat 50% capital subsidy uplabdh hai."
+        ],
+        actionSteps: [
+          "Raised wooden slatted floor ya ventilated shed banwayen.",
+          "Certified livestock breeding center se 10 female + 1 male (Barbari / Sirohi) khareedein.",
+          "PPR, Enterotoxemia aur Goat Pox ka regular vaccination schedule follow karein."
+        ],
+        metrics: {
+          estimatedMargin: "45% - 60%",
+          investmentRequired: "₹70,000 - ₹1,40,000",
+          breakevenTimeline: "8 se 10 Mahine",
+          subsidy: "National Livestock Mission (50% Subsidy) & NABARD"
+        },
+        extracted: {
+          businessType: "Goat Farming (Bakri Palan)",
+          capital: "₹80,000 - ₹1,50,000",
+          location: profile?.location || "Rural Grazing Area",
+          experience: "Livestock handling",
+          requirements: "Shed, grazing ground / stall feed, Barbari/Sirohi breed"
+        },
+        suggestedFollowUps: [
+          "Bakri palan ke liye 50% NLM subsidy kaise apply karein?",
+          "Stall-fed (shed ke andar) bakri palan kaise karein?",
+          "Sabse zyada bachhe dene wali bakri ki nasl kaun si hai?"
+        ]
+      };
+    } else {
+      return {
+        spokenText: "Goat farming offers robust 45 to 60 percent returns with low feeding costs. Starting with 10 does and 1 buck requires 70,000 to 1.3 lakh rupees, with up to 50 percent capital subsidy under the National Livestock Mission.",
+        headline: "Commercial Goat Farming Project Plan",
+        directAnswer: "**Goat Farming Enterprise:** Known as the 'poor man's cow', goats offer high disease resistance, multiple twinning rates, and peak festive market value in meat trading.",
+        keyPoints: [
+          "**Herd Doubling:** Herd expands rapidly through 8-month reproductive cycles.",
+          "**Low Overhead:** High feed-to-meat conversion using local shrubs and dry roughage.",
+          "**Subsidy Access:** 50% capital subsidy under NLM and concessional KCC credit."
+        ],
+        actionSteps: [
+          "Construct a semi-intensive elevated shed with dry ventilation.",
+          "Acquire vaccinated Barbari or Sirohi breeding stock.",
+          "Maintain vaccination calendar against PPR and Enterotoxemia."
+        ],
+        metrics: {
+          estimatedMargin: "45% - 60%",
+          investmentRequired: "₹80,000 - ₹1,50,000",
+          breakevenTimeline: "8 - 10 Months",
+          subsidy: "NLM (50% Subsidy) & NABARD Support"
+        },
+        extracted: {
+          businessType: "Goat Farming",
+          capital: "₹1,00,000",
+          location: profile?.location || "Rural Plot",
+          experience: "Livestock rearing",
+          requirements: "Elevated shed, fodder supply, breeding buck"
+        },
+        suggestedFollowUps: [
+          "How to apply for NLM 50% goat farming subsidy?",
+          "What is stall feeding vs open grazing economics?",
+          "Best commercial breeds for meat yield in India"
+        ]
+      };
+    }
+  }
+
+  // 9. Generic / Custom Business & General Guidance
   const capVal = query.match(/(\d+[\s]*(lakh|hazaar|k|rupaye|rs|thousand|cr))/i)?.[0] || profile?.capital?.toString() || "₹50,000 - ₹1,00,000";
 
   if (isHindi) {
@@ -450,7 +720,7 @@ function generateDynamicKnowledgeResponse(transcript: string, profile?: UserProf
 export async function POST(req: Request) {
   try {
     const body: RequestBody = await req.json();
-    const { transcript, history, userProfile, language } = body;
+    const { transcript, userProfile, language } = body;
 
     if (!transcript || typeof transcript !== 'string' || !transcript.trim()) {
       return NextResponse.json(
@@ -465,7 +735,7 @@ export async function POST(req: Request) {
     if (!process.env.GEMINI_API_KEY) {
       // Dynamic intelligent knowledge fallback
       const dynamicResponse = generateDynamicKnowledgeResponse(cleanTranscript, userProfile);
-      return NextResponse.json(dynamicResponse);
+      return NextResponse.json(normalizeResponse(dynamicResponse));
     }
 
     try {
@@ -533,10 +803,14 @@ export async function POST(req: Request) {
       `;
 
       const result = await model.generateContent(prompt);
-      const responseText = result.response.text();
-      const parsedData: VoiceAssistantResponse = JSON.parse(responseText);
+      let rawText = result.response.text().trim();
+      
+      // Clean markdown code blocks if present
+      if (rawText.startsWith('```')) {
+        rawText = rawText.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim();
+      }
 
-      // Sanitize and ensure spokenText exists
+      const parsedData: VoiceAssistantResponse = JSON.parse(rawText);
       const normalized = normalizeResponse(parsedData);
       return NextResponse.json(normalized);
     } catch (geminiError) {

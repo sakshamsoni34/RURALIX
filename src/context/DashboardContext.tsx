@@ -12,6 +12,9 @@ interface DashboardContextType {
   setCustomers: (customers: number) => void;
   isVoiceModalOpen: boolean;
   setIsVoiceModalOpen: (isOpen: boolean) => void;
+  voiceInitialQuery: string;
+  setVoiceInitialQuery: (query: string) => void;
+  openVoiceAssistantWithQuery: (query: string) => void;
   schemes: Scheme[];
   setSchemes: (schemes: Scheme[]) => void;
   trendingItems: TrendingItem[];
@@ -34,6 +37,12 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
   });
   const [customers, setCustomers] = useState(25);
   const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
+  const [voiceInitialQuery, setVoiceInitialQuery] = useState('');
+
+  const openVoiceAssistantWithQuery = (query: string) => {
+    setVoiceInitialQuery(query);
+    setIsVoiceModalOpen(true);
+  };
   
   const [schemes, setSchemes] = useState<Scheme[]>([
     {
@@ -73,6 +82,8 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
       userProfile, setUserProfile,
       customers, setCustomers,
       isVoiceModalOpen, setIsVoiceModalOpen,
+      voiceInitialQuery, setVoiceInitialQuery,
+      openVoiceAssistantWithQuery,
       schemes, setSchemes,
       trendingItems, setTrendingItems,
       realityScores, setRealityScores

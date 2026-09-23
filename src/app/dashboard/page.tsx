@@ -27,6 +27,7 @@ function DashboardContent() {
     activeTab, 
     userProfile,
     isVoiceModalOpen, setIsVoiceModalOpen,
+    voiceInitialQuery,
     setSchemes,
     setTrendingItems,
     setRealityScores
@@ -96,6 +97,7 @@ function DashboardContent() {
       
       <VoiceAssistantModal 
         isOpen={isVoiceModalOpen}
+        initialQuery={voiceInitialQuery}
         onClose={() => setIsVoiceModalOpen(false)}
       />
       <OnboardingModal />

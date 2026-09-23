@@ -6,12 +6,13 @@ import {
   Target, 
   BarChart3, 
   BrainCircuit,
-  Sprout
+  Sprout,
+  Mic
 } from 'lucide-react';
 import styles from '../../app/dashboard/page.module.css';
 import { useDashboard } from '../../context/DashboardContext';
 
-function LandmarkIcon(props: any) {
+function LandmarkIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -36,7 +37,7 @@ function LandmarkIcon(props: any) {
 }
 
 export default function Sidebar() {
-  const { activeTab, setActiveTab } = useDashboard();
+  const { activeTab, setActiveTab, setIsVoiceModalOpen } = useDashboard();
 
   return (
     <aside className={styles.sidebar}>
@@ -47,6 +48,12 @@ export default function Sidebar() {
       <nav className={styles.nav}>
         <button onClick={() => setActiveTab('dashboard')} className={`${styles.navItem} ${activeTab === 'dashboard' ? styles.navItemActive : ''}`} style={{border:'none', width:'100%', textAlign:'left', fontFamily:'inherit', background: activeTab === 'dashboard' ? '#fff' : 'transparent', cursor: 'pointer'}}>
           <LayoutDashboard size={20} /> Dashboard
+        </button>
+        <button onClick={() => setIsVoiceModalOpen(true)} className={styles.navItem} style={{border:'none', width:'100%', textAlign:'left', fontFamily:'inherit', background: 'transparent', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <Mic size={20} color="var(--primary)" /> Voice Assistant (आवाज़)
+          </div>
+          <span style={{ fontSize: '0.68rem', background: 'rgba(5, 150, 105, 0.12)', color: 'var(--primary)', padding: '2px 6px', borderRadius: '6px', fontWeight: 700 }}>LIVE</span>
         </button>
         <button onClick={() => setActiveTab('ai-recommendation')} className={`${styles.navItem} ${activeTab === 'ai-recommendation' ? styles.navItemActive : ''}`} style={{border:'none', width:'100%', textAlign:'left', fontFamily:'inherit', background: activeTab === 'ai-recommendation' ? '#fff' : 'transparent', cursor: 'pointer'}}>
           <Lightbulb size={20} /> AI Business Recommendation
