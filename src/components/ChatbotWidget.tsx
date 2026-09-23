@@ -25,13 +25,14 @@ const QUICK_PROMPTS = [
 ];
 
 export default function ChatbotWidget() {
+  const [mounted, setMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
       role: 'assistant',
       content: '👋 Namaste! I am your **Grameen Mentor AI**.\n\nYou can ask me for a **complete step-by-step business workflow**, daily operational SOPs, government subsidies, profit models, marketing tactics, or feasibility analysis. How can I help your business grow today?',
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      timestamp: 'Just now'
     }
   ]);
   const [input, setInput] = useState('');
@@ -40,6 +41,10 @@ export default function ChatbotWidget() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const { userProfile, realityScores, schemes } = useDashboard();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -353,6 +358,8 @@ export default function ChatbotWidget() {
       </div>
     );
   };
+
+  if (!mounted) return null;
 
   return (
     <>

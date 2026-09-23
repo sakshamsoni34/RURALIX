@@ -202,6 +202,12 @@ export default function OpportunityMap({ location }: { location: string }) {
 
     return () => {
       isMounted = false;
+      if (leafletMapRef.current) {
+        leafletMapRef.current.remove();
+        leafletMapRef.current = null;
+        markersGroupRef.current = null;
+        tileLayerRef.current = null;
+      }
     };
   }, [mapData, mapLayer, activeCategory]);
 

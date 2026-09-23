@@ -6,10 +6,10 @@ import { useDashboard } from '../context/DashboardContext';
 
 export default function OnboardingModal() {
   const router = useRouter();
-  const { userProfile, setUserProfile, setActiveTab } = useDashboard();
+  const { userProfile, setUserProfile, setActiveTab, isLoaded } = useDashboard();
 
-  // If user already completed onboarding, don't show
-  if (userProfile.hasBusiness !== null) return null;
+  // If not loaded yet from localStorage or user already completed onboarding, don't show
+  if (!isLoaded || userProfile.hasBusiness !== null) return null;
 
   const handleHaveBusiness = () => {
     router.push('/have-business');

@@ -1,12 +1,15 @@
 'use client';
 
+import { useEffect } from 'react';
 import { 
   LayoutDashboard, 
   Lightbulb, 
   Target, 
   BarChart3, 
   BrainCircuit,
-  Sprout
+  Map as MapIcon,
+  Sprout,
+  X
 } from 'lucide-react';
 import styles from '../../app/dashboard/page.module.css';
 import { useDashboard } from '../../context/DashboardContext';
@@ -36,39 +39,103 @@ function LandmarkIcon(props: any) {
 }
 
 export default function Sidebar() {
-  const { activeTab, setActiveTab } = useDashboard();
+  const { activeTab, setActiveTab, isMenuOpen, setIsMenuOpen } = useDashboard();
+
+  // Close menu on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isMenuOpen) {
+        setIsMenuOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isMenuOpen, setIsMenuOpen]);
+
+  const handleSelectTab = (tab: string) => {
+    setActiveTab(tab);
+    setIsMenuOpen(false);
+  };
 
   return (
-    <aside className={styles.sidebar}>
-      <div className={styles.logo}>
-        <Sprout size={28} />
-        Grameen<span>Sathi</span>
-      </div>
-      <nav className={styles.nav}>
-        <button onClick={() => setActiveTab('dashboard')} className={`${styles.navItem} ${activeTab === 'dashboard' ? styles.navItemActive : ''}`} style={{border:'none', width:'100%', textAlign:'left', fontFamily:'inherit', background: activeTab === 'dashboard' ? '#fff' : 'transparent', cursor: 'pointer'}}>
-          <LayoutDashboard size={20} /> Dashboard
-        </button>
-        <button onClick={() => setActiveTab('ai-recommendation')} className={`${styles.navItem} ${activeTab === 'ai-recommendation' ? styles.navItemActive : ''}`} style={{border:'none', width:'100%', textAlign:'left', fontFamily:'inherit', background: activeTab === 'ai-recommendation' ? '#fff' : 'transparent', cursor: 'pointer'}}>
-          <Lightbulb size={20} /> AI Business Recommendation
-        </button>
-        <button onClick={() => setActiveTab('reality-check')} className={`${styles.navItem} ${activeTab === 'reality-check' ? styles.navItemActive : ''}`} style={{border:'none', width:'100%', textAlign:'left', fontFamily:'inherit', background: activeTab === 'reality-check' ? '#fff' : 'transparent', cursor: 'pointer'}}>
-          <Target size={20} /> Reality Check
-        </button>
-        <button onClick={() => setActiveTab('schemes')} className={`${styles.navItem} ${activeTab === 'schemes' ? styles.navItemActive : ''}`} style={{border:'none', width:'100%', textAlign:'left', fontFamily:'inherit', background: activeTab === 'schemes' ? '#fff' : 'transparent', cursor: 'pointer'}}>
-          <LandmarkIcon size={20} /> Government Schemes
-        </button>
-        <button onClick={() => setActiveTab('demand')} className={`${styles.navItem} ${activeTab === 'demand' ? styles.navItemActive : ''}`} style={{border:'none', width:'100%', textAlign:'left', fontFamily:'inherit', background: activeTab === 'demand' ? '#fff' : 'transparent', cursor: 'pointer'}}>
-          <BarChart3 size={20} /> Demand Predictor
-        </button>
-        <button onClick={() => setActiveTab('mentor')} className={`${styles.navItem} ${activeTab === 'mentor' ? styles.navItemActive : ''}`} style={{border:'none', width:'100%', textAlign:'left', fontFamily:'inherit', background: activeTab === 'mentor' ? '#fff' : 'transparent', cursor: 'pointer'}}>
-          <BrainCircuit size={20} /> Continuous AI Mentor
-        </button>
-      </nav>
-      <div className={styles.sidebarIllustration}>
-        <Sprout size={32} style={{margin: '0 auto 10px'}} />
-        <h4>Stronger Businesses<br/>Brighter Villages</h4>
-        <p>Empowering Rural India</p>
-      </div>
-    </aside>
+    <>
+      {/* Backdrop overlay */}
+      <div 
+        className={`${styles.drawerOverlay} ${isMenuOpen ? styles.drawerOverlayOpen : ''}`} 
+        onClick={() => setIsMenuOpen(false)}
+        aria-hidden={!isMenuOpen}
+      />
+
+      {/* Hamburger Slide-over Drawer */}
+      <aside 
+        className={`${styles.sidebar} ${isMenuOpen ? styles.sidebarOpen : ''}`}
+        aria-label="Navigation drawer"
+      >
+        <div className={styles.drawerHeader}>
+          <div className={styles.logo}>
+            <Sprout size={28} color="#10b981" />
+            <span>Grameen<span style={{ color: '#10b981' }}>Sathi</span></span>
+          </div>
+          <button 
+            className={styles.closeDrawerBtn}
+            onClick={() => setIsMenuOpen(false)}
+            aria-label="Close navigation menu"
+          >
+            <X size={20} />
+          </button>
+        </div>
+
+        <nav className={styles.nav}>
+          <button 
+            onClick={() => handleSelectTab('dashboard')} 
+            className={`${styles.navItem} ${activeTab === 'dashboard' ? styles.navItemActive : ''}`}
+          >
+            <LayoutDashboard size={20} /> Dashboard
+          </button>
+          <button 
+            onClick={() => handleSelectTab('ai-recommendation')} 
+            className={`${styles.navItem} ${activeTab === 'ai-recommendation' ? styles.navItemActive : ''}`}
+          >
+            <Lightbulb size={20} /> AI Business Recommendation
+          </button>
+          <button 
+            onClick={() => handleSelectTab('reality-check')} 
+            className={`${styles.navItem} ${activeTab === 'reality-check' ? styles.navItemActive : ''}`}
+          >
+            <Target size={20} /> Reality Check
+          </button>
+          <button 
+            onClick={() => handleSelectTab('schemes')} 
+            className={`${styles.navItem} ${activeTab === 'schemes' ? styles.navItemActive : ''}`}
+          >
+            <LandmarkIcon size={20} /> Government Schemes
+          </button>
+          <button 
+            onClick={() => handleSelectTab('demand')} 
+            className={`${styles.navItem} ${activeTab === 'demand' ? styles.navItemActive : ''}`}
+          >
+            <BarChart3 size={20} /> Demand Predictor
+          </button>
+          <button 
+            onClick={() => handleSelectTab('mentor')} 
+            className={`${styles.navItem} ${activeTab === 'mentor' ? styles.navItemActive : ''}`}
+          >
+            <BrainCircuit size={20} /> Continuous AI Mentor
+          </button>
+          <button 
+            onClick={() => handleSelectTab('map')} 
+            className={`${styles.navItem} ${activeTab === 'map' ? styles.navItemActive : ''}`}
+          >
+            <MapIcon size={20} /> Market Opportunity Map
+          </button>
+        </nav>
+
+        <div className={styles.sidebarIllustration}>
+          <Sprout size={30} style={{margin: '0 auto 8px', color: '#10b981'}} />
+          <h4>Stronger Businesses<br/>Brighter Villages</h4>
+          <p>Empowering Rural India</p>
+        </div>
+      </aside>
+    </>
   );
 }
