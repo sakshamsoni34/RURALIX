@@ -7,8 +7,9 @@ import styles from '../../app/dashboard/page.module.css';
 import { useDashboard } from '../../context/DashboardContext';
 
 export default function Header() {
-  const { setIsVoiceModalOpen, userProfile } = useDashboard();
+  const { setIsVoiceModalOpen, openVoiceAssistantWithQuery, userProfile } = useDashboard();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [searchText, setSearchText] = useState('');
   const router = useRouter();
 
   const handleSignOut = () => {
@@ -16,18 +17,43 @@ export default function Header() {
     router.push('/login');
   };
 
+  const handleSearchSubmit = (e: React.FormEvent | React.KeyboardEvent) => {
+    if ('key' in e && e.key !== 'Enter') return;
+    e.preventDefault();
+    if (searchText.trim()) {
+      openVoiceAssistantWithQuery(searchText.trim());
+      setSearchText('');
+    } else {
+      setIsVoiceModalOpen(true);
+    }
+  };
+
   return (
     <header className={styles.header}>
       <div style={{display: 'flex', gap: '0.75rem', flex: 1, maxWidth: '600px', alignItems: 'center'}}>
         <div className={styles.searchBar} style={{flex: 1, maxWidth: 'none', margin: 0}}>
-          <Search size={18} color="var(--text-muted)" />
-          <input type="text" placeholder="Ask anything... (e.g. 'Is dairy good here?')" />
+          <Search size={18} color="var(--text-muted)" style={{ cursor: 'pointer' }} onClick={handleSearchSubmit} />
+          <input 
+            type="text" 
+            placeholder="Ask anything... (e.g. 'Dairy business profit')" 
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            onKeyDown={handleSearchSubmit}
+          />
         </div>
         <button 
-          onClick={() => setIsVoiceModalOpen(true)}
-          style={{background: 'var(--primary)', border: 'none', borderRadius: '50%', width: '42px', height: '42px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', cursor: 'pointer', boxShadow: '0 2px 8px rgba(5, 150, 105, 0.3)', transition: 'transform 0.2s'}}
+          onClick={() => {
+            if (searchText.trim()) {
+              openVoiceAssistantWithQuery(searchText.trim());
+              setSearchText('');
+            } else {
+              setIsVoiceModalOpen(true);
+            }
+          }}
+          style={{background: 'var(--primary)', border: 'none', borderRadius: '50%', width: '42px', height: '42px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', cursor: 'pointer', boxShadow: '0 2px 8px rgba(5, 150, 105, 0.3)', transition: 'transform 0.2s', flexShrink: 0}}
           onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
           onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+          title="Voice Assistant"
         >
           <Mic size={20} />
         </button>

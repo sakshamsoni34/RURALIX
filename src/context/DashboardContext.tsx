@@ -12,6 +12,9 @@ interface DashboardContextType {
   setCustomers: (customers: number) => void;
   isVoiceModalOpen: boolean;
   setIsVoiceModalOpen: (isOpen: boolean) => void;
+  voiceInitialQuery: string;
+  setVoiceInitialQuery: (query: string) => void;
+  openVoiceAssistantWithQuery: (query: string) => void;
   schemes: Scheme[];
   setSchemes: (schemes: Scheme[]) => void;
   trendingItems: TrendingItem[];
@@ -24,40 +27,22 @@ const DashboardContext = createContext<DashboardContextType | undefined>(undefin
 
 export function DashboardProvider({ children }: { children: ReactNode }) {
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [userProfile, setUserProfile] = useState<UserProfile>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const saved = localStorage.getItem('ruralix_user_profile');
-        if (saved) {
-          return JSON.parse(saved);
-        }
-      } catch (e) {
-        console.error('Failed to load userProfile from localStorage:', e);
-      }
-    }
-    return {
-      hasBusiness: null,
-      businessIdea: '',
-      location: '',
-      capital: '',
-      infrastructure: '',
-      experience: ''
-    };
+  const [userProfile, setUserProfile] = useState<UserProfile>({
+    hasBusiness: null,
+    businessIdea: '',
+    location: '',
+    capital: '',
+    infrastructure: '',
+    experience: ''
   });
-
-  // Sync to localStorage on change
-  React.useEffect(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        localStorage.setItem('ruralix_user_profile', JSON.stringify(userProfile));
-      } catch (e) {
-        console.error('Failed to save userProfile to localStorage:', e);
-      }
-    }
-  }, [userProfile]);
-
   const [customers, setCustomers] = useState(25);
   const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
+  const [voiceInitialQuery, setVoiceInitialQuery] = useState('');
+
+  const openVoiceAssistantWithQuery = (query: string) => {
+    setVoiceInitialQuery(query);
+    setIsVoiceModalOpen(true);
+  };
   
   const [schemes, setSchemes] = useState<Scheme[]>([
     {
@@ -83,29 +68,13 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
     { name: "Seasonal Goods", trend: "UP", reason: "Approaching market cycle" }
   ]);
   
-  const [realityScores, setRealityScores] = useState<RealityCheckScores>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const saved = localStorage.getItem('ruralix_reality_scores');
-        if (saved) return JSON.parse(saved);
-      } catch (e) {}
-    }
-    return {
-      demand: 82,
-      competition: 65,
-      infra: 88,
-      risk: 32,
-      overall: 78
-    };
+  const [realityScores, setRealityScores] = useState<RealityCheckScores>({
+    demand: 82,
+    competition: 65,
+    infra: 88,
+    risk: 32,
+    overall: 78
   });
-
-  React.useEffect(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        localStorage.setItem('ruralix_reality_scores', JSON.stringify(realityScores));
-      } catch (e) {}
-    }
-  }, [realityScores]);
 
   return (
     <DashboardContext.Provider value={{
@@ -113,6 +82,8 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
       userProfile, setUserProfile,
       customers, setCustomers,
       isVoiceModalOpen, setIsVoiceModalOpen,
+      voiceInitialQuery, setVoiceInitialQuery,
+      openVoiceAssistantWithQuery,
       schemes, setSchemes,
       trendingItems, setTrendingItems,
       realityScores, setRealityScores

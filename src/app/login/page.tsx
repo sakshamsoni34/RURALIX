@@ -24,7 +24,7 @@ export default function Login() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    router.push('/onboarding');
+    router.push('/dashboard');
   };
 
   return (
