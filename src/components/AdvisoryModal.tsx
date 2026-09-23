@@ -6,15 +6,17 @@ import {
   Sprout, 
   MapPin, 
   IndianRupee, 
-  Lightbulb, 
+  Lightbulb,
   Zap,
   CheckCircle2,
   BrainCircuit,
   Sparkles,
   ArrowRight,
-  TrendingUp,
   ShieldCheck,
-  Building2
+  ChevronDown,
+  Compass,
+  Check,
+  RotateCcw
 } from 'lucide-react';
 import styles from './AdvisoryModal.module.css';
 import { useDashboard } from '../context/DashboardContext';
@@ -40,90 +42,128 @@ const POPULAR_LOCATIONS = [
   'Jaipur, Rajasthan',
   'Patna, Bihar',
   'Pune, Maharashtra',
-  'Indore, MP'
+  'Indore, MP',
+  'Varanasi, UP',
+  'Ludhiana, Punjab',
+  'Coimbatore, Tamil Nadu',
+  'Ahmednagar, Maharashtra'
 ];
 
-const CAPITAL_PRESETS = [
-  { label: '₹50,000 (Micro)', value: '50000' },
-  { label: '₹1,50,000 (Small)', value: '150000' },
-  { label: '₹3,00,000 (Medium)', value: '300000' },
-  { label: '₹8,00,000+ (Commercial)', value: '800000' }
+const CAPITAL_OPTIONS = [
+  { value: '50000', label: '₹50,000 - Micro Enterprise (MUDRA Shishu Loan)' },
+  { value: '150000', label: '₹1,50,000 - Small Business (PMEGP 35% Subsidy)' },
+  { value: '300000', label: '₹3,00,000 - Medium Venture (MUDRA Kishore)' },
+  { value: '800000', label: '₹8,00,000+ - Commercial Hub (Agri-Infra Fund)' }
 ];
 
-const SECTOR_TAGS = [
+const SECTOR_OPTIONS = [
   '🛒 Retail & Supermart',
   '🌾 Agri & Cold Storage',
   '🚚 Logistics & Delivery Point',
   '💻 Digital & CSC Services',
   '🛠️ Hardware & Tools',
-  '🏭 Processing & Flour Mill'
+  '🏭 Processing & Flour Mill',
+  '🐄 Dairy & Livestock Production',
+  '☀️ Solar & Renewable Energy Hub',
+  '🧵 Handloom, Textile & Craft',
+  '🏥 Rural Health & Pharmacy Outlet'
 ];
 
-const INFRASTRUCTURE_TAGS = [
-  '⚡ 24/7 Power Supply',
+const INFRASTRUCTURE_OPTIONS = [
+  '⚡ 24/7 Power Supply (3-Phase)',
   '🚛 Highway & Road Access',
-  '🏪 Own Commercial Shop',
-  '💧 Water & Borewell',
-  '📶 4G/5G Internet'
+  '🏪 Own Commercial Shop / Pucca Building',
+  '💧 Water Supply & Borewell',
+  '📶 4G/5G Internet Connectivity',
+  '🏭 Covered Warehouse / Shed',
+  '🚚 Heavy Vehicle Loading & Parking',
+  '🚜 Tractor & Transport Machinery'
 ];
 
 export default function AdvisoryModal({ isOpen, onClose, inline = false }: AdvisoryModalProps) {
   const { setUserProfile, setActiveTab } = useDashboard();
   const [step, setStep] = useState<'input' | 'loading' | 'result'>('input');
   
-  const [formData, setFormData] = useState({
-    location: '',
-    capital: '',
-    interests: '',
-    infrastructure: ''
-  });
+  // Exactly 1 state variable per parameter
+  const [location, setLocation] = useState('');
+  const [capital, setCapital] = useState('');
+  const [sectorAndExperience, setSectorAndExperience] = useState('');
+  const [infraDetails, setInfraDetails] = useState('');
 
   const [result, setResult] = useState<AdvisoryResult | null>(null);
   const [isDetecting, setIsDetecting] = useState(false);
 
-  const detectLocation = () => {
-    if (!navigator.geolocation) {
-      alert('Geolocation is not supported by your browser');
-      return;
-    }
-
+  // Reliable Auto-detect location (GPS with Nominatim reverse-geocode + IP fallback)
+  const detectLocation = async () => {
     setIsDetecting(true);
-    navigator.geolocation.getCurrentPosition(async (position) => {
+
+    const applyDetectedLocation = async (coords?: { lat: number; lon: number }) => {
       try {
-        const { latitude, longitude } = position.coords;
-        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
-        if (!res.ok) throw new Error('Failed to fetch address');
+        const res = await fetch('/api/detect-location', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(coords || {})
+        });
+        if (!res.ok) throw new Error('API failed');
         const data = await res.json();
-        
-        const address = data.address;
-        const place = address.village || address.town || address.city || address.county || '';
-        const state = address.state || '';
-        const finalLocation = [place, state, 'India'].filter(Boolean).join(', ');
-        
-        setFormData(prev => ({ ...prev, location: finalLocation || `${latitude.toFixed(4)}, ${longitude.toFixed(4)}` }));
+        if (data.location) {
+          setLocation(data.location);
+        } else {
+          setLocation('Delhi, India');
+        }
       } catch (err) {
-        console.error(err);
-        alert('Failed to detect exact address, please enter manually.');
+        console.warn('Location detection fallback:', err);
+        setLocation('Delhi, India');
       } finally {
         setIsDetecting(false);
       }
-    }, () => {
-      alert('Unable to retrieve your location. Please check your browser permissions.');
-      setIsDetecting(false);
+    };
+
+    if (typeof window !== 'undefined' && 'geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          applyDetectedLocation({
+            lat: pos.coords.latitude,
+            lon: pos.coords.longitude
+          });
+        },
+        (err) => {
+          console.log('GPS error/permission fallback to IP:', err);
+          applyDetectedLocation();
+        },
+        { timeout: 6000, enableHighAccuracy: false }
+      );
+    } else {
+      applyDetectedLocation();
+    }
+  };
+
+  const handleSectorSelect = (sector: string) => {
+    if (!sector) return;
+    setSectorAndExperience(prev => {
+      if (!prev.trim()) return sector;
+      if (prev.includes(sector)) return prev;
+      return `${prev}, ${sector}`;
     });
   };
 
-  const handleTagToggle = (field: 'interests' | 'infrastructure', tag: string) => {
-    setFormData(prev => {
-      const current = prev[field];
-      if (current.includes(tag)) {
-        const updated = current.replace(tag, '').replace(/,\s*,/g, ',').replace(/^,\s*|,\s*$/g, '').trim();
-        return { ...prev, [field]: updated };
-      } else {
-        const updated = current ? `${current}, ${tag}` : tag;
-        return { ...prev, [field]: updated };
-      }
+  const handleInfraSelect = (infra: string) => {
+    if (!infra) return;
+    setInfraDetails(prev => {
+      if (!prev.trim()) return infra;
+      if (prev.includes(infra)) return prev;
+      return `${prev}, ${infra}`;
     });
+  };
+
+  const handleReset = () => {
+    setLocation('');
+    setCapital('');
+    setSectorAndExperience('');
+    setInfraDetails('');
+    if (!inline) {
+      onClose();
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -134,7 +174,12 @@ export default function AdvisoryModal({ isOpen, onClose, inline = false }: Advis
       const response = await fetch('/api/advisory', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          location,
+          capital,
+          interests: sectorAndExperience,
+          infrastructure: infraDetails
+        }),
       });
 
       if (!response.ok) throw new Error('Failed to fetch');
@@ -142,197 +187,336 @@ export default function AdvisoryModal({ isOpen, onClose, inline = false }: Advis
       const data = await response.json();
       setResult(data);
       setStep('result');
-    } catch (error) {
+    } catch {
       setStep('input');
       alert('Failed to generate business plan. Please try again.');
     }
   };
 
+  const formatIndianCurrency = (numStr: string) => {
+    const num = parseInt(numStr, 10);
+    if (isNaN(num) || num <= 0) return '';
+    return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(num);
+  };
+
   if (!isOpen && !inline) return null;
 
   const content = (
-    <div className={`${styles.modal} ${inline ? styles.inlineModal : ''}`}>
-      {/* Header */}
-      <div className={styles.header}>
-        <div className={styles.titleArea}>
-          <div className={styles.badge}>
-            <Sparkles size={13} /> AI Hyper-Local GIS Engine
+    <div className={`${styles.modalCardWrapper} ${inline ? styles.inlineCardWrapper : ''}`}>
+      <div className={styles.formCard}>
+        {/* Header Block (Form Top) */}
+        <div className={styles.formCardHeader}>
+          <div className={styles.headerLeft}>
+            <div className={styles.formBadge}>
+              <Sparkles size={13} /> OFFICIAL INTAKE FORM &bull; AI GIS ENGINE
+            </div>
+            <h2 className={styles.formTitle}>
+              <Sprout color="#059669" size={26} />
+              Enterprise Feasibility Assessment Form
+            </h2>
+            <p className={styles.formSubtitle}>
+              Please provide your 4 regional parameters below. All fields are evaluated concurrently by our GIS engine.
+            </p>
           </div>
-          <h2 className={styles.title}>
-            <Sprout color="#059669" size={26} />
-            AI Business Recommendation & Viability
-          </h2>
-          <p className={styles.subtitle}>
-            Discover high-margin, market-verified business opportunities tailored to your regional demographics and capital.
-          </p>
+          <div className={styles.headerRight}>
+            {!inline && (
+              <button onClick={onClose} className={styles.closeBtn} aria-label="Close modal">
+                <X size={20} />
+              </button>
+            )}
+            <div className={styles.requiredIndicator}>
+              <span className={styles.requiredStar}>*</span> Required fields for evaluation
+            </div>
+          </div>
         </div>
-        {!inline && (
-          <button onClick={onClose} className={styles.closeBtn} aria-label="Close modal">
-            <X size={20} />
-          </button>
-        )}
-      </div>
 
-      <div className={styles.content}>
+        {/* Form Body - Exactly 1 Box Per Parameter with Dropdown Arrow */}
         {step === 'input' && (
-          <form onSubmit={handleSubmit} className={styles.formGrid}>
-            {/* 1. Location Section */}
-            <div className={styles.sectionCard}>
-              <div className={styles.labelRow}>
-                <label className={styles.label}>
-                  <MapPin size={17} color="#059669" />
-                  Target Location / Village / City
-                </label>
+          <form onSubmit={handleSubmit} className={styles.formContainer}>
+            {/* 1. Target Location */}
+            <div className={styles.formSection}>
+              <div className={styles.sectionHeaderRow}>
+                <div className={styles.sectionTitleBlock}>
+                  <h3 className={styles.sectionHeading}>
+                    <span className={styles.sectionStepNum}>1</span>
+                    Target Location / Village / City
+                    <span className={styles.requiredStar}>*</span>
+                  </h3>
+                  <p className={styles.sectionDescription}>
+                    Type your specific village, taluka, city or click the dropdown arrow to select popular trade centers.
+                  </p>
+                </div>
                 <button 
                   type="button" 
                   onClick={detectLocation}
                   disabled={isDetecting}
                   className={styles.locationDetectBtn}
+                  title="Detect your location via GPS or network IP"
                 >
-                  <MapPin size={13} />
-                  {isDetecting ? 'Detecting GPS...' : 'Auto-Detect Location'}
+                  <Compass size={14} className={isDetecting ? styles.spinIcon : ''} />
+                  {isDetecting ? 'Detecting Location...' : 'Auto-Detect Location'}
                 </button>
               </div>
 
-              <div className={styles.inputWrapper}>
-                <MapPin size={18} className={styles.inputIcon} />
-                <input 
-                  type="text" 
-                  className={styles.input}
-                  placeholder="e.g., Satara, Maharashtra or Delhi, India"
-                  value={formData.location}
-                  onChange={(e) => setFormData({...formData, location: e.target.value})}
-                  required
-                />
-              </div>
+              {/* Single Unified Location Box */}
+              <div className={styles.formField}>
+                <div className={styles.unifiedLocationBox}>
+                  <MapPin size={18} className={styles.inputIcon} />
+                  <input 
+                    type="text" 
+                    className={styles.unifiedLocationInput}
+                    placeholder="e.g., Satara, Maharashtra or Bhind, MP"
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                    list="popular-locations-list"
+                    required
+                  />
+                  <div className={styles.dropdownArrowBtnWrapper} title="Open regional hubs list">
+                    <select 
+                      className={styles.dropdownArrowSelect}
+                      value=""
+                      onChange={(e) => {
+                        if (e.target.value) setLocation(e.target.value);
+                      }}
+                      title="Choose from Popular Regional Hubs"
+                    >
+                      <option value="" disabled hidden>-- Select Hub --</option>
+                      {POPULAR_LOCATIONS.map((loc, idx) => (
+                        <option key={idx} value={loc}>📍 {loc}</option>
+                      ))}
+                    </select>
+                    <ChevronDown size={18} className={styles.dropdownArrowIcon} />
+                  </div>
+                </div>
 
-              {/* Location Suggestions */}
-              <div className={styles.chipGroup}>
-                {POPULAR_LOCATIONS.map((loc, idx) => (
-                  <button
-                    key={idx}
-                    type="button"
-                    className={`${styles.chip} ${formData.location === loc ? styles.chipActive : ''}`}
-                    onClick={() => setFormData({ ...formData, location: loc })}
-                  >
-                    📍 {loc}
-                  </button>
-                ))}
+                <datalist id="popular-locations-list">
+                  {POPULAR_LOCATIONS.map((loc, idx) => (
+                    <option key={idx} value={loc} />
+                  ))}
+                </datalist>
+
+                {location && (
+                  <div className={styles.activeSelectionBanner}>
+                    <Check size={14} color="#059669" />
+                    <span>Selected Target: <strong>{location}</strong></span>
+                  </div>
+                )}
               </div>
             </div>
 
-            {/* 2. Capital Section */}
-            <div className={styles.sectionCard}>
-              <div className={styles.labelRow}>
-                <label className={styles.label}>
-                  <IndianRupee size={17} color="#059669" />
-                  Available Working Capital (₹)
+            {/* 2. Available Working Capital - ONLY ONE BOX */}
+            <div className={styles.formSection}>
+              <div className={styles.sectionHeaderRow}>
+                <div className={styles.sectionTitleBlock}>
+                  <h3 className={styles.sectionHeading}>
+                    <span className={styles.sectionStepNum}>2</span>
+                    Available Working Capital (₹)
+                    <span className={styles.requiredStar}>*</span>
+                  </h3>
+                  <p className={styles.sectionDescription}>
+                    Enter your exact available working / seed capital or click the dropdown arrow to select an investment tier.
+                  </p>
+                </div>
+                <div className={styles.subsidyCallout}>
+                  <Sparkles size={13} color="#059669" />
+                  <span>Eligible for up to 35% PMEGP / MUDRA Subsidies</span>
+                </div>
+              </div>
+
+              {/* Single Unified Capital Box */}
+              <div className={styles.formField}>
+                <div className={styles.fieldLabelRow}>
+                  <label className={styles.fieldLabel}>
+                    Working Capital Amount:
+                  </label>
+                  {capital && (
+                    <span className={styles.capitalFormattedBadge}>
+                      {formatIndianCurrency(capital)}
+                    </span>
+                  )}
+                </div>
+                <div className={styles.unifiedLocationBox}>
+                  <IndianRupee size={18} className={styles.inputIcon} />
+                  <input 
+                    type="number" 
+                    className={styles.unifiedLocationInput}
+                    placeholder="e.g., 150000"
+                    value={capital}
+                    onChange={(e) => setCapital(e.target.value)}
+                    required
+                    min="1000"
+                  />
+                  <div className={styles.dropdownArrowBtnWrapper} title="Select an investment tier">
+                    <select 
+                      className={styles.dropdownArrowSelect}
+                      value=""
+                      onChange={(e) => {
+                        if (e.target.value) setCapital(e.target.value);
+                      }}
+                      title="Select investment scale tier"
+                    >
+                      <option value="" disabled hidden>-- Select Tier --</option>
+                      {CAPITAL_OPTIONS.map((tier, idx) => (
+                        <option key={idx} value={tier.value}>{tier.label}</option>
+                      ))}
+                    </select>
+                    <ChevronDown size={18} className={styles.dropdownArrowIcon} />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 3. Assets, Background & Preferred Sector - ONLY ONE BOX */}
+            <div className={styles.formSection}>
+              <div className={styles.sectionHeaderRow}>
+                <div className={styles.sectionTitleBlock}>
+                  <h3 className={styles.sectionHeading}>
+                    <span className={styles.sectionStepNum}>3</span>
+                    Assets, Background & Preferred Sector
+                    <span className={styles.requiredStar}>*</span>
+                  </h3>
+                  <p className={styles.sectionDescription}>
+                    Type your commercial space, land front, or domain experience, or click the dropdown arrow to select sectors.
+                  </p>
+                </div>
+              </div>
+
+              {/* Single Unified Box */}
+              <div className={styles.formField}>
+                <label className={styles.fieldLabel}>
+                  Commercial Space, Land, Experience & Preferred Sectors:
                 </label>
-                <span className={styles.helperText}>
-                  ✨ Eligible for up to 35% PMEGP / MUDRA Govt Subsidies
+                <div className={styles.unifiedLocationBox}>
+                  <Lightbulb size={18} className={styles.inputIcon} />
+                  <input 
+                    type="text" 
+                    className={styles.unifiedLocationInput}
+                    placeholder="e.g., Have 2 acres land, 500 sq ft shop, farming experience"
+                    value={sectorAndExperience}
+                    onChange={(e) => setSectorAndExperience(e.target.value)}
+                    list="sector-options-list"
+                    required
+                  />
+                  <div className={styles.dropdownArrowBtnWrapper} title="Select preferred sector">
+                    <select 
+                      className={styles.dropdownArrowSelect}
+                      value=""
+                      onChange={(e) => {
+                        if (e.target.value) handleSectorSelect(e.target.value);
+                      }}
+                      title="Choose from industry sectors"
+                    >
+                      <option value="" disabled hidden>-- Select Sector --</option>
+                      {SECTOR_OPTIONS.map((tag, idx) => (
+                        <option key={idx} value={tag}>{tag}</option>
+                      ))}
+                    </select>
+                    <ChevronDown size={18} className={styles.dropdownArrowIcon} />
+                  </div>
+                </div>
+
+                <datalist id="sector-options-list">
+                  {SECTOR_OPTIONS.map((tag, idx) => (
+                    <option key={idx} value={tag} />
+                  ))}
+                </datalist>
+                <span className={styles.fieldHint}>
+                  Type custom details or click the arrow to append industry sectors (Retail, Cold Storage, Processing, Dairy, etc.).
                 </span>
               </div>
-
-              <div className={styles.inputWrapper}>
-                <IndianRupee size={18} className={styles.inputIcon} />
-                <input 
-                  type="number" 
-                  className={styles.input}
-                  placeholder="e.g., 150000"
-                  value={formData.capital}
-                  onChange={(e) => setFormData({...formData, capital: e.target.value})}
-                  required
-                />
-              </div>
-
-              {/* Capital Presets */}
-              <div className={styles.chipGroup}>
-                {CAPITAL_PRESETS.map((preset, idx) => (
-                  <button
-                    key={idx}
-                    type="button"
-                    className={`${styles.chip} ${formData.capital === preset.value ? styles.chipActive : ''}`}
-                    onClick={() => setFormData({ ...formData, capital: preset.value })}
-                  >
-                    {preset.label}
-                  </button>
-                ))}
-              </div>
             </div>
 
-            {/* 3. Assets & Sector Interests */}
-            <div className={styles.sectionCard}>
-              <div className={styles.labelRow}>
-                <label className={styles.label}>
-                  <Lightbulb size={17} color="#059669" />
-                  Assets, Background & Preferred Sectors
+            {/* 4. Available Infrastructure & Utilities - ONLY ONE BOX */}
+            <div className={styles.formSection}>
+              <div className={styles.sectionHeaderRow}>
+                <div className={styles.sectionTitleBlock}>
+                  <h3 className={styles.sectionHeading}>
+                    <span className={styles.sectionStepNum}>4</span>
+                    Available Infrastructure & Utilities
+                    <span className={styles.requiredStar}>*</span>
+                  </h3>
+                  <p className={styles.sectionDescription}>
+                    Type machinery, power, or road details, or click the dropdown arrow to select available utilities.
+                  </p>
+                </div>
+              </div>
+
+              {/* Single Unified Box */}
+              <div className={styles.formField}>
+                <label className={styles.fieldLabel}>
+                  Specific Machinery, Road, Power & Utilities:
                 </label>
-                <span className={styles.helperText}>Select multiple or type details</span>
-              </div>
+                <div className={styles.unifiedLocationBox}>
+                  <Zap size={18} className={styles.inputIcon} />
+                  <input 
+                    type="text" 
+                    className={styles.unifiedLocationInput}
+                    placeholder="e.g., 24/7 3-phase electricity, highway road connectivity, 15 HP tube-well"
+                    value={infraDetails}
+                    onChange={(e) => setInfraDetails(e.target.value)}
+                    list="infra-options-list"
+                    required
+                  />
+                  <div className={styles.dropdownArrowBtnWrapper} title="Select available utility">
+                    <select 
+                      className={styles.dropdownArrowSelect}
+                      value=""
+                      onChange={(e) => {
+                        if (e.target.value) handleInfraSelect(e.target.value);
+                      }}
+                      title="Choose from available utilities"
+                    >
+                      <option value="" disabled hidden>-- Select Utility --</option>
+                      {INFRASTRUCTURE_OPTIONS.map((infra, idx) => (
+                        <option key={idx} value={infra}>{infra}</option>
+                      ))}
+                    </select>
+                    <ChevronDown size={18} className={styles.dropdownArrowIcon} />
+                  </div>
+                </div>
 
-              {/* Sector Tags */}
-              <div className={styles.chipGroup} style={{ marginBottom: '0.4rem' }}>
-                {SECTOR_TAGS.map((tag, idx) => (
-                  <button
-                    key={idx}
-                    type="button"
-                    className={`${styles.chip} ${formData.interests.includes(tag) ? styles.chipActive : ''}`}
-                    onClick={() => handleTagToggle('interests', tag)}
-                  >
-                    {tag}
-                  </button>
-                ))}
+                <datalist id="infra-options-list">
+                  {INFRASTRUCTURE_OPTIONS.map((infra, idx) => (
+                    <option key={idx} value={infra} />
+                  ))}
+                </datalist>
+                <span className={styles.fieldHint}>
+                  Type machinery specifications or click the arrow to append utilities (3-Phase Power, Highway Access, Warehouse, etc.).
+                </span>
               </div>
-
-              <input 
-                type="text" 
-                className={`${styles.input} ${styles.inputNoIcon}`}
-                placeholder="e.g., Have 2 acres commercial land, 500 sq ft shop front, interested in cold supply"
-                value={formData.interests}
-                onChange={(e) => setFormData({...formData, interests: e.target.value})}
-                required
-              />
             </div>
 
-            {/* 4. Infrastructure & Capabilities */}
-            <div className={styles.sectionCard}>
-              <div className={styles.labelRow}>
-                <label className={styles.label}>
-                  <Zap size={17} color="#059669" />
-                  Available Infrastructure & Utilities
-                </label>
-                <span className={styles.helperText}>Select available assets</span>
+            {/* GIS Synchronization Alert Banner */}
+            <div className={styles.infoBanner}>
+              <div className={styles.infoBannerIcon}>
+                <ShieldCheck size={20} color="#059669" />
               </div>
-
-              {/* Infrastructure Tags */}
-              <div className={styles.chipGroup} style={{ marginBottom: '0.4rem' }}>
-                {INFRASTRUCTURE_TAGS.map((tag, idx) => (
-                  <button
-                    key={idx}
-                    type="button"
-                    className={`${styles.chip} ${formData.infrastructure.includes(tag) ? styles.chipActive : ''}`}
-                    onClick={() => handleTagToggle('infrastructure', tag)}
-                  >
-                    {tag}
-                  </button>
-                ))}
+              <div className={styles.infoBannerText}>
+                Synchronized with National GIS Demographics, Census Clusters & Micro-Enterprise Subsidy Portals
               </div>
-
-              <input 
-                type="text" 
-                className={`${styles.input} ${styles.inputNoIcon}`}
-                placeholder="e.g., 24/7 3-phase electricity, good heavy transport road connectivity"
-                value={formData.infrastructure}
-                onChange={(e) => setFormData({...formData, infrastructure: e.target.value})}
-                required
-              />
             </div>
 
-            {/* Submit Action */}
-            <button type="submit" className={styles.submitBtn}>
-              <BrainCircuit size={22} />
-              Generate Hyper-Local Business Plan & Viability Report
-            </button>
+            {/* Action Footer */}
+            <div className={styles.formActionFooter}>
+              <button 
+                type="button" 
+                onClick={handleReset}
+                className={styles.cancelBtn}
+              >
+                <RotateCcw size={16} />
+                <span>Reset Form</span>
+              </button>
+
+              <button 
+                type="submit" 
+                className={styles.submitBtn}
+                disabled={!location || !capital}
+              >
+                <BrainCircuit size={20} />
+                <span>Generate Hyper-Local Business Plan & Viability Report</span>
+                <ArrowRight size={18} />
+              </button>
+            </div>
           </form>
         )}
 
@@ -344,7 +528,7 @@ export default function AdvisoryModal({ isOpen, onClose, inline = false }: Advis
               Synthesizing Demographics & GIS Analytics...
             </h3>
             <p className={styles.loadingText}>
-              Evaluating market voids, consumer purchasing power, transport access, and commercial viability for <strong>{formData.location || 'your area'}</strong>...
+              Evaluating market voids, consumer purchasing power, transport access, and commercial viability for <strong>{location || 'your area'}</strong>...
             </p>
           </div>
         )}
@@ -357,7 +541,7 @@ export default function AdvisoryModal({ isOpen, onClose, inline = false }: Advis
               <div className={styles.resultHeroDetails}>
                 <h3>✨ Top Recommended Enterprise</h3>
                 <h2>{result.recommendation}</h2>
-                <p>📍 Optimized for {formData.location} with ₹{Number(formData.capital).toLocaleString('en-IN')} working capital</p>
+                <p>📍 Optimized for {location} with ₹{Number(capital).toLocaleString('en-IN')} working capital</p>
               </div>
 
               <div className={styles.scoreGaugeBox}>
@@ -406,10 +590,10 @@ export default function AdvisoryModal({ isOpen, onClose, inline = false }: Advis
                   setUserProfile({
                     hasBusiness: true,
                     businessIdea: result.recommendation,
-                    location: formData.location,
-                    capital: formData.capital,
-                    infrastructure: formData.infrastructure,
-                    experience: formData.interests
+                    location: location,
+                    capital: capital,
+                    infrastructure: infraDetails,
+                    experience: sectorAndExperience
                   });
                   setActiveTab('reality-check');
                 }} 

@@ -14,10 +14,11 @@ import {
   Clock, 
   Users, 
   TrendingUp, 
-  ShieldAlert, 
+  ShieldCheck, 
   CheckCircle2, 
   ArrowRight,
-  HelpCircle
+  RotateCcw,
+  ChevronDown
 } from 'lucide-react';
 import styles from './RealityCheckModal.module.css';
 import { useDashboard } from '../context/DashboardContext';
@@ -121,6 +122,27 @@ export default function RealityCheckModal({ isOpen, onClose, onCheckComplete, in
 
   const [result, setResult] = useState<RealityCheckResult | null>(null);
 
+  const handleReset = () => {
+    setFormData({
+      idea: '',
+      capital: '',
+      land: '',
+      electricity: '',
+      experience: '',
+      hours: '',
+      customers: ''
+    });
+    if (!inline) {
+      onClose();
+    }
+  };
+
+  const formatIndianCurrency = (numStr: string) => {
+    const num = parseInt(numStr, 10);
+    if (isNaN(num) || num <= 0) return '';
+    return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(num);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStep('loading');
@@ -139,7 +161,7 @@ export default function RealityCheckModal({ isOpen, onClose, onCheckComplete, in
       onCheckComplete(data.scores);
       setRealityScores(data.scores);
       setStep('result');
-    } catch (error) {
+    } catch {
       setStep('input');
       alert('Failed to run reality check. Please try again.');
     }
@@ -158,292 +180,438 @@ export default function RealityCheckModal({ isOpen, onClose, onCheckComplete, in
   if (!isOpen && !inline) return null;
 
   const content = (
-    <div className={`${styles.modal} ${inline ? styles.inlineModal : ''}`}>
-      {/* Header */}
-      <div className={styles.header}>
-        <div className={styles.titleArea}>
-          <div className={styles.badge}>
-            <Sparkles size={13} /> Uncompromising Risk Engine
+    <div className={`${styles.modalCardWrapper} ${inline ? styles.inlineCardWrapper : ''}`}>
+      <div className={styles.formCard}>
+        {/* Header Block */}
+        <div className={styles.formCardHeader}>
+          <div className={styles.headerLeft}>
+            <div className={styles.formBadge}>
+              <Sparkles size={13} /> UNCOMPROMISING RISK ENGINE
+            </div>
+            <h2 className={styles.formTitle}>
+              <Target color="#059669" size={26} />
+              Business Feasibility & Financial Reality Check
+            </h2>
+            <p className={styles.formSubtitle}>
+              Stress-test your business model against realistic market saturation, working capital burn, operational constraints, and customer demand.
+            </p>
           </div>
-          <h2 className={styles.title}>
-            <Target color="#059669" size={26} />
-            Business Feasibility & Financial Reality Check
-          </h2>
-          <p className={styles.subtitle}>
-            Stress-test your business model against realistic market saturation, working capital burn, operational constraints, and customer demand.
-          </p>
+          <div className={styles.headerRight}>
+            {!inline && (
+              <button onClick={onClose} className={styles.closeBtn} aria-label="Close modal">
+                <X size={20} />
+              </button>
+            )}
+            <div className={styles.requiredIndicator}>
+              <span className={styles.requiredStar}>*</span> Required fields for evaluation
+            </div>
+          </div>
         </div>
-        {!inline && (
-          <button onClick={onClose} className={styles.closeBtn} aria-label="Close modal">
-            <X size={20} />
-          </button>
-        )}
-      </div>
 
-      <div className={styles.content}>
+        {/* Form Body - Single Column with Simple Dropdown Arrows */}
         {step === 'input' && (
-          <form onSubmit={handleSubmit} className={styles.formGrid}>
-            {/* 1. Business Idea */}
-            <div className={styles.sectionCard}>
-              <div className={styles.labelRow}>
-                <label className={styles.label}>
-                  <Target size={17} color="#059669" />
-                  Target Business Venture / Proposed Setup
-                </label>
-                <span className={styles.helperText}>Select a preset or enter your custom venture</span>
+          <form onSubmit={handleSubmit} className={styles.formContainer}>
+            {/* 1. Target Business Venture */}
+            <div className={styles.formSection}>
+              <div className={styles.sectionHeaderRow}>
+                <div className={styles.sectionTitleBlock}>
+                  <h3 className={styles.sectionHeading}>
+                    <span className={styles.sectionStepNum}>1</span>
+                    Target Business Venture / Proposed Setup
+                    <span className={styles.requiredStar}>*</span>
+                  </h3>
+                  <p className={styles.sectionDescription}>
+                    Type your specific business idea or click the dropdown arrow to select presets.
+                  </p>
+                </div>
               </div>
 
-              <div className={styles.inputWrapper}>
-                <Target size={18} className={styles.inputIcon} />
-                <input 
-                  type="text" 
-                  className={styles.input}
-                  placeholder="e.g., Commercial Cold Storage & Flour Processing Unit"
-                  value={formData.idea}
-                  onChange={(e) => setFormData({...formData, idea: e.target.value})}
-                  required
-                />
-              </div>
+              <div className={styles.formField}>
+                <div className={styles.unifiedBox}>
+                  <Target size={18} className={styles.inputIcon} />
+                  <input 
+                    type="text" 
+                    className={styles.unifiedInput}
+                    placeholder="e.g., Specialized Cold Storage & Logistics Hub"
+                    value={formData.idea}
+                    onChange={(e) => setFormData({...formData, idea: e.target.value})}
+                    list="reality-idea-list"
+                    required
+                  />
+                  <div className={styles.dropdownArrowBtnWrapper} title="Open options list">
+                    <select 
+                      className={styles.dropdownArrowSelect}
+                      value=""
+                      onChange={(e) => {
+                        if (e.target.value) setFormData({ ...formData, idea: e.target.value });
+                      }}
+                      title="Choose from presets"
+                    >
+                      <option value="" disabled hidden>-- Select --</option>
+                      {IDEA_PRESETS.map((preset, idx) => (
+                        <option key={idx} value={preset}>{preset}</option>
+                      ))}
+                    </select>
+                    <ChevronDown size={18} className={styles.dropdownArrowIcon} />
+                  </div>
+                </div>
 
-              {/* Idea Presets */}
-              <div className={styles.chipGroup}>
-                {IDEA_PRESETS.map((preset, idx) => (
-                  <button
-                    key={idx}
-                    type="button"
-                    className={`${styles.chip} ${formData.idea === preset ? styles.chipActive : ''}`}
-                    onClick={() => setFormData({ ...formData, idea: preset })}
-                  >
-                    {preset}
-                  </button>
-                ))}
+                <datalist id="reality-idea-list">
+                  {IDEA_PRESETS.map((preset, idx) => (
+                    <option key={idx} value={preset} />
+                  ))}
+                </datalist>
               </div>
             </div>
 
-            {/* 2. Capital & Real Estate (2-col) */}
-            <div className={styles.twoColRow}>
-              {/* Capital */}
-              <div className={styles.sectionCard}>
-                <div className={styles.labelRow}>
-                  <label className={styles.label}>
-                    <IndianRupee size={17} color="#059669" />
+            {/* 2. Available Capital */}
+            <div className={styles.formSection}>
+              <div className={styles.sectionHeaderRow}>
+                <div className={styles.sectionTitleBlock}>
+                  <h3 className={styles.sectionHeading}>
+                    <span className={styles.sectionStepNum}>2</span>
                     Available Capital (₹)
-                  </label>
+                    <span className={styles.requiredStar}>*</span>
+                  </h3>
+                  <p className={styles.sectionDescription}>
+                    Enter available working & seed capital for stress-testing liquidity and runway.
+                  </p>
                 </div>
+                {formData.capital && (
+                  <span className={styles.capitalFormattedBadge}>
+                    {formatIndianCurrency(formData.capital)}
+                  </span>
+                )}
+              </div>
 
-                <div className={styles.inputWrapper}>
+              <div className={styles.formField}>
+                <div className={styles.unifiedBox}>
                   <IndianRupee size={18} className={styles.inputIcon} />
                   <input 
                     type="number" 
-                    className={styles.input}
+                    className={styles.unifiedInput}
                     placeholder="e.g., 150000"
                     value={formData.capital}
                     onChange={(e) => setFormData({...formData, capital: e.target.value})}
                     required
+                    min="1000"
                   />
-                </div>
-
-                <div className={styles.chipGroup}>
-                  {CAPITAL_PRESETS.map((preset, idx) => (
-                    <button
-                      key={idx}
-                      type="button"
-                      className={`${styles.chip} ${formData.capital === preset.value ? styles.chipActive : ''}`}
-                      onClick={() => setFormData({ ...formData, capital: preset.value })}
+                  <div className={styles.dropdownArrowBtnWrapper} title="Open options list">
+                    <select 
+                      className={styles.dropdownArrowSelect}
+                      value=""
+                      onChange={(e) => {
+                        if (e.target.value) setFormData({ ...formData, capital: e.target.value });
+                      }}
+                      title="Select capital scale tier"
                     >
-                      {preset.label}
-                    </button>
-                  ))}
+                      <option value="" disabled hidden>-- Select --</option>
+                      {CAPITAL_PRESETS.map((preset, idx) => (
+                        <option key={idx} value={preset.value}>{preset.label}</option>
+                      ))}
+                    </select>
+                    <ChevronDown size={18} className={styles.dropdownArrowIcon} />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 3. Land / Shop Availability */}
+            <div className={styles.formSection}>
+              <div className={styles.sectionHeaderRow}>
+                <div className={styles.sectionTitleBlock}>
+                  <h3 className={styles.sectionHeading}>
+                    <span className={styles.sectionStepNum}>3</span>
+                    Land / Shop Availability
+                    <span className={styles.requiredStar}>*</span>
+                  </h3>
+                  <p className={styles.sectionDescription}>
+                    Specify current commercial real estate status, shop frontage, or land holding.
+                  </p>
                 </div>
               </div>
 
-              {/* Land / Shop */}
-              <div className={styles.sectionCard}>
-                <div className={styles.labelRow}>
-                  <label className={styles.label}>
-                    <Building2 size={17} color="#059669" />
-                    Land / Shop Availability
-                  </label>
-                </div>
-
-                <div className={styles.inputWrapper}>
+              <div className={styles.formField}>
+                <div className={styles.unifiedBox}>
                   <Building2 size={18} className={styles.inputIcon} />
                   <input 
                     type="text" 
-                    className={styles.input}
+                    className={styles.unifiedInput}
                     placeholder="e.g., Own 1 room, Rented market space"
                     value={formData.land}
                     onChange={(e) => setFormData({...formData, land: e.target.value})}
+                    list="reality-land-list"
                     required
                   />
+                  <div className={styles.dropdownArrowBtnWrapper} title="Open options list">
+                    <select 
+                      className={styles.dropdownArrowSelect}
+                      value=""
+                      onChange={(e) => {
+                        if (e.target.value) setFormData({ ...formData, land: e.target.value });
+                      }}
+                      title="Choose commercial space type"
+                    >
+                      <option value="" disabled hidden>-- Select --</option>
+                      {LAND_PRESETS.map((preset, idx) => (
+                        <option key={idx} value={preset}>{preset}</option>
+                      ))}
+                    </select>
+                    <ChevronDown size={18} className={styles.dropdownArrowIcon} />
+                  </div>
                 </div>
 
-                <div className={styles.chipGroup}>
+                <datalist id="reality-land-list">
                   {LAND_PRESETS.map((preset, idx) => (
-                    <button
-                      key={idx}
-                      type="button"
-                      className={`${styles.chip} ${formData.land === preset ? styles.chipActive : ''}`}
-                      onClick={() => setFormData({ ...formData, land: preset })}
-                    >
-                      {preset}
-                    </button>
+                    <option key={idx} value={preset} />
                   ))}
-                </div>
+                </datalist>
               </div>
             </div>
 
-            {/* 3. Electricity & Experience (2-col) */}
-            <div className={styles.twoColRow}>
-              {/* Electricity */}
-              <div className={styles.sectionCard}>
-                <div className={styles.labelRow}>
-                  <label className={styles.label}>
-                    <Zap size={17} color="#059669" />
+            {/* 4. Electricity & Power Supply */}
+            <div className={styles.formSection}>
+              <div className={styles.sectionHeaderRow}>
+                <div className={styles.sectionTitleBlock}>
+                  <h3 className={styles.sectionHeading}>
+                    <span className={styles.sectionStepNum}>4</span>
                     Electricity & Power Supply
-                  </label>
+                    <span className={styles.requiredStar}>*</span>
+                  </h3>
+                  <p className={styles.sectionDescription}>
+                    Assess electrical reliability against machine loads and commercial uptime requirements.
+                  </p>
                 </div>
+              </div>
 
-                <div className={styles.inputWrapper}>
+              <div className={styles.formField}>
+                <div className={styles.unifiedBox}>
                   <Zap size={18} className={styles.inputIcon} />
                   <input 
                     type="text" 
-                    className={styles.input}
-                    placeholder="e.g., 24/7 3-phase, 18 hrs/day"
+                    className={styles.unifiedInput}
+                    placeholder="e.g., 24/7 Power Supply, 18 hrs/day"
                     value={formData.electricity}
                     onChange={(e) => setFormData({...formData, electricity: e.target.value})}
+                    list="reality-electricity-list"
                     required
                   />
+                  <div className={styles.dropdownArrowBtnWrapper} title="Open options list">
+                    <select 
+                      className={styles.dropdownArrowSelect}
+                      value=""
+                      onChange={(e) => {
+                        if (e.target.value) setFormData({ ...formData, electricity: e.target.value });
+                      }}
+                      title="Choose electricity infrastructure"
+                    >
+                      <option value="" disabled hidden>-- Select --</option>
+                      {ELECTRICITY_PRESETS.map((preset, idx) => (
+                        <option key={idx} value={preset}>{preset}</option>
+                      ))}
+                    </select>
+                    <ChevronDown size={18} className={styles.dropdownArrowIcon} />
+                  </div>
                 </div>
 
-                <div className={styles.chipGroup}>
+                <datalist id="reality-electricity-list">
                   {ELECTRICITY_PRESETS.map((preset, idx) => (
-                    <button
-                      key={idx}
-                      type="button"
-                      className={`${styles.chip} ${formData.electricity === preset ? styles.chipActive : ''}`}
-                      onClick={() => setFormData({ ...formData, electricity: preset })}
-                    >
-                      {preset}
-                    </button>
+                    <option key={idx} value={preset} />
                   ))}
+                </datalist>
+              </div>
+            </div>
+
+            {/* 5. Founder Domain Experience */}
+            <div className={styles.formSection}>
+              <div className={styles.sectionHeaderRow}>
+                <div className={styles.sectionTitleBlock}>
+                  <h3 className={styles.sectionHeading}>
+                    <span className={styles.sectionStepNum}>5</span>
+                    Founder Domain Experience
+                    <span className={styles.requiredStar}>*</span>
+                  </h3>
+                  <p className={styles.sectionDescription}>
+                    Evaluate management competency, vendor negotiation capability, and operational resilience.
+                  </p>
                 </div>
               </div>
 
-              {/* Experience */}
-              <div className={styles.sectionCard}>
-                <div className={styles.labelRow}>
-                  <label className={styles.label}>
-                    <Award size={17} color="#059669" />
-                    Founder Domain Experience
-                  </label>
-                </div>
-
-                <div className={styles.inputWrapper}>
+              <div className={styles.formField}>
+                <div className={styles.unifiedBox}>
                   <Award size={18} className={styles.inputIcon} />
                   <input 
                     type="text" 
-                    className={styles.input}
-                    placeholder="e.g., 2 years working in trade"
+                    className={styles.unifiedInput}
+                    placeholder="e.g., Agri & Cold Storage, 2 years trade experience"
                     value={formData.experience}
                     onChange={(e) => setFormData({...formData, experience: e.target.value})}
+                    list="reality-experience-list"
                     required
                   />
+                  <div className={styles.dropdownArrowBtnWrapper} title="Open options list">
+                    <select 
+                      className={styles.dropdownArrowSelect}
+                      value=""
+                      onChange={(e) => {
+                        if (e.target.value) setFormData({ ...formData, experience: e.target.value });
+                      }}
+                      title="Choose founder experience tier"
+                    >
+                      <option value="" disabled hidden>-- Select --</option>
+                      {EXPERIENCE_PRESETS.map((preset, idx) => (
+                        <option key={idx} value={preset}>{preset}</option>
+                      ))}
+                    </select>
+                    <ChevronDown size={18} className={styles.dropdownArrowIcon} />
+                  </div>
                 </div>
 
-                <div className={styles.chipGroup}>
+                <datalist id="reality-experience-list">
                   {EXPERIENCE_PRESETS.map((preset, idx) => (
-                    <button
-                      key={idx}
-                      type="button"
-                      className={`${styles.chip} ${formData.experience === preset ? styles.chipActive : ''}`}
-                      onClick={() => setFormData({ ...formData, experience: preset })}
-                    >
-                      {preset}
-                    </button>
+                    <option key={idx} value={preset} />
                   ))}
-                </div>
+                </datalist>
               </div>
             </div>
 
-            {/* 4. Hours & Customer Traffic (2-col) */}
-            <div className={styles.twoColRow}>
-              {/* Expected Hours */}
-              <div className={styles.sectionCard}>
-                <div className={styles.labelRow}>
-                  <label className={styles.label}>
-                    <Clock size={17} color="#059669" />
+            {/* 6. Daily Working Hours */}
+            <div className={styles.formSection}>
+              <div className={styles.sectionHeaderRow}>
+                <div className={styles.sectionTitleBlock}>
+                  <h3 className={styles.sectionHeading}>
+                    <span className={styles.sectionStepNum}>6</span>
                     Daily Working Hours
-                  </label>
+                    <span className={styles.requiredStar}>*</span>
+                  </h3>
+                  <p className={styles.sectionDescription}>
+                    Calculate founder bandwidth and staffing overhead against break-even timelines.
+                  </p>
                 </div>
+              </div>
 
-                <div className={styles.inputWrapper}>
+              <div className={styles.formField}>
+                <div className={styles.unifiedBox}>
                   <Clock size={18} className={styles.inputIcon} />
                   <input 
                     type="text" 
-                    className={styles.input}
+                    className={styles.unifiedInput}
                     placeholder="e.g., 8-10 hours/day"
                     value={formData.hours}
                     onChange={(e) => setFormData({...formData, hours: e.target.value})}
+                    list="reality-hours-list"
                     required
                   />
+                  <div className={styles.dropdownArrowBtnWrapper} title="Open options list">
+                    <select 
+                      className={styles.dropdownArrowSelect}
+                      value=""
+                      onChange={(e) => {
+                        if (e.target.value) setFormData({ ...formData, hours: e.target.value });
+                      }}
+                      title="Choose working hours schedule"
+                    >
+                      <option value="" disabled hidden>-- Select --</option>
+                      {HOURS_PRESETS.map((preset, idx) => (
+                        <option key={idx} value={preset}>{preset}</option>
+                      ))}
+                    </select>
+                    <ChevronDown size={18} className={styles.dropdownArrowIcon} />
+                  </div>
                 </div>
 
-                <div className={styles.chipGroup}>
+                <datalist id="reality-hours-list">
                   {HOURS_PRESETS.map((preset, idx) => (
-                    <button
-                      key={idx}
-                      type="button"
-                      className={`${styles.chip} ${formData.hours === preset ? styles.chipActive : ''}`}
-                      onClick={() => setFormData({ ...formData, hours: preset })}
-                    >
-                      {preset}
-                    </button>
+                    <option key={idx} value={preset} />
                   ))}
-                </div>
-              </div>
-
-              {/* Customer Traffic */}
-              <div className={styles.sectionCard}>
-                <div className={styles.labelRow}>
-                  <label className={styles.label}>
-                    <Users size={17} color="#059669" />
-                    Local Customer Reach
-                  </label>
-                </div>
-
-                <div className={styles.inputWrapper}>
-                  <Users size={18} className={styles.inputIcon} />
-                  <input 
-                    type="text" 
-                    className={styles.input}
-                    placeholder="e.g., 500 households in village"
-                    value={formData.customers}
-                    onChange={(e) => setFormData({...formData, customers: e.target.value})}
-                    required
-                  />
-                </div>
-
-                <div className={styles.chipGroup}>
-                  {CUSTOMERS_PRESETS.map((preset, idx) => (
-                    <button
-                      key={idx}
-                      type="button"
-                      className={`${styles.chip} ${formData.customers === preset ? styles.chipActive : ''}`}
-                      onClick={() => setFormData({ ...formData, customers: preset })}
-                    >
-                      {preset}
-                    </button>
-                  ))}
-                </div>
+                </datalist>
               </div>
             </div>
 
-            {/* Submit CTA */}
-            <button type="submit" className={styles.submitBtn}>
-              <BrainCircuit size={22} />
-              Calculate Brutal Reality Check & Feasibility Score
-            </button>
+            {/* 7. Local Customer Reach */}
+            <div className={styles.formSection}>
+              <div className={styles.sectionHeaderRow}>
+                <div className={styles.sectionTitleBlock}>
+                  <h3 className={styles.sectionHeading}>
+                    <span className={styles.sectionStepNum}>7</span>
+                    Local Customer Reach
+                    <span className={styles.requiredStar}>*</span>
+                  </h3>
+                  <p className={styles.sectionDescription}>
+                    Estimate realistic daily footfall, catchment population, or repeat institutional buyers.
+                  </p>
+                </div>
+              </div>
+
+              <div className={styles.formField}>
+                <div className={styles.unifiedBox}>
+                  <Users size={18} className={styles.inputIcon} />
+                  <input 
+                    type="text" 
+                    className={styles.unifiedInput}
+                    placeholder="e.g., 500 households in village"
+                    value={formData.customers}
+                    onChange={(e) => setFormData({...formData, customers: e.target.value})}
+                    list="reality-customers-list"
+                    required
+                  />
+                  <div className={styles.dropdownArrowBtnWrapper} title="Open options list">
+                    <select 
+                      className={styles.dropdownArrowSelect}
+                      value=""
+                      onChange={(e) => {
+                        if (e.target.value) setFormData({ ...formData, customers: e.target.value });
+                      }}
+                      title="Choose customer footfall reach"
+                    >
+                      <option value="" disabled hidden>-- Select --</option>
+                      {CUSTOMERS_PRESETS.map((preset, idx) => (
+                        <option key={idx} value={preset}>{preset}</option>
+                      ))}
+                    </select>
+                    <ChevronDown size={18} className={styles.dropdownArrowIcon} />
+                  </div>
+                </div>
+
+                <datalist id="reality-customers-list">
+                  {CUSTOMERS_PRESETS.map((preset, idx) => (
+                    <option key={idx} value={preset} />
+                  ))}
+                </datalist>
+              </div>
+            </div>
+
+            {/* Information Alert Banner */}
+            <div className={styles.infoBanner}>
+              <div className={styles.infoBannerIcon}>
+                <ShieldCheck size={20} color="#059669" />
+              </div>
+              <div className={styles.infoBannerText}>
+                Stress-tested against National MSME Risk Database, Regional Saturation Maps & Consumer Purchasing Indices
+              </div>
+            </div>
+
+            {/* Action Footer */}
+            <div className={styles.formActionFooter}>
+              <button 
+                type="button" 
+                onClick={handleReset}
+                className={styles.cancelBtn}
+              >
+                <RotateCcw size={16} />
+                <span>Reset Form</span>
+              </button>
+
+              <button 
+                type="submit" 
+                className={styles.submitBtn}
+                disabled={!formData.idea || !formData.capital}
+              >
+                <BrainCircuit size={20} />
+                <span>Calculate Brutal Reality Check & Feasibility Score</span>
+                <ArrowRight size={18} />
+              </button>
+            </div>
           </form>
         )}
 
