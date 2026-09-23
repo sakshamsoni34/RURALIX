@@ -2,9 +2,11 @@
 
 import { useState } from 'react';
 import { Briefcase, Lightbulb, ArrowRight } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useDashboard } from '../context/DashboardContext';
 
 export default function OnboardingModal() {
+  const router = useRouter();
   const { userProfile, setUserProfile, setActiveTab, isLoaded } = useDashboard();
   const [step, setStep] = useState<'initial' | 'manual'>('initial');
   
@@ -24,6 +26,11 @@ export default function OnboardingModal() {
     // They don't have a business, want an AI recommendation
     setUserProfile(prev => ({ ...prev, hasBusiness: false }));
     setActiveTab('ai-recommendation');
+  };
+
+  const handleSelectExisting = () => {
+    setUserProfile(prev => ({ ...prev, hasBusiness: true }));
+    router.push('/existing-business');
   };
 
   const handleSaveManual = (e: React.FormEvent) => {

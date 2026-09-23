@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
 import { 
   LayoutDashboard, 
   Lightbulb, 
@@ -10,7 +11,9 @@ import {
   Map as MapIcon,
   Sprout,
   Mic,
-  X
+  X,
+  Building2,
+  Compass
 } from 'lucide-react';
 import styles from '../../app/dashboard/page.module.css';
 import { useDashboard } from '../../context/DashboardContext';
@@ -41,6 +44,8 @@ function LandmarkIcon({ size = 24, ...props }: React.SVGProps<SVGSVGElement> & {
 
 export default function Sidebar() {
   const { activeTab, setActiveTab, isMenuOpen, setIsMenuOpen, setIsVoiceModalOpen } = useDashboard();
+  const router = useRouter();
+  const pathname = usePathname();
 
   // Close menu on Escape key
   useEffect(() => {
@@ -56,11 +61,19 @@ export default function Sidebar() {
   const handleSelectTab = (tab: string) => {
     setActiveTab(tab);
     setIsMenuOpen(false);
+    if (pathname !== '/dashboard') {
+      router.push('/dashboard');
+    }
   };
 
   const handleOpenVoice = () => {
     setIsVoiceModalOpen(true);
     setIsMenuOpen(false);
+  };
+
+  const handleNavigate = (path: string) => {
+    setIsMenuOpen(false);
+    router.push(path);
   };
 
   return (
@@ -78,7 +91,11 @@ export default function Sidebar() {
         aria-label="Navigation drawer"
       >
         <div className={styles.drawerHeader}>
-          <div className={styles.logo}>
+          <div 
+            className={styles.logo} 
+            onClick={() => handleSelectTab('dashboard')}
+            style={{ cursor: 'pointer' }}
+          >
             <Sprout size={28} color="#10b981" />
             <span>Grameen<span style={{ color: '#10b981' }}>Sathi</span></span>
           </div>
@@ -94,10 +111,18 @@ export default function Sidebar() {
         <nav className={styles.nav}>
           <button 
             onClick={() => handleSelectTab('dashboard')} 
-            className={`${styles.navItem} ${activeTab === 'dashboard' ? styles.navItemActive : ''}`}
+            className={`${styles.navItem} ${pathname === '/dashboard' && activeTab === 'dashboard' ? styles.navItemActive : ''}`}
           >
             <LayoutDashboard size={20} /> Dashboard
           </button>
+          
+          <button 
+            onClick={() => handleNavigate('/existing-business')} 
+            className={`${styles.navItem} ${pathname === '/existing-business' ? styles.navItemActive : ''}`}
+          >
+            <Building2 size={20} /> My Business Hub
+          </button>
+
           <button 
             onClick={handleOpenVoice} 
             className={styles.navItem} 
@@ -143,6 +168,14 @@ export default function Sidebar() {
             className={`${styles.navItem} ${activeTab === 'map' ? styles.navItemActive : ''}`}
           >
             <MapIcon size={20} /> Market Opportunity Map
+          </button>
+
+          <button 
+            onClick={() => handleNavigate('/onboarding')} 
+            className={`${styles.navItem} ${pathname === '/onboarding' ? styles.navItemActive : ''}`}
+            style={{ marginTop: '0.5rem', opacity: 0.85, borderTop: '1px solid rgba(255, 255, 255, 0.1)', paddingTop: '0.75rem' }}
+          >
+            <Compass size={20} /> Change Path (Onboarding)
           </button>
         </nav>
 

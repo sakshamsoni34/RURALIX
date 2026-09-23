@@ -42,8 +42,12 @@ export default function Header() {
 
         <div 
           className={styles.brandTitle}
-          onClick={() => setActiveTab('dashboard')}
+          onClick={() => {
+            setActiveTab('dashboard');
+            router.push('/dashboard');
+          }}
           title="Grameen Sathi Dashboard"
+          style={{ cursor: 'pointer' }}
         >
           <Sprout size={24} color="#059669" />
           <span>Grameen<strong>Sathi</strong></span>
@@ -153,6 +157,33 @@ export default function Header() {
                 <IndianRupee size={16} color="var(--primary)" />
                 <strong>Capital:</strong> ₹{userProfile.capital || '0'}
               </div>
+
+              <button 
+                onClick={() => {
+                  setIsDropdownOpen(false);
+                  router.push('/existing-business');
+                }}
+                style={{
+                  marginTop: '0.25rem',
+                  width: '100%',
+                  padding: '0.65rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.5rem',
+                  background: 'var(--primary-glow)',
+                  color: 'var(--primary-dark)',
+                  border: '1px solid rgba(5, 150, 105, 0.2)',
+                  borderRadius: '8px',
+                  fontWeight: 600,
+                  fontSize: '0.85rem',
+                  cursor: 'pointer',
+                  transition: 'background 0.2s'
+                }}
+              >
+                <Briefcase size={15} />
+                Manage Business Hub
+              </button>
 
               <button 
                 onClick={handleSignOut}
