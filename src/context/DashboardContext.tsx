@@ -21,20 +21,65 @@ interface DashboardContextType {
   setTrendingItems: (items: TrendingItem[]) => void;
   realityScores: RealityCheckScores;
   setRealityScores: (scores: RealityCheckScores) => void;
+  isLoaded: boolean;
+  isMenuOpen: boolean;
+  setIsMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
+
+const defaultUserProfile: UserProfile = {
+  hasBusiness: null,
+  businessIdea: '',
+  location: '',
+  capital: '',
+  infrastructure: '',
+  experience: ''
+};
+
+const defaultRealityScores: RealityCheckScores = {
+  demand: 82,
+  competition: 65,
+  infra: 88,
+  risk: 32,
+  overall: 78
+};
 
 const DashboardContext = createContext<DashboardContextType | undefined>(undefined);
 
 export function DashboardProvider({ children }: { children: ReactNode }) {
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [userProfile, setUserProfile] = useState<UserProfile>({
-    hasBusiness: null,
-    businessIdea: '',
-    location: '',
-    capital: '',
-    infrastructure: '',
-    experience: ''
-  });
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [userProfile, setUserProfile] = useState<UserProfile>(defaultUserProfile);
+  const [realityScores, setRealityScores] = useState<RealityCheckScores>(defaultRealityScores);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  // Load from localStorage on client mount to prevent SSR hydration mismatch
+  React.useEffect(() => {
+    try {
+      const savedProfile = localStorage.getItem('ruralix_user_profile');
+      if (savedProfile) {
+        setUserProfile(JSON.parse(savedProfile));
+      }
+      const savedScores = localStorage.getItem('ruralix_reality_scores');
+      if (savedScores) {
+        setRealityScores(JSON.parse(savedScores));
+      }
+    } catch (e) {
+      console.error('Failed to load from localStorage:', e);
+    } finally {
+      setIsLoaded(true);
+    }
+  }, []);
+
+  // Sync to localStorage on change only after initial hydration load
+  React.useEffect(() => {
+    if (!isLoaded) return;
+    try {
+      localStorage.setItem('ruralix_user_profile', JSON.stringify(userProfile));
+    } catch (e) {
+      console.error('Failed to save userProfile to localStorage:', e);
+    }
+  }, [userProfile, isLoaded]);
+
   const [customers, setCustomers] = useState(25);
   const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
   const [voiceInitialQuery, setVoiceInitialQuery] = useState('');
@@ -67,14 +112,13 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
     { name: "Packaging & Supplies", trend: "UP", reason: "Rising local commercial demand" },
     { name: "Seasonal Goods", trend: "UP", reason: "Approaching market cycle" }
   ]);
-  
-  const [realityScores, setRealityScores] = useState<RealityCheckScores>({
-    demand: 82,
-    competition: 65,
-    infra: 88,
-    risk: 32,
-    overall: 78
-  });
+
+  React.useEffect(() => {
+    if (!isLoaded) return;
+    try {
+      localStorage.setItem('ruralix_reality_scores', JSON.stringify(realityScores));
+    } catch (e) {}
+  }, [realityScores, isLoaded]);
 
   return (
     <DashboardContext.Provider value={{
@@ -86,7 +130,9 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
       openVoiceAssistantWithQuery,
       schemes, setSchemes,
       trendingItems, setTrendingItems,
-      realityScores, setRealityScores
+      realityScores, setRealityScores,
+      isLoaded,
+      isMenuOpen, setIsMenuOpen
     }}>
       {children}
     </DashboardContext.Provider>

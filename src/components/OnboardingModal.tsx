@@ -5,7 +5,7 @@ import { Briefcase, Lightbulb, ArrowRight } from 'lucide-react';
 import { useDashboard } from '../context/DashboardContext';
 
 export default function OnboardingModal() {
-  const { userProfile, setUserProfile, setActiveTab } = useDashboard();
+  const { userProfile, setUserProfile, setActiveTab, isLoaded } = useDashboard();
   const [step, setStep] = useState<'initial' | 'manual'>('initial');
   
   // Local state for manual business entry
@@ -17,8 +17,8 @@ export default function OnboardingModal() {
     experience: ''
   });
 
-  // If user already answered, don't show
-  if (userProfile.hasBusiness !== null) return null;
+  // If not loaded yet from localStorage or user already completed onboarding, don't show
+  if (!isLoaded || userProfile.hasBusiness !== null) return null;
 
   const handleNoBusiness = () => {
     // They don't have a business, want an AI recommendation

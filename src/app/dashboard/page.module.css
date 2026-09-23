@@ -6,19 +6,114 @@
   background-color: var(--background);
 }
 
+/* Backdrop Overlay */
+.drawerOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.28s ease;
+}
+
+.drawerOverlayOpen {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Hamburger Slide-over Drawer */
 .sidebar {
-  width: 260px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 285px;
+  max-width: 85vw;
   background-color: var(--sidebar-bg);
   color: var(--text-inverse);
   display: flex;
   flex-direction: column;
-  box-shadow: var(--shadow-lg);
-  z-index: 10;
+  box-shadow: 12px 0 36px rgba(0, 0, 0, 0.35);
+  z-index: 1001;
+  transform: translateX(-100%);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow-y: auto;
+}
+
+.sidebarOpen {
+  transform: translateX(0);
+}
+
+.drawerHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.closeDrawerBtn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.closeDrawerBtn:hover {
+  background: rgba(255, 255, 255, 0.22);
+  transform: scale(1.05);
+}
+
+.hamburgerBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.hamburgerBtn:hover {
+  background: #f0fdf4;
+  border-color: var(--primary);
+  color: var(--primary);
+  transform: scale(1.04);
+}
+
+.brandTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #064e3b;
+  cursor: pointer;
+  user-select: none;
+  flex-shrink: 0;
+  transition: opacity 0.2s;
+}
+
+.brandTitle:hover {
+  opacity: 0.85;
 }
 
 .logo {
-  padding: 1.5rem;
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: 800;
   display: flex;
   align-items: center;
@@ -38,10 +133,16 @@
   display: flex;
   align-items: center;
   gap: 0.875rem;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.82);
   font-weight: 500;
   transition: var(--transition);
   font-size: 0.95rem;
+  background: transparent;
+  border: none;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+  cursor: pointer;
 }
 
 .navItem:hover {

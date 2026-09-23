@@ -72,8 +72,6 @@ function DashboardContent() {
                 <WeatherWidget />
               </div>
             </div>
-
-            <OpportunityMap location={userProfile.location || "Bhind, Madhya Pradesh"} />
           </div>
 
           <div style={{ display: activeTab === 'ai-recommendation' ? 'block' : 'none' }}>
@@ -90,6 +88,11 @@ function DashboardContent() {
           </div>
           <div style={{ display: activeTab === 'mentor' ? 'block' : 'none' }}>
             <AIBusinessMentorModal isOpen={true} onClose={() => {}} inline={true} />
+          </div>
+          <div style={{ display: activeTab === 'map' ? 'block' : 'none' }}>
+            {activeTab === 'map' && (
+              <OpportunityMap location={userProfile.location || "Bhind, Madhya Pradesh"} />
+            )}
           </div>
 
         </div>
