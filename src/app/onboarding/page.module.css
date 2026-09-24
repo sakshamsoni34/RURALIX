@@ -1,58 +1,54 @@
 .pageWrapper {
   min-height: 100vh;
   width: 100%;
-  background: radial-gradient(circle at 50% 0%, #064e3b 0%, #022c22 45%, #0f172a 100%);
+  background-color: var(--background);
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(5, 150, 105, 0.08) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(245, 158, 11, 0.06) 0px, transparent 50%);
   display: flex;
   flex-direction: column;
   position: relative;
   overflow-x: hidden;
   font-family: 'Outfit', sans-serif;
-  color: #ffffff;
-}
-
-.backgroundGlow {
-  position: absolute;
-  top: -150px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 800px;
-  height: 500px;
-  background: radial-gradient(circle, rgba(16, 185, 129, 0.25) 0%, rgba(5, 150, 105, 0.05) 60%, transparent 80%);
-  filter: blur(80px);
-  pointer-events: none;
-  z-index: 1;
+  color: var(--text-main);
 }
 
 .header {
+  height: 72px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: center;
-  padding: 1.5rem 3rem;
+  padding: 0 2.5rem;
   z-index: 10;
+  box-shadow: var(--shadow-sm);
 }
 
-.logo {
+.brandTitle {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  font-size: 1.5rem;
+  gap: 0.6rem;
+  font-size: 1.35rem;
   font-weight: 700;
-  color: #ffffff;
-  letter-spacing: -0.5px;
+  color: #064e3b;
+  cursor: pointer;
+  user-select: none;
 }
 
-.logo span {
-  color: #34d399;
+.brandTitle span strong {
+  color: var(--primary);
+  font-weight: 800;
 }
 
 .badge {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  padding: 0.4rem 1rem;
+  background: var(--background);
+  border: 1px solid var(--border);
+  padding: 0.45rem 1.1rem;
   border-radius: 9999px;
   font-size: 0.85rem;
-  color: #e2e8f0;
+  font-weight: 600;
+  color: var(--primary-dark);
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -62,7 +58,7 @@
   max-width: 1100px;
   width: 100%;
   margin: 0 auto;
-  padding: 1rem 2rem 4rem;
+  padding: 2.5rem 2rem 4rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -73,42 +69,42 @@
 
 .headingSection {
   text-align: center;
-  margin-bottom: 3rem;
-  max-width: 680px;
+  margin-bottom: 2.75rem;
+  max-width: 720px;
 }
 
 .stepIndicator {
-  display: inline-block;
-  font-size: 0.85rem;
-  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 1.5px;
-  color: #34d399;
-  background: rgba(52, 211, 153, 0.12);
-  padding: 0.35rem 0.9rem;
+  letter-spacing: 1.2px;
+  color: var(--primary-dark);
+  background: #ecfdf5;
+  padding: 0.35rem 0.95rem;
   border-radius: 20px;
   margin-bottom: 1rem;
-  border: 1px solid rgba(52, 211, 153, 0.25);
+  border: 1px solid #a7f3d0;
 }
 
 .title {
   font-size: 2.5rem;
   font-weight: 800;
-  color: #ffffff;
-  line-height: 1.2;
+  color: var(--text-main);
+  line-height: 1.25;
   margin-bottom: 0.75rem;
   letter-spacing: -0.5px;
 }
 
 .titleHighlight {
-  background: linear-gradient(135deg, #34d399 0%, #10b981 50%, #6ee7b7 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--primary);
 }
 
 .subtitle {
-  font-size: 1.1rem;
-  color: #94a3b8;
+  font-size: 1.05rem;
+  color: var(--text-muted);
   line-height: 1.6;
 }
 
@@ -120,59 +116,33 @@
 }
 
 .optionCard {
-  background: rgba(15, 23, 42, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(16px);
-  border-radius: 24px;
-  padding: 2.5rem 2rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 2.5rem 2.25rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   cursor: pointer;
-  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
-  overflow: hidden;
-  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
   text-align: left;
 }
 
-.optionCard::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 24px;
-  padding: 2px;
-  background: linear-gradient(135deg, transparent, transparent);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-  transition: background 0.35s ease;
-}
-
 .optionCard:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.7);
+  transform: translateY(-6px);
+  box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.08), 0 10px 15px -5px rgba(0, 0, 0, 0.04);
 }
 
 /* Card 1: Existing Business */
 .cardExisting:hover {
-  border-color: rgba(52, 211, 153, 0.6);
-  background: rgba(6, 78, 59, 0.4);
-}
-
-.cardExisting:hover::before {
-  background: linear-gradient(135deg, rgba(52, 211, 153, 0.8), transparent);
+  border-color: var(--primary);
 }
 
 /* Card 2: Need Idea */
 .cardNew:hover {
-  border-color: rgba(245, 158, 11, 0.6);
-  background: rgba(69, 26, 3, 0.35);
-}
-
-.cardNew:hover::before {
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.8), transparent);
+  border-color: var(--accent-orange);
 }
 
 .cardTag {
@@ -180,73 +150,73 @@
   font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  padding: 0.3rem 0.75rem;
+  letter-spacing: 0.8px;
+  padding: 0.35rem 0.85rem;
   border-radius: 20px;
   margin-bottom: 1.5rem;
 }
 
 .cardTagExisting {
-  background: rgba(16, 185, 129, 0.15);
-  color: #34d399;
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  background: #ecfdf5;
+  color: var(--primary-dark);
+  border: 1px solid #a7f3d0;
 }
 
 .cardTagNew {
-  background: rgba(245, 158, 11, 0.15);
-  color: #fbbf24;
-  border: 1px solid rgba(245, 158, 11, 0.3);
+  background: #fffbeb;
+  color: #b45309;
+  border: 1px solid #fde68a;
 }
 
 .cardIconWrapper {
-  width: 68px;
-  height: 68px;
-  border-radius: 20px;
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 1.5rem;
-  transition: transform 0.3s ease;
+  transition: transform 0.25s ease;
 }
 
 .optionCard:hover .cardIconWrapper {
-  transform: scale(1.1) rotate(-3deg);
+  transform: scale(1.08) rotate(-3deg);
 }
 
 .iconExisting {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.25) 0%, rgba(5, 150, 105, 0.1) 100%);
-  border: 1px solid rgba(52, 211, 153, 0.3);
-  color: #34d399;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: var(--primary);
 }
 
 .iconNew {
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.25) 0%, rgba(217, 119, 6, 0.1) 100%);
-  border: 1px solid rgba(245, 158, 11, 0.3);
-  color: #fbbf24;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  color: #d97706;
 }
 
 .cardTitle {
-  font-size: 1.6rem;
-  font-weight: 700;
-  color: #ffffff;
-  margin-bottom: 0.35rem;
+  font-size: 1.55rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 0.25rem;
   line-height: 1.3;
 }
 
 .cardHindiTitle {
   font-size: 0.95rem;
-  color: #a7f3d0;
-  font-weight: 500;
-  margin-bottom: 1rem;
+  color: var(--primary-dark);
+  font-weight: 600;
+  margin-bottom: 0.9rem;
 }
 
 .cardHindiTitleNew {
-  color: #fde68a;
+  color: #b45309;
 }
 
 .cardDescription {
-  font-size: 0.95rem;
-  color: #94a3b8;
+  font-size: 0.92rem;
+  color: var(--text-muted);
   line-height: 1.6;
   margin-bottom: 1.5rem;
 }
@@ -254,23 +224,24 @@
 .featureList {
   display: flex;
   flex-direction: column;
-  gap: 0.65rem;
+  gap: 0.75rem;
   margin-bottom: 2rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid var(--border);
   padding-top: 1.25rem;
 }
 
 .featureItem {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
+  gap: 0.75rem;
   font-size: 0.88rem;
-  color: #cbd5e1;
+  font-weight: 500;
+  color: #334155;
 }
 
 .featureCheck {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -279,57 +250,59 @@
 }
 
 .checkExisting {
-  background: rgba(16, 185, 129, 0.2);
-  color: #34d399;
+  background: #ecfdf5;
+  color: var(--primary);
 }
 
 .checkNew {
-  background: rgba(245, 158, 11, 0.2);
-  color: #fbbf24;
+  background: #fffbeb;
+  color: #d97706;
 }
 
 .actionBtn {
   width: 100%;
-  padding: 1rem 1.5rem;
-  border-radius: 14px;
-  font-size: 1rem;
-  font-weight: 600;
+  padding: 0.95rem 1.5rem;
+  border-radius: 12px;
+  font-size: 0.98rem;
+  font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.75rem;
+  gap: 0.65rem;
   transition: all 0.25s ease;
   cursor: pointer;
   border: none;
 }
 
 .actionBtnExisting {
-  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  background: var(--primary);
   color: #ffffff;
-  box-shadow: 0 4px 15px rgba(5, 150, 105, 0.4);
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
 }
 
-.optionCard:hover .actionBtnExisting {
-  background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
-  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.6);
+.actionBtnExisting:hover {
+  background: var(--primary-dark);
+  box-shadow: 0 6px 16px rgba(5, 150, 105, 0.35);
 }
 
 .actionBtnNew {
-  background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+  background: #d97706;
   color: #ffffff;
-  box-shadow: 0 4px 15px rgba(217, 119, 6, 0.4);
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.25);
 }
 
-.optionCard:hover .actionBtnNew {
-  background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
-  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.6);
+.actionBtnNew:hover {
+  background: #b45309;
+  box-shadow: 0 6px 16px rgba(217, 119, 6, 0.35);
 }
 
 .footer {
   text-align: center;
   padding: 1.5rem;
-  color: #64748b;
+  color: var(--text-muted);
   font-size: 0.85rem;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
   z-index: 10;
 }
 
@@ -341,7 +314,7 @@
   }
   
   .header {
-    padding: 1.25rem 1.5rem;
+    padding: 1rem 1.5rem;
   }
 
   .title {
@@ -349,6 +322,6 @@
   }
 
   .container {
-    padding: 1rem 1.5rem 3rem;
+    padding: 1.5rem 1.5rem 3rem;
   }
 }

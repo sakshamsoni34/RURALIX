@@ -47,16 +47,14 @@ export default function Onboarding() {
 
   return (
     <div className={styles.pageWrapper}>
-      <div className={styles.backgroundGlow} />
-
       {/* Header */}
       <header className={styles.header}>
-        <div className={styles.logo}>
-          <Sprout size={32} color="#10b981" />
-          Grameen<span>Sathi</span>
+        <div className={styles.brandTitle}>
+          <Sprout size={28} color="#059669" />
+          <span>Grameen<strong>Sathi</strong></span>
         </div>
         <div className={styles.badge}>
-          <ShieldCheck size={16} color="#34d399" />
+          <ShieldCheck size={16} color="#059669" />
           <span>Rural Enterprise Assistant</span>
         </div>
       </header>
