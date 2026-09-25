@@ -592,7 +592,6 @@ export default function RealityCheckModal({ isOpen, onClose, onCheckComplete, in
               <button 
                 type="submit" 
                 className={styles.submitBtn}
-                disabled={step === 'loading'}
               >
                 <BrainCircuit size={20} />
                 <span>Calculate Brutal Reality Check & Feasibility Score</span>
@@ -679,9 +678,12 @@ export default function RealityCheckModal({ isOpen, onClose, onCheckComplete, in
                   if (result?.scores) {
                     onCheckComplete(result.scores);
                     setRealityScores(result.scores);
+                    try {
+                      localStorage.setItem('ruralix_reality_scores', JSON.stringify(result.scores));
+                    } catch (e) {}
                   }
                   if (!inline) onClose();
-                  setActiveTab('demand');
+                  setActiveTab('demand', true);
                 }} 
                 className={styles.primaryBtn}
               >

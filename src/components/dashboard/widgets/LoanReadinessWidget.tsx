@@ -1,10 +1,12 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { FileText, CheckCircle2, AlertCircle } from 'lucide-react';
 import styles from '../../../app/dashboard/page.module.css';
 import { useDashboard } from '../../../context/DashboardContext';
 
 export default function LoanReadinessWidget() {
+  const router = useRouter();
   const { userProfile, realityScores, setActiveTab } = useDashboard();
 
   const capitalNum = parseInt(userProfile.capital as string) || 0;
@@ -50,7 +52,7 @@ export default function LoanReadinessWidget() {
           </li>
         </ul>
         <button 
-          onClick={() => setActiveTab('schemes')}
+          onClick={() => router.push('/government-schemes')}
           className={styles.cardLink} 
           style={{ display: 'block', width: '100%', marginTop: '1rem', textAlign: 'center', background: 'transparent', border: 'none', cursor: 'pointer' }}
         >

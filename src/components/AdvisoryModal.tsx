@@ -119,7 +119,7 @@ const PRESET_TEMPLATES = [
 ];
 
 export default function AdvisoryModal({ isOpen, onClose, inline = false }: AdvisoryModalProps) {
-  const { setUserProfile, setActiveTab, userProfile } = useDashboard();
+  const { setUserProfile, setActiveTab, userProfile, setRealityScores, setTrendingItems } = useDashboard();
   const [step, setStep] = useState<'input' | 'loading' | 'result'>('input');
   
   const [location, setLocation] = useState('');
@@ -632,7 +632,7 @@ export default function AdvisoryModal({ isOpen, onClose, inline = false }: Advis
                       localStorage.removeItem('ruralix_reality_scores');
                       localStorage.removeItem('ruralix_trending_items');
                     } catch (e) {}
-                    setActiveTab('reality-check');
+                    setActiveTab('reality-check', true);
                   }} 
                   className={styles.primaryActionBtn}
                 >

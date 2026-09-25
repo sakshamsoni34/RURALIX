@@ -1,0 +1,455 @@
+.stepperCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 1.5rem 1.75rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle background accent glow */
+.stepperCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #2563eb 0%, #be123c 50%, #059669 100%);
+}
+
+.topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.titleGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.badgePill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #047857;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  width: fit-content;
+}
+
+.stageHeading {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0;
+  letter-spacing: -0.015em;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.activeFocusPill {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  padding: 0.5rem 1rem;
+  border-radius: 30px;
+  font-size: 0.85rem;
+  color: #166534;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.1);
+}
+
+.activeFocusPill:hover {
+  background: #dcfce7;
+  border-color: #4ade80;
+  transform: translateY(-1px);
+}
+
+.focusDot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.25);
+  animation: pulseDot 2s infinite ease-in-out;
+}
+
+@keyframes pulseDot {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.25);
+    opacity: 0.75;
+  }
+}
+
+.focusLabel {
+  font-weight: 500;
+  color: #15803d;
+}
+
+.focusText {
+  font-weight: 800;
+  max-width: 280px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Horizontal Track of 3 Steps */
+.stepperTrack {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto 1fr;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.5rem 0;
+}
+
+/* Individual Step Box */
+.stepCard {
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: 16px;
+  padding: 1.15rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+}
+
+.stepCard:hover:not(.stepLocked) {
+  border-color: #94a3b8;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.stepCardActive {
+  background: #ffffff;
+  border-color: #059669 !important;
+  box-shadow: 0 8px 26px rgba(5, 150, 105, 0.15) !important;
+  transform: translateY(-2px);
+}
+
+.stepCardActive::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  box-shadow: inset 0 0 0 1px #10b981;
+  pointer-events: none;
+}
+
+.stepCompleted {
+  border-color: #bbf7d0;
+  background: linear-gradient(180deg, #ffffff 0%, #f0fdf4 100%);
+}
+
+.stepLocked {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+  opacity: 0.75;
+  cursor: not-allowed;
+}
+
+/* 3D Glossy Metallic Badges - directly styled after Step 1, 2, 3 image */
+.glossyNode {
+  width: 68px;
+  height: 68px;
+  min-width: 68px;
+  border-radius: 50%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  
+  /* Chrome Metallic Beveled Rim */
+  background: linear-gradient(135deg, #ffffff 0%, #d1d5db 25%, #6b7280 50%, #9ca3af 75%, #ffffff 100%);
+  padding: 5px;
+  box-shadow: 
+    0 8px 18px rgba(0, 0, 0, 0.2),
+    0 2px 5px rgba(0, 0, 0, 0.15),
+    inset 0 1px 2px rgba(255, 255, 255, 0.8),
+    inset 0 -2px 3px rgba(0, 0, 0, 0.4);
+  transition: all 0.25s ease;
+  user-select: none;
+}
+
+.stepCard:hover:not(.stepLocked) .glossyNode {
+  transform: scale(1.05);
+  box-shadow: 
+    0 12px 24px rgba(0, 0, 0, 0.25),
+    0 3px 6px rgba(0, 0, 0, 0.18),
+    inset 0 1px 2px rgba(255, 255, 255, 0.9),
+    inset 0 -2px 3px rgba(0, 0, 0, 0.4);
+}
+
+.glossyInnerDisk {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: 
+    inset 0 4px 8px rgba(0, 0, 0, 0.5),
+    inset 0 -3px 6px rgba(255, 255, 255, 0.25),
+    0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+/* Step 1 Blue Glossy Disk */
+.diskBlue {
+  background: radial-gradient(circle at 35% 28%, #60a5fa 0%, #2563eb 45%, #1e3a8a 85%, #0f172a 100%);
+}
+
+/* Step 2 Red/Crimson Glossy Disk */
+.diskRed {
+  background: radial-gradient(circle at 35% 28%, #fb7185 0%, #e11d48 45%, #9f1239 85%, #4c0519 100%);
+}
+
+/* Step 3 Green Glossy Disk */
+.diskGreen {
+  background: radial-gradient(circle at 35% 28%, #34d399 0%, #059669 45%, #065f46 85%, #022c22 100%);
+}
+
+/* Locked Gray Metallic Disk */
+.diskLocked {
+  background: radial-gradient(circle at 35% 28%, #cbd5e1 0%, #64748b 55%, #334155 100%);
+}
+
+/* Glass shine light reflection on top half */
+.glassReflection {
+  position: absolute;
+  top: 2px;
+  left: 10%;
+  right: 10%;
+  height: 48%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0.25) 60%, rgba(255, 255, 255, 0) 100%);
+  border-radius: 50% 50% 40% 40% / 60% 60% 30% 30%;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Embossed 3D Typography */
+.stepLabelTop {
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #ffffff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7), 0 0 4px rgba(255, 255, 255, 0.3);
+  z-index: 3;
+  line-height: 1;
+  margin-bottom: 1px;
+}
+
+.stepNumberMain {
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8), 0 0 6px rgba(255, 255, 255, 0.4);
+  z-index: 3;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+/* Completion Check Badge */
+.nodeCheckMark {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #10b981;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  z-index: 4;
+}
+
+/* Lock Badge on locked state */
+.nodeLockBadge {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #475569;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  z-index: 4;
+}
+
+/* Step Information Column */
+.stepInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.metaRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+}
+
+.stepCategoryTag {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.statusPill {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.15rem 0.55rem;
+  border-radius: 12px;
+  white-space: nowrap;
+}
+
+.statusPillDone {
+  background: #ecfdf5;
+  color: #059669;
+  border: 1px solid #a7f3d0;
+}
+
+.statusPillActive {
+  background: #eff6ff;
+  color: #2563eb;
+  border: 1px solid #bfdbfe;
+}
+
+.statusPillLocked {
+  background: #f1f5f9;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+}
+
+.cardTitle {
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cardSubtitle {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 3D Curved Arrow Connector (inspired by Image 1) */
+.arrowConnector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 0.25rem;
+  position: relative;
+  user-select: none;
+}
+
+.curvedArrowSvg {
+  width: 44px;
+  height: 38px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
+  transition: all 0.3s ease;
+}
+
+.arrowPathActive {
+  fill: #059669;
+  filter: drop-shadow(0 0 6px rgba(5, 150, 105, 0.4));
+}
+
+.arrowPathInactive {
+  fill: #94a3b8;
+  opacity: 0.5;
+}
+
+/* Mobile & Tablet Responsiveness */
+@media (max-width: 1024px) {
+  .stepperTrack {
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
+  }
+
+  .arrowConnector {
+    transform: rotate(90deg);
+    height: 24px;
+    padding: 0;
+    margin: -0.25rem 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .stepperCard {
+    padding: 1.15rem;
+  }
+
+  .stageHeading {
+    font-size: 1.15rem;
+  }
+
+  .glossyNode {
+    width: 56px;
+    height: 56px;
+    min-width: 56px;
+  }
+
+  .stepNumberMain {
+    font-size: 1rem;
+  }
+
+  .cardTitle {
+    font-size: 0.95rem;
+  }
+}

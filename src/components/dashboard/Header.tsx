@@ -56,10 +56,12 @@ export default function Header() {
         <div 
           className={styles.brandTitle}
           onClick={() => {
-            setActiveTab('ai-recommendation');
-            router.push('/dashboard?tab=ai-recommendation');
+            const hasIdea = Boolean(userProfile?.businessIdea?.trim());
+            const target = hasIdea ? 'dashboard' : 'ai-recommendation';
+            setActiveTab(target);
+            router.push(`/dashboard?tab=${target}`);
           }}
-          title="Grameen Sathi - AI Business Planner"
+          title="GrameenSathi - Rural Enterprise Platform"
           style={{ cursor: 'pointer' }}
         >
           <Sprout size={24} color="#059669" />
@@ -112,7 +114,9 @@ export default function Header() {
       <div className={styles.headerActions}>
         <button 
           className={styles.locationBadge}
-          onClick={() => setActiveTab('map')}
+          onClick={() => {
+            router.push('/opportunity-map');
+          }}
           title="Open Market Opportunity Map"
           style={{ cursor: 'pointer', border: '1px solid var(--border)', background: 'var(--surface)', fontFamily: 'inherit' }}
           suppressHydrationWarning

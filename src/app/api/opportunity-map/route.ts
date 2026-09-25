@@ -25,7 +25,11 @@ const KNOWN_LOCATIONS: Record<string, { lat: number; lng: number; state: string 
   'bengaluru': { lat: 12.9716, lng: 77.5946, state: 'Karnataka' },
   'bangalore': { lat: 12.9716, lng: 77.5946, state: 'Karnataka' },
   'hyderabad': { lat: 17.3850, lng: 78.4867, state: 'Telangana' },
-  'chennai': { lat: 13.0827, lng: 80.2707, state: 'Tamil Nadu' }
+  'chennai': { lat: 13.0827, lng: 80.2707, state: 'Tamil Nadu' },
+  'gurugram': { lat: 28.4595, lng: 77.0266, state: 'Haryana' },
+  'gurgaon': { lat: 28.4595, lng: 77.0266, state: 'Haryana' },
+  'satara': { lat: 17.6805, lng: 74.0183, state: 'Maharashtra' },
+  'rohtak': { lat: 28.8955, lng: 76.6066, state: 'Haryana' }
 };
 
 async function geocodeLocation(locationStr: string): Promise<LocationCoord> {

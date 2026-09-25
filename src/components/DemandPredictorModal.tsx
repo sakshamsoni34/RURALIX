@@ -73,7 +73,8 @@ export default function DemandPredictorModal({ isOpen, onClose, onPredictionComp
     isDashboardUnlocked, 
     setIsDashboardUnlocked, 
     setActiveTab, 
-    setTrendingItems 
+    setTrendingItems,
+    showToast
   } = useDashboard();
   const [step, setStep] = useState<'input' | 'loading' | 'result'>('input');
   const [formData, setFormData] = useState({
@@ -398,36 +399,72 @@ export default function DemandPredictorModal({ isOpen, onClose, onPredictionComp
                 Your AI Business Plan, Feasibility & Reality Check, and Hyper-Local Demand Forecasts have all been generated. You can review or adjust any step in the launchpad at any time.
               </p>
               
-              <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap', marginTop: '1rem' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', alignItems: 'center', marginTop: '1.25rem' }}>
                 <button 
                   type="button"
                   onClick={() => {
                     if (result?.trendingItems) {
                       onPredictionComplete(result.trendingItems);
                       setTrendingItems(result.trendingItems);
+                      try {
+                        localStorage.setItem('ruralix_trending_items', JSON.stringify(result.trendingItems));
+                      } catch (e) {}
                     }
-                    setActiveTab('reality-check');
+                    setIsDashboardUnlocked(true);
+                    showToast('🎉 All 3 steps complete! Your live Dashboard is now updated and unlocked.', 'success');
+                    setActiveTab('dashboard', true);
                   }} 
                   className={styles.unlockBtn}
-                  style={{ background: 'var(--surface)', color: 'var(--text-main)', border: '1px solid var(--border)' }}
+                  style={{
+                    background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+                    color: '#ffffff',
+                    border: 'none',
+                    fontWeight: 800,
+                    fontSize: '1rem',
+                    padding: '0.95rem 2rem',
+                    boxShadow: '0 6px 20px rgba(5, 150, 105, 0.35)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.65rem',
+                    cursor: 'pointer'
+                  }}
                 >
-                  ← Re-evaluate Step 2: Reality Check
+                  <CheckCircle2 size={20} color="#ffffff" />
+                  <span>Proceed to Live Dashboard (Launchpad Complete)</span>
+                  <ArrowRight size={19} />
                 </button>
 
-                <button 
-                  type="button"
-                  onClick={() => {
-                    if (result?.trendingItems) {
-                      onPredictionComplete(result.trendingItems);
-                      setTrendingItems(result.trendingItems);
-                    }
-                    setActiveTab('ai-recommendation');
-                  }} 
-                  className={styles.unlockBtn}
-                >
-                  <CheckCircle2 size={18} color="#ffffff" />
-                  <span>Review Step 1: AI Business Plan</span>
-                </button>
+                <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+                  <button 
+                    type="button"
+                    onClick={() => {
+                      if (result?.trendingItems) {
+                        onPredictionComplete(result.trendingItems);
+                        setTrendingItems(result.trendingItems);
+                      }
+                      setActiveTab('reality-check', true);
+                    }} 
+                    className={styles.unlockBtn}
+                    style={{ background: 'var(--surface)', color: 'var(--text-main)', border: '1px solid var(--border)' }}
+                  >
+                    ← Re-evaluate Step 2: Reality Check
+                  </button>
+
+                  <button 
+                    type="button"
+                    onClick={() => {
+                      if (result?.trendingItems) {
+                        onPredictionComplete(result.trendingItems);
+                        setTrendingItems(result.trendingItems);
+                      }
+                      setActiveTab('ai-recommendation', true);
+                    }} 
+                    className={styles.unlockBtn}
+                    style={{ background: 'var(--surface)', color: 'var(--text-main)', border: '1px solid var(--border)' }}
+                  >
+                    <span>Review Step 1: AI Business Plan</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
