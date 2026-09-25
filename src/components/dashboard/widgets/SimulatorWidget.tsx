@@ -18,12 +18,12 @@ export default function SimulatorWidget() {
     <div className={styles.card}>
       <div className={styles.cardHeader}>
         <div className={styles.cardTitle}>
-          <LineChart size={20} color="var(--primary)"/> Profit Simulator ({businessName})
+          <LineChart size={20} color="var(--primary)"/> Monthly Profit Calculator ({businessName})
         </div>
       </div>
       <div className={styles.simulatorControls}>
         <div style={{ fontSize: '0.9rem', fontWeight: 500 }}>
-          Adjust daily customer transactions:
+          Adjust estimated daily customers:
         </div>
         <div className={styles.sliderWrapper}>
           <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--primary)' }}>{customers}</span>
@@ -46,7 +46,7 @@ export default function SimulatorWidget() {
           </div>
         </div>
         <div style={{ color: "var(--primary)", fontWeight: 600, fontSize: '0.9rem' }}>
-          ↑ {Math.round((customers / 40) * 100)}% Capacity
+          ~{customers * 30} customers / month
         </div>
       </div>
     </div>

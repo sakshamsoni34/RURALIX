@@ -261,7 +261,7 @@ function OpportunityMapContent() {
 
   const categories = [
     { label: 'All Businesses', value: 'All', count: mapData?.shops.length || 0 },
-    { label: '⭐ Untapped Gaps', value: 'Opportunities', count: mapData?.shops.filter(s => s.category === 'Opportunity-Gap').length || 0 },
+    { label: '⭐ Business Gaps', value: 'Opportunities', count: mapData?.shops.filter(s => s.category === 'Opportunity-Gap').length || 0 },
     { label: '🥛 Dairy & Processing', value: 'Agri-Processing', count: mapData?.shops.filter(s => s.category === 'Agri-Processing').length || 0 },
     { label: '🏪 Retail & Kirana', value: 'Retail', count: mapData?.shops.filter(s => s.category === 'Retail').length || 0 },
     { label: '🛠️ Hardware & Tools', value: 'Hardware', count: mapData?.shops.filter(s => s.category === 'Hardware').length || 0 },
@@ -333,7 +333,7 @@ function OpportunityMapContent() {
                 className={`${styles.layerBtn} ${mapMode === 'google-street' ? styles.layerBtnActive : ''}`}
                 onClick={() => setMapMode('google-street')}
               >
-                🗺️ Google Street
+                🗺️ Street View
               </button>
               <button 
                 type="button"
@@ -356,7 +356,7 @@ function OpportunityMapContent() {
               onClick={() => router.push('/dashboard')}
               className={styles.backBtn}
             >
-              <ArrowLeft size={16} /> Back to Studio
+              <ArrowLeft size={16} /> Back to Dashboard
             </button>
           </div>
         </header>
@@ -365,24 +365,24 @@ function OpportunityMapContent() {
         <div className={styles.hudBar}>
           <div className={styles.hudStats}>
             <div className={styles.hudItem}>
-              <span className={styles.hudLabel}>Active Radar:</span>
+              <span className={styles.hudLabel}>Location:</span>
               <span className={styles.hudValue}>
                 <MapPin size={14} color="#059669" /> 
                 {mapData?.center.displayName || activeLocation}
               </span>
             </div>
             <div className={styles.hudItem}>
-              <span className={styles.hudLabel}>Businesses Found:</span>
+              <span className={styles.hudLabel}>Shops Found:</span>
               <span className={styles.hudValue}>
                 <Store size={14} color="#2563eb" /> 
-                {mapData?.radarStats.totalShopsFound || 0} Units
+                {mapData?.radarStats.totalShopsFound || 0} Shops
               </span>
             </div>
             <div className={styles.hudItem}>
-              <span className={styles.hudLabel}>High-Profit Gaps:</span>
+              <span className={styles.hudLabel}>Business Gaps:</span>
               <span className={styles.hudValue} style={{ color: '#059669' }}>
                 <Sparkles size={14} color="#059669" /> 
-                {mapData?.radarStats.untappedGapsFound || 0} Voids
+                {mapData?.radarStats.untappedGapsFound || 0} Opportunities
               </span>
             </div>
           </div>
@@ -415,7 +415,7 @@ function OpportunityMapContent() {
                 type="button" 
                 onClick={() => fetchMapData(activeLocation)} 
                 className={styles.detectBtn}
-                title="Refresh Map Telemetry"
+                title="Refresh Map"
               >
                 <RefreshCw size={12} /> Refresh
               </button>
@@ -477,7 +477,7 @@ function OpportunityMapContent() {
               <div className={styles.loadingOverlay}>
                 <div className={styles.spinner}></div>
                 <p style={{ fontWeight: 700, color: 'var(--text-main)' }}>
-                  Loading Google Maps business radar for {activeLocation}...
+                  Loading local area map for {activeLocation}...
                 </p>
               </div>
             )}
@@ -533,7 +533,7 @@ function OpportunityMapContent() {
                 </div>
 
                 <div className={styles.dossierAdviceBox}>
-                  <strong>Action Strategy:</strong> {selectedShop.actionAdvice}
+                  <strong>Recommendation:</strong> {selectedShop.actionAdvice}
                 </div>
 
                 <a

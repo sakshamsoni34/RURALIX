@@ -54,21 +54,21 @@ interface StarredMilestone {
 }
 
 const STRATEGY_LENSES = [
-  { id: 'general', label: '🌐 All-Round Enterprise Advisory' },
-  { id: 'growth', label: '🚀 30-Day Growth Sprint' },
-  { id: 'capital', label: '💰 PMEGP & Capital Subsidies' },
-  { id: 'cost', label: '📉 Cost & Waste Reduction' },
-  { id: 'marketing', label: '🚚 WhatsApp & Local Sales' },
-  { id: 'risk', label: '🛡️ Competitor & Risk Shield' }
+  { id: 'general', label: '🌐 General Advice' },
+  { id: 'growth', label: '🚀 30-Day Action Plan' },
+  { id: 'capital', label: '💰 Loans & Subsidies' },
+  { id: 'cost', label: '📉 Reducing Costs & Waste' },
+  { id: 'marketing', label: '📱 Sales & Customers' },
+  { id: 'risk', label: '🛡️ Managing Risks' }
 ] as const;
 
 const QUICK_PROMPTS = [
-  '📋 6-Phase Daily Operational Workflow',
-  '💰 35% PMEGP Subsidy Application Steps',
-  '📉 A competitor opened a shop nearby, how to defend?',
-  '📈 Strategy to double monthly turnover',
-  '👥 How to hire and train 2 local assistants',
-  '📦 Supplier bargaining tactics for cheaper raw materials'
+  '📋 Daily shop routine & tasks',
+  '💰 How to apply for PMEGP subsidy',
+  '🏪 How to deal with local competition?',
+  '📈 Simple ways to increase sales',
+  '👥 Tips for hiring helpers/workers',
+  '📦 How to get better prices from suppliers'
 ];
 
 export default function AIBusinessMentorModal({ isOpen, onClose, inline = false }: AIBusinessMentorModalProps) {
@@ -112,19 +112,19 @@ export default function AIBusinessMentorModal({ isOpen, onClose, inline = false 
           role: 'assistant',
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           provider: 'mistral',
-          content: `👋 **Namaste! I am your Grameen Mentor AI**, powered by **Mistral LLM** ⚡.
+          content: `👋 **Namaste! I am your GrameenSathi Mentor**.
 
-I have loaded your enterprise profile:
-🏢 **Business:** ${userProfile?.businessIdea || 'Rural Enterprise'}
-📍 **Location:** ${userProfile?.location || 'Local Catchment'}
-💰 **Capital Pool:** ₹${userProfile?.capital ? Number(userProfile.capital).toLocaleString('en-IN') : '50,000'}
+I have loaded your business details:
+🏢 **Business:** ${userProfile?.businessIdea || 'Rural Business'}
+📍 **Location:** ${userProfile?.location || 'Local Area'}
+💰 **Budget:** ₹${userProfile?.capital ? Number(userProfile.capital).toLocaleString('en-IN') : '50,000'}
 
-You can message me anytime for:
-• 📋 **Daily Operational SOPs & 6-Phase Workflows**
-• 💰 **35% PMEGP Subsidy & PM MUDRA Loan guidance**
-• 🛡️ **Risk mitigation, supplier bargaining & competitor defence**
+You can ask me questions about:
+• 📋 **Daily shop routines & checklists**
+• 💰 **Government subsidies (PMEGP, MUDRA loans)**
+• 🛡️ **Pricing, supplier negotiation & competition**
 
-How can I help your business grow today?`
+How can I help you today?`
         };
         setMessages([initialWelcome]);
       }

@@ -268,25 +268,25 @@ export default function OpportunityMap({ location }: { location: string }) {
         </div>
       </div>
 
-      {/* Live Telemetry HUD */}
+      {/* Live Area Summary HUD */}
       {mapData && (
         <div className={styles.statsHud}>
           <div className={styles.hudItem}>
-            <span className={styles.hudLabel}>Scanned Area</span>
+            <span className={styles.hudLabel}>Area Radius</span>
             <span className={styles.hudValue}>
               <TrendingUp size={15} color="#10b981" /> {mapData.radarStats.scannedRadiusKm} km Radius
             </span>
           </div>
           <div className={styles.hudItem}>
-            <span className={styles.hudLabel}>Active Shops Mapped</span>
+            <span className={styles.hudLabel}>Shops Found</span>
             <span className={styles.hudValue}>
-              <Store size={15} color="#2563eb" /> {mapData.radarStats.totalShopsFound} Local Enterprises
+              <Store size={15} color="#2563eb" /> {mapData.radarStats.totalShopsFound} Local Shops
             </span>
           </div>
           <div className={styles.hudItem}>
             <span className={styles.hudLabel}>High Opportunity Gaps</span>
             <span className={styles.hudValue} style={{ color: '#059669' }}>
-              <Sparkles size={15} color="#059669" /> {mapData.radarStats.untappedGapsFound} Untapped Spots
+              <Sparkles size={15} color="#059669" /> {mapData.radarStats.untappedGapsFound} Business Gaps
             </span>
           </div>
           <div className={styles.hudItem}>
@@ -320,11 +320,11 @@ export default function OpportunityMap({ location }: { location: string }) {
         {isLoading && (
           <div className={styles.loadingState}>
             <div className={styles.spinner}></div>
-            <p style={{ fontWeight: 600 }}>Loading world map coordinates & commercial shops for {location}...</p>
+            <p style={{ fontWeight: 600 }}>Loading local map and shops for {location}...</p>
           </div>
         )}
 
-        {/* Shop Dossier Panel */}
+        {/* Shop Details Panel */}
         {selectedShop && (
           <div className={styles.panelOverlay}>
             <div className={styles.panelHeader}>
@@ -358,8 +358,8 @@ export default function OpportunityMap({ location }: { location: string }) {
 
             <div className={styles.metricsGrid}>
               <div className={styles.metricBox}>
-                <label>Daily Customer Footfall</label>
-                <span>{selectedShop.footfall} Traffic</span>
+                <label>Estimated Footfall</label>
+                <span>{selectedShop.footfall}</span>
               </div>
               <div className={styles.metricBox}>
                 <label>Est. Monthly Revenue</label>
@@ -376,12 +376,12 @@ export default function OpportunityMap({ location }: { location: string }) {
             </div>
 
             <div className={styles.analysisSection}>
-              <h4>Market Insight & Reason</h4>
+              <h4>Market Insight</h4>
               <p style={{ margin: 0 }}>{selectedShop.reason}</p>
             </div>
 
             <div className={styles.analysisSection} style={{ backgroundColor: 'var(--primary-glow)', borderColor: 'var(--primary)' }}>
-              <h4 style={{ color: 'var(--primary)' }}>Entrepreneur Action Advice</h4>
+              <h4 style={{ color: 'var(--primary)' }}>Tip for Your Business</h4>
               <p style={{ margin: 0, fontWeight: 500 }}>{selectedShop.actionAdvice}</p>
             </div>
 
@@ -392,7 +392,7 @@ export default function OpportunityMap({ location }: { location: string }) {
               className={styles.actionButton}
             >
               <Navigation size={16} />
-              Open Live Location in Google Maps
+              Open in Google Maps
               <ExternalLink size={14} />
             </a>
           </div>

@@ -61,7 +61,7 @@ export default function Onboarding() {
         </div>
         <div className={styles.badge}>
           <ShieldCheck size={16} color="#059669" />
-          <span>Rural Enterprise Assistant</span>
+          <span>Rural Business Assistant</span>
         </div>
       </header>
 
@@ -73,7 +73,7 @@ export default function Onboarding() {
             What brings you to <span className={styles.titleHighlight}>GrameenSathi</span>?
           </h1>
           <p className={styles.subtitle}>
-            अपनी आवश्यकता के अनुसार सही विकल्प चुनें ताकि हम आपके लिए सर्वोत्तम AI मार्गदर्शन तैयार कर सकें।
+            अपनी आवश्यकता के अनुसार सही विकल्प चुनें ताकि हम आपके लिए सही मार्गदर्शन तैयार कर सकें।
           </p>
         </div>
 
@@ -100,7 +100,7 @@ export default function Onboarding() {
               <div className={styles.cardHindiTitle}>मेरे पास पहले से व्यवसाय / विचार है</div>
               
               <p className={styles.cardDescription}>
-                Evaluate business viability, check eligibility for government subsidies & MUDRA loans, forecast cashflow, and diagnose risks.
+                Check business feasibility, find government subsidies & MUDRA loans, and plan your startup budget.
               </p>
 
               <div className={styles.featureList}>
@@ -108,19 +108,19 @@ export default function Onboarding() {
                   <div className={`${styles.featureCheck} ${styles.checkExisting}`}>
                     <CheckCircle2 size={14} />
                   </div>
-                  <span>Real-time Risk & Reality Diagnostics</span>
+                  <span>Ground Reality & Feasibility Check</span>
                 </div>
                 <div className={styles.featureItem}>
                   <div className={`${styles.featureCheck} ${styles.checkExisting}`}>
                     <CheckCircle2 size={14} />
                   </div>
-                  <span>PMEGP & Govt. Subsidy Matcher</span>
+                  <span>PMEGP & Govt. Subsidy Checker</span>
                 </div>
                 <div className={styles.featureItem}>
                   <div className={`${styles.featureCheck} ${styles.checkExisting}`}>
                     <CheckCircle2 size={14} />
                   </div>
-                  <span>Financial Planning & Profit Simulator</span>
+                  <span>Profit & Cash Flow Calculator</span>
                 </div>
               </div>
             </div>
@@ -158,7 +158,7 @@ export default function Onboarding() {
               <div className={`${styles.cardHindiTitle} ${styles.cardHindiTitleNew}`}>मुझे नया बिजनेस आइडिया चाहिए</div>
               
               <p className={styles.cardDescription}>
-                Let our hyper-local AI recommend profitable micro-enterprises tailored to your village, available budget, and local market demand.
+                Get practical business recommendations tailored to your village, budget, and local market demand.
               </p>
 
               <div className={styles.featureList}>
@@ -166,19 +166,19 @@ export default function Onboarding() {
                   <div className={`${styles.featureCheck} ${styles.checkNew}`}>
                     <CheckCircle2 size={14} />
                   </div>
-                  <span>Hyper-Local AI Business Recommendations</span>
+                  <span>Practical Business Ideas for Your Area</span>
                 </div>
                 <div className={styles.featureItem}>
                   <div className={`${styles.featureCheck} ${styles.checkNew}`}>
                     <CheckCircle2 size={14} />
                   </div>
-                  <span>Village Market Opportunity & Competition Map</span>
+                  <span>Local Area Map & Business Gaps</span>
                 </div>
                 <div className={styles.featureItem}>
                   <div className={`${styles.featureCheck} ${styles.checkNew}`}>
                     <CheckCircle2 size={14} />
                   </div>
-                  <span>Interactive Voice Advisory (आवाज़ में सहायता)</span>
+                  <span>Voice Assistant in Hindi & English (आवाज़ में सहायता)</span>
                 </div>
               </div>
             </div>
@@ -199,7 +199,7 @@ export default function Onboarding() {
 
       {/* Footer */}
       <footer className={styles.footer}>
-        GrameenSathi AI • Empowering Sustainable Rural Entrepreneurship across India
+        GrameenSathi • Supporting Rural Entrepreneurs Across India
       </footer>
     </div>
   );

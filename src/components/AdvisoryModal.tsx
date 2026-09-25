@@ -273,14 +273,14 @@ export default function AdvisoryModal({ isOpen, onClose, inline = false }: Advis
         <div className={styles.formCardHeader}>
           <div className={styles.headerLeft}>
             <div className={styles.formBadge}>
-              <Sparkles size={13} /> AI Enterprise Strategy Studio
+              <Sparkles size={13} /> Step 1: Business Planning
             </div>
             <h2 className={styles.formTitle}>
               <Sprout color="#059669" size={28} />
-              AI Business Plan Generator
+              Business Idea & Planning
             </h2>
             <p className={styles.formSubtitle}>
-              Tailor a high-impact, hyper-local business plan configured for your exact market location, available budget, and local demand voids.
+              Get a simple, realistic business plan based on your location, budget, and local market demand.
             </p>
           </div>
           <div className={styles.headerRight}>
@@ -299,7 +299,7 @@ export default function AdvisoryModal({ isOpen, onClose, inline = false }: Advis
             <div className={styles.presetsSection}>
               <div className={styles.presetsHeader}>
                 <Sparkles size={14} className={styles.presetsHeaderIcon} />
-                <span>Quick-Start Popular Enterprise Templates:</span>
+                <span>Sample Business Ideas to Start Quickly:</span>
               </div>
               <div className={styles.presetsGrid}>
                 {PRESET_TEMPLATES.map((tmpl, idx) => (
@@ -323,8 +323,8 @@ export default function AdvisoryModal({ isOpen, onClose, inline = false }: Advis
                     <MapPin size={18} />
                   </div>
                   <div>
-                    <h3 className={styles.sectionTitle}>Target Location / City / Mandi Hub</h3>
-                    <p className={styles.sectionHelper}>We tailor supply chains and consumer demand to this exact region.</p>
+                    <h3 className={styles.sectionTitle}>Your Village / Town / City</h3>
+                    <p className={styles.sectionHelper}>We check local demand and opportunities for this location.</p>
                   </div>
                 </div>
 
@@ -333,7 +333,7 @@ export default function AdvisoryModal({ isOpen, onClose, inline = false }: Advis
                   onClick={detectLocation}
                   disabled={isDetecting}
                   className={styles.detectBtn}
-                  title="Detect your location via GPS or IP"
+                  title="Detect your location via GPS"
                 >
                   <Compass size={14} className={isDetecting ? styles.spinIcon : ''} />
                   {isDetecting ? 'Detecting...' : 'Auto-Detect Location'}
@@ -375,8 +375,8 @@ export default function AdvisoryModal({ isOpen, onClose, inline = false }: Advis
                     <IndianRupee size={18} />
                   </div>
                   <div>
-                    <h3 className={styles.sectionTitle}>Available Working Capital & Investment Budget</h3>
-                    <p className={styles.sectionHelper}>Choose an investment scale tier or enter custom working capital.</p>
+                    <h3 className={styles.sectionTitle}>Your Available Budget / Investment</h3>
+                    <p className={styles.sectionHelper}>Choose a budget range or enter your custom amount.</p>
                   </div>
                 </div>
 
@@ -408,7 +408,7 @@ export default function AdvisoryModal({ isOpen, onClose, inline = false }: Advis
                 <input 
                   type="number" 
                   className={styles.inputField}
-                  placeholder="Custom Capital (e.g. 200000)"
+                  placeholder="Custom Budget (e.g. 200000)"
                   value={capital}
                   onChange={(e) => setCapital(e.target.value)}
                   min="5000"
@@ -425,8 +425,8 @@ export default function AdvisoryModal({ isOpen, onClose, inline = false }: Advis
                     <Lightbulb size={18} />
                   </div>
                   <div>
-                    <h3 className={styles.sectionTitle}>Preferred Sectors & Commercial Space</h3>
-                    <p className={styles.sectionHelper}>Click any industry sector pill to include or type your experience.</p>
+                    <h3 className={styles.sectionTitle}>Business Type & Your Experience</h3>
+                    <p className={styles.sectionHelper}>Select sectors you are interested in or type your experience.</p>
                   </div>
                 </div>
               </div>
@@ -453,7 +453,7 @@ export default function AdvisoryModal({ isOpen, onClose, inline = false }: Advis
                 <input 
                   type="text" 
                   className={styles.inputField}
-                  placeholder="e.g. 500 sq ft shop front, highway proximity, 2 years retail experience"
+                  placeholder="e.g. 500 sq ft shop space, near main road, 2 years grocery experience"
                   value={sectorAndExperience}
                   onChange={(e) => setSectorAndExperience(e.target.value)}
                 />
@@ -468,8 +468,8 @@ export default function AdvisoryModal({ isOpen, onClose, inline = false }: Advis
                     <Zap size={18} />
                   </div>
                   <div>
-                    <h3 className={styles.sectionTitle}>Available Infrastructure & Assets</h3>
-                    <p className={styles.sectionHelper}>Select available utilities and equipment to maximize operational readiness.</p>
+                    <h3 className={styles.sectionTitle}>Available Facilities (Power, Road, Water)</h3>
+                    <p className={styles.sectionHelper}>Select available facilities to check what fits your setup.</p>
                   </div>
                 </div>
               </div>
@@ -496,7 +496,7 @@ export default function AdvisoryModal({ isOpen, onClose, inline = false }: Advis
                 <input 
                   type="text" 
                   className={styles.inputField}
-                  placeholder="e.g. 3-phase connection, 10 HP water pump, solar inverter backup"
+                  placeholder="e.g. 3-phase electricity, water borewell, storage room"
                   value={infraDetails}
                   onChange={(e) => setInfraDetails(e.target.value)}
                 />
@@ -520,7 +520,7 @@ export default function AdvisoryModal({ isOpen, onClose, inline = false }: Advis
                 disabled={!location || !capital}
               >
                 <BrainCircuit size={20} />
-                <span>Generate Hyper-Local Business Plan</span>
+                <span>Generate Business Plan</span>
                 <ArrowRight size={18} />
               </button>
             </div>
@@ -532,24 +532,24 @@ export default function AdvisoryModal({ isOpen, onClose, inline = false }: Advis
           <div className={styles.loadingContainer}>
             <div className={styles.loadingSpinnerCircle}></div>
             <h3 className={styles.loadingTitle}>
-              Synthesizing Demographics & GIS Analytics...
+              Analyzing Local Business Opportunities...
             </h3>
             <p className={styles.loadingText}>
-              Evaluating market voids, consumer purchasing power, and commercial feasibility for <strong>{location || 'your area'}</strong>...
+              Checking market demand, budget requirements, and local opportunities for <strong>{location || 'your area'}</strong>...
             </p>
 
             <div className={styles.loadingPhases}>
               <div className={`${styles.phaseItem} ${styles.phaseItemActive}`}>
                 <CheckCircle2 size={16} color="#059669" />
-                <span>GIS Demographics & Trade Corridor Scanned</span>
+                <span>Location & local market analyzed</span>
               </div>
               <div className={`${styles.phaseItem} ${styles.phaseItemActive}`}>
                 <CheckCircle2 size={16} color="#059669" />
-                <span>Evaluating PMEGP / MUDRA Subsidies</span>
+                <span>Checking eligible government schemes & loans</span>
               </div>
               <div className={`${styles.phaseItem} ${styles.phaseItemActive}`}>
                 <CheckCircle2 size={16} color="#059669" />
-                <span>Generating High-Margin Operational Roadmap</span>
+                <span>Creating step-by-step business plan</span>
               </div>
             </div>
           </div>
@@ -562,18 +562,18 @@ export default function AdvisoryModal({ isOpen, onClose, inline = false }: Advis
             <div className={styles.resultHeroBanner}>
               <div className={styles.resultHeroLeft}>
                 <div className={styles.resultHeroBadge}>
-                  <Sparkles size={13} /> Recommended Enterprise Opportunity
+                  <Sparkles size={13} /> Recommended Business Idea
                 </div>
                 <h2 className={styles.resultTitle}>{result.recommendation}</h2>
                 <div className={styles.resultMetaRow}>
-                  <span className={styles.resultMetaTag}>📍 {location || 'Target Region'}</span>
-                  <span className={styles.resultMetaTag}>💰 ₹{Number(capital || 100000).toLocaleString('en-IN')} Capital</span>
+                  <span className={styles.resultMetaTag}>📍 {location || 'Target Area'}</span>
+                  <span className={styles.resultMetaTag}>💰 ₹{Number(capital || 100000).toLocaleString('en-IN')} Budget</span>
                 </div>
               </div>
 
               <div className={styles.viabilityGaugeBox}>
                 <div className={styles.gaugeValue}>{result.viabilityScore}%</div>
-                <div className={styles.gaugeLabel}>Viability Rating</div>
+                <div className={styles.gaugeLabel}>Viability Score</div>
               </div>
             </div>
 
@@ -581,7 +581,7 @@ export default function AdvisoryModal({ isOpen, onClose, inline = false }: Advis
             <div className={styles.resultDetailCard}>
               <div className={styles.cardHeaderRow}>
                 <BrainCircuit size={22} color="#059669" />
-                <h4 className={styles.cardHeading}>Market Fit & Economic Rationale</h4>
+                <h4 className={styles.cardHeading}>Why This Business Works Here</h4>
               </div>
               <p className={styles.analysisParagraph}>{result.analysis}</p>
             </div>
@@ -590,7 +590,7 @@ export default function AdvisoryModal({ isOpen, onClose, inline = false }: Advis
             <div className={styles.resultDetailCard}>
               <div className={styles.cardHeaderRow}>
                 <CheckCircle2 size={22} color="#059669" />
-                <h4 className={styles.cardHeading}>4-Step Execution & Launch Blueprint</h4>
+                <h4 className={styles.cardHeading}>Key Steps to Start</h4>
               </div>
               <ul className={styles.roadmapList}>
                 {result.actionSteps.map((action, idx) => (
@@ -609,7 +609,7 @@ export default function AdvisoryModal({ isOpen, onClose, inline = false }: Advis
                 onClick={() => setStep('input')} 
                 className={styles.secondaryActionBtn}
               >
-                ← Adjust Parameters
+                ← Change Inputs / Try Another Idea
               </button>
 
               <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
@@ -636,7 +636,7 @@ export default function AdvisoryModal({ isOpen, onClose, inline = false }: Advis
                   }} 
                   className={styles.primaryActionBtn}
                 >
-                  <span>Proceed to Step 2: Feasibility & Reality Check</span>
+                  <span>Proceed to Step 2: Reality Check</span>
                   <ArrowRight size={18} />
                 </button>
               </div>

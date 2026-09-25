@@ -559,11 +559,11 @@ export default function VoiceAssistantModal({ isOpen, onClose, initialQuery }: V
           <div className={styles.titleGroup}>
             <h2 className={styles.title}>
               <Mic size={22} color="var(--primary)" />
-              Voice-First Assistant
+              Voice Assistant
             </h2>
             <span className={styles.liveBadge}>
               <span className={styles.liveDot}></span>
-              AI Responsive
+              Voice Enabled
             </span>
           </div>
 
@@ -573,7 +573,7 @@ export default function VoiceAssistantModal({ isOpen, onClose, initialQuery }: V
               <button 
                 className={`${styles.langBtn} ${language === 'hi' ? styles.activeLang : ''}`}
                 onClick={() => setLanguage('hi')}
-                title="Hindi / Hinglish Voice"
+                title="Hindi Voice"
               >
                 🇮🇳 हिन्दी
               </button>
@@ -606,8 +606,8 @@ export default function VoiceAssistantModal({ isOpen, onClose, initialQuery }: V
                 </p>
                 <p className={styles.subStatusText}>
                   {language === 'hi' 
-                    ? "मुनाफ़ा, लोन, सब्सिडी, डेली वर्कफ़्लो या मार्केट डिमांड के बारे में पूछें"
-                    : "Ask about profit margins, govt subsidies, daily operations, or setup costs"}
+                    ? "मुनाफ़ा, लोन, सरकारी योजनाएं या दुकान शुरू करने के बारे में पूछें"
+                    : "Ask about profit margins, government subsidies, loans, or setup costs"}
                 </p>
 
                 <div className={styles.micContainer}>
@@ -748,7 +748,7 @@ export default function VoiceAssistantModal({ isOpen, onClose, initialQuery }: V
                   disabled={!transcript.trim()}
                 >
                   <BrainCircuit size={20} />
-                  Get AI Voice Answer
+                  Get Answer
                 </button>
               </div>
             </>
@@ -759,7 +759,7 @@ export default function VoiceAssistantModal({ isOpen, onClose, initialQuery }: V
             <div className={styles.loadingState}>
               <div className={styles.spinner}></div>
               <h3 style={{ color: 'var(--text-main)', marginBottom: '0.5rem', fontSize: '1.25rem' }}>
-                Analyzing Voice Query...
+                Finding Answer...
               </h3>
               <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>
                 "{lastQuery}"

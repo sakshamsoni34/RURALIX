@@ -59,12 +59,12 @@ export default function KpiCards() {
         <div className={styles.kpiCard}>
           <div className={styles.kpiIcon}><Users size={24} color="var(--accent-orange)" /></div>
           <div className={styles.kpiInfo}>
-            <h3>Monthly Footfall</h3>
+            <h3>Monthly Customers</h3>
             <div className={styles.kpiValue} suppressHydrationWarning>
               {totalMonthlyCustomers.toLocaleString('en-IN')}
             </div>
             <div className={styles.kpiTrend} suppressHydrationWarning>
-              ~{activeCustomers} active daily visits
+              ~{activeCustomers} daily customer visits
             </div>
           </div>
         </div>
@@ -74,7 +74,7 @@ export default function KpiCards() {
         <div className={styles.kpiCard}>
           <div className={styles.kpiIcon}><TargetIcon size={24} color="var(--accent-red)" /></div>
           <div className={styles.kpiInfo}>
-            <h3>Milestones Completed</h3>
+            <h3>Setup Milestones</h3>
             <div className={styles.kpiValue} suppressHydrationWarning>{goalsCount}</div>
             <span className={styles.cardLink} style={{ cursor: 'default' }} suppressHydrationWarning>
               Viability: {isLoaded && realityScores?.overall ? realityScores.overall : 78}%

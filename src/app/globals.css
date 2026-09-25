@@ -1,11 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-  /* Light, Airy, Premium Theme */
-  --background: #f8fafc;
-  --surface: #ffffff;
-  --surface-hover: #f1f5f9;
-  --border: #e2e8f0;
+  /* Light Green Theme */
+  --background: #edf7f0; /* Soothing light green page background */
+  --surface: #f4faf6; /* Light green for boxes / cards */
+  --surface-hover: #e5f5ec;
+  --border: #c2e5cc; /* Soft, defined light green border */
+  
+  /* Top Header Light Green */
+  --header-bg: #dcf2e3; /* Distinct crisp light green header */
+  --header-border: #bee5cb;
   
   /* Forest/Agri Greens */
   --primary: #059669; /* Emerald */
@@ -15,19 +19,19 @@
   
   /* Text */
   --text-main: #0f172a;
-  --text-muted: #64748b;
+  --text-muted: #476152;
   --text-inverse: #ffffff;
   
   /* Accents */
-  --accent-blue: #3b82f6;
-  --accent-orange: #f59e0b;
-  --accent-red: #ef4444;
+  --accent-blue: #2563eb;
+  --accent-orange: #d97706;
+  --accent-red: #dc2626;
   
   --radius: 16px;
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.05);
+  --shadow-sm: 0 1px 3px 0 rgba(6, 78, 59, 0.06);
+  --shadow-md: 0 4px 6px -1px rgba(6, 78, 59, 0.07), 0 2px 4px -2px rgba(6, 78, 59, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(6, 78, 59, 0.09), 0 4px 6px -4px rgba(6, 78, 59, 0.06);
 }
 
 * {

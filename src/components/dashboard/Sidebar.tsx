@@ -67,13 +67,13 @@ export default function Sidebar() {
   // Handler 1: Dashboard
   const handleDashboardClick = () => {
     if (!isStep1Done) {
-      showToast('Please complete Step 1 (AI Business Planner) to begin unlocking your Dashboard.', 'warning');
+      showToast('Please complete Step 1 (Business Idea & Plan) first to unlock your Dashboard.', 'warning');
       navigateToTab('ai-recommendation');
     } else if (!isStep2Done) {
-      showToast('Please complete Step 2 (Reality Check) to continue unlocking your Dashboard.', 'warning');
+      showToast('Please complete Step 2 (Reality Check) first to unlock your Dashboard.', 'warning');
       navigateToTab('reality-check');
     } else if (!isStep3Done) {
-      showToast('Please complete Step 3 (Demand Predictor) to finish unlocking your Dashboard.', 'warning');
+      showToast('Please complete Step 3 (Demand Forecast) first to unlock your Dashboard.', 'warning');
       navigateToTab('demand');
     } else {
       navigateToTab('dashboard');
@@ -88,7 +88,7 @@ export default function Sidebar() {
   // Handler 3: Reality Check
   const handleRealityCheckClick = () => {
     if (!isStep1Done) {
-      showToast('Please complete Step 1 (AI Business Planner) first before running Reality Check.', 'warning');
+      showToast('Please complete Step 1 (Business Idea & Plan) first before running Reality Check.', 'warning');
       navigateToTab('ai-recommendation');
     } else {
       navigateToTab('reality-check');
@@ -98,7 +98,7 @@ export default function Sidebar() {
   // Handler 4: Demand Predictor
   const handleDemandPredictorClick = () => {
     if (!isStep1Done) {
-      showToast('Please complete Step 1 (AI Business Planner) first before forecasting Demand.', 'warning');
+      showToast('Please complete Step 1 (Business Idea & Plan) first before forecasting Demand.', 'warning');
       navigateToTab('ai-recommendation');
     } else if (!isStep2Done) {
       showToast('Please complete Step 2 (Reality Check) first before forecasting Demand.', 'warning');
@@ -170,7 +170,7 @@ export default function Sidebar() {
           gap: '0.4rem' 
         }}>
           <Sparkles size={13} color="#10b981" />
-          <span>Enterprise Menu</span>
+          <span>Navigation Menu</span>
         </div>
 
         <nav className={styles.nav}>
@@ -196,7 +196,7 @@ export default function Sidebar() {
             )}
           </button>
 
-          {/* 2. AI Business Planner */}
+          {/* 2. Business Idea & Plan */}
           <button 
             type="button"
             onClick={handleAIBusinessPlannerClick} 
@@ -204,8 +204,8 @@ export default function Sidebar() {
           >
             <Lightbulb size={20} />
             <div style={{ display: 'flex', flexDirection: 'column', flex: 1, textAlign: 'left' }}>
-              <span style={{ fontSize: '0.7rem', opacity: 0.7, textTransform: 'uppercase' }}>Step 1 • Model & Capital</span>
-              <span>2. AI Business Planner</span>
+              <span style={{ fontSize: '0.7rem', opacity: 0.7, textTransform: 'uppercase' }}>Step 1 • Idea & Budget</span>
+              <span>2. Business Idea & Plan</span>
             </div>
             {isStep1Done && <Check size={16} color="#10b981" />}
           </button>
@@ -215,12 +215,12 @@ export default function Sidebar() {
             type="button"
             onClick={handleRealityCheckClick} 
             className={`${styles.navItem} ${activeTab === 'reality-check' ? styles.navItemActive : ''}`}
-            title={!isStep1Done ? 'Complete Step 1 (AI Business Planner) first to unlock Reality Check' : 'Feasibility & Reality Diagnostics'}
+            title={!isStep1Done ? 'Complete Step 1 (Business Idea & Plan) first to unlock Reality Check' : 'Reality & Feasibility Check'}
             style={{ opacity: !isStep1Done ? 0.75 : 1 }}
           >
             <Target size={20} />
             <div style={{ display: 'flex', flexDirection: 'column', flex: 1, textAlign: 'left' }}>
-              <span style={{ fontSize: '0.7rem', opacity: 0.7, textTransform: 'uppercase' }}>Step 2 • Risk Analysis</span>
+              <span style={{ fontSize: '0.7rem', opacity: 0.7, textTransform: 'uppercase' }}>Step 2 • Reality Check</span>
               <span>3. Reality Check</span>
             </div>
             {!isStep1Done ? (
@@ -234,18 +234,18 @@ export default function Sidebar() {
             ) : null}
           </button>
 
-          {/* 4. Demand Predictor */}
+          {/* 4. Demand Forecast */}
           <button 
             type="button"
             onClick={handleDemandPredictorClick} 
             className={`${styles.navItem} ${activeTab === 'demand' ? styles.navItemActive : ''}`}
-            title={!isStep2Done ? 'Complete Step 2 (Reality Check) first to unlock Demand Predictor' : 'Market Demand & Stocking Forecast'}
+            title={!isStep2Done ? 'Complete Step 2 (Reality Check) first to unlock Demand Forecast' : 'Local Demand & Stock Planning'}
             style={{ opacity: !isStep2Done ? 0.75 : 1 }}
           >
             <BarChart3 size={20} />
             <div style={{ display: 'flex', flexDirection: 'column', flex: 1, textAlign: 'left' }}>
-              <span style={{ fontSize: '0.7rem', opacity: 0.7, textTransform: 'uppercase' }}>Step 3 • Market Forecast</span>
-              <span>4. Demand Predictor</span>
+              <span style={{ fontSize: '0.7rem', opacity: 0.7, textTransform: 'uppercase' }}>Step 3 • Local Demand</span>
+              <span>4. Demand Forecast</span>
             </div>
             {!isStep2Done ? (
               <span title="Locked - Complete Steps 1 & 2 First" style={{ display: 'flex', alignItems: 'center', gap: '3px', fontSize: '0.7rem', background: 'rgba(255,255,255,0.12)', padding: '2px 6px', borderRadius: '6px' }}>
@@ -261,12 +261,12 @@ export default function Sidebar() {
             type="button"
             onClick={handleOpportunityMapsClick} 
             className={`${styles.navItem} ${pathname === '/opportunity-map' || activeTab === 'map' ? styles.navItemActive : ''}`}
-            title="Interactive Local Map & Commercial Shops (Accessible Anytime)"
+            title="Local Map & Business Gaps (Accessible Anytime)"
           >
             <Compass size={20} />
             <div style={{ display: 'flex', flexDirection: 'column', flex: 1, textAlign: 'left' }}>
-              <span style={{ fontSize: '0.7rem', opacity: 0.7, textTransform: 'uppercase' }}>Geospatial GIS • Always Open</span>
-              <span>5. Opportunity Maps</span>
+              <span style={{ fontSize: '0.7rem', opacity: 0.7, textTransform: 'uppercase' }}>Area Map • Always Open</span>
+              <span>5. Village Opportunity Map</span>
             </div>
           </button>
 
@@ -275,11 +275,11 @@ export default function Sidebar() {
             type="button"
             onClick={handleGovernmentSchemesClick} 
             className={`${styles.navItem} ${pathname === '/government-schemes' || activeTab === 'schemes' ? styles.navItemActive : ''}`}
-            title="Central & State Schemes, Subsidies & Direct Application (Accessible Anytime)"
+            title="Government Schemes, Subsidies & Loans (Accessible Anytime)"
           >
             <Landmark size={20} />
             <div style={{ display: 'flex', flexDirection: 'column', flex: 1, textAlign: 'left' }}>
-              <span style={{ fontSize: '0.7rem', opacity: 0.7, textTransform: 'uppercase' }}>Subsidies & Grants • Always Open</span>
+              <span style={{ fontSize: '0.7rem', opacity: 0.7, textTransform: 'uppercase' }}>Subsidies & Loans • Always Open</span>
               <span>6. Govt Schemes</span>
             </div>
           </button>
@@ -289,21 +289,21 @@ export default function Sidebar() {
             type="button"
             onClick={handleHelpClick} 
             className={`${styles.navItem} ${activeTab === 'help' ? styles.navItemActive : ''}`}
-            title="Helplines, Contact Us, and FAQs (Accessible Anytime)"
+            title="Helplines, Support, and FAQs (Accessible Anytime)"
             style={{ marginTop: '0.5rem', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '0.9rem' }}
           >
             <HelpCircle size={20} />
             <div style={{ display: 'flex', flexDirection: 'column', flex: 1, textAlign: 'left' }}>
-              <span style={{ fontSize: '0.7rem', opacity: 0.7, textTransform: 'uppercase' }}>Support & Contact • Always Open</span>
-              <span>7. Help & Resources</span>
+              <span style={{ fontSize: '0.7rem', opacity: 0.7, textTransform: 'uppercase' }}>Helplines & FAQs • Always Open</span>
+              <span>7. Help & Support</span>
             </div>
           </button>
         </nav>
 
         <div className={styles.sidebarIllustration}>
           <Sprout size={28} style={{margin: '0 auto 6px', color: '#10b981'}} />
-          <h4>Empowering Rural India</h4>
-          <p>Plan • Stress-Test • Forecast • Scale</p>
+          <h4>GrameenSathi</h4>
+          <p>Simple steps to start & grow your business</p>
         </div>
       </aside>
     </>

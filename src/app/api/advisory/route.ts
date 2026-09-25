@@ -23,90 +23,90 @@ function generateHeuristicAdvisory(location: string, capital: string, interests:
   const normalizedLoc = location || 'your region';
   const cityName = normalizedLoc.split(',')[0].trim() || 'Regional Market';
 
-  let recommendation = `Hyper-Local Retail & Essential Consumer Goods Hub (${cityName})`;
+  let recommendation = `Local Retail & Grocery Store (${cityName})`;
   let viabilityScore = 82;
   let analysis = '';
   let actionSteps: string[] = [];
 
   if (normalizedInterest.includes('dairy') || normalizedInterest.includes('milk') || normalizedInterest.includes('pashu') || normalizedInterest.includes('ghee') || normalizedInterest.includes('paneer')) {
-    recommendation = `Modern Dairy & Value-Added Milk Unit (${cityName})`;
+    recommendation = `Dairy Farming & Milk Products Unit (${cityName})`;
     viabilityScore = cap >= 100000 ? 89 : 76;
-    analysis = `Based on your target market in ${normalizedLoc} and available capital of ₹${cap.toLocaleString('en-IN')}, a dairy collection, chilling, and value-added product unit (paneer, curd, packaged milk) is highly viable. Your infrastructure assets (${infrastructure || 'local facility'}) support clean milk handling. Local households, sweet shops, and eateries in ${cityName} provide a reliable, daily cash-settled customer base with 25-32% gross margins.`;
+    analysis = `Based on your target market in ${normalizedLoc} and available capital of ₹${cap.toLocaleString('en-IN')}, a dairy collection, chilling, and milk products unit (paneer, curd, packaged milk) is highly viable. Local households, sweet shops, and eateries in ${cityName} provide a steady daily cash customer base with 25-32% gross margins.`;
     actionSteps = [
-      `Deploy ₹${Math.floor(cap * 0.45).toLocaleString('en-IN')} for 2 high-yield cattle or bulk stainless steel milk chilling cans`,
+      `Deploy ₹${Math.floor(cap * 0.45).toLocaleString('en-IN')} for 2 high-yield cattle or bulk milk storage cans`,
       "Obtain basic FSSAI Form A registration and local trade license",
-      "Establish morning doorstep WhatsApp subscriptions across 35-50 residential clusters",
+      "Establish morning doorstep milk deliveries across 35-50 neighborhood families",
       "Apply for 35% PMEGP capital subsidy or National Livestock Mission loan"
     ];
   } else if (normalizedInterest.includes('cold') || normalizedInterest.includes('storage') || normalizedInterest.includes('warehouse') || normalizedInterest.includes('logistics') || normalizedInterest.includes('delivery')) {
-    recommendation = `Agro-Cold Storage & Regional Logistics Depot (${cityName})`;
+    recommendation = `Cold Storage & Agri-Logistics Center (${cityName})`;
     viabilityScore = cap >= 250000 ? 88 : 74;
-    analysis = `Regional mandi trade corridors in ${normalizedLoc} suffer 18-25% crop spoilage during seasonal harvest peaks. Utilizing your capital of ₹${cap.toLocaleString('en-IN')} alongside ${infrastructure || 'storage space'} will capture high-margin storage fees and bulk transport consolidation for local farmers and mandi traders.`;
+    analysis = `Mandi trade areas in ${normalizedLoc} experience produce spoilage during seasonal harvest peaks. Utilizing your capital of ₹${cap.toLocaleString('en-IN')} alongside ${infrastructure || 'storage space'} will capture reliable storage fees and transport consolidation for local farmers and traders.`;
     actionSteps = [
-      `Allocate ₹${Math.floor(cap * 0.4).toLocaleString('en-IN')} for modular cold chamber installation or insulated storage racking`,
-      "Partner with 10-15 local mandi vegetable and fruit traders for guaranteed monthly batch contracts",
-      "Register on the e-NAM portal and apply for Agriculture Infrastructure Fund (AIF) 3% interest subvention",
-      "Implement solar/inverter power backup to safeguard perishable inventory"
+      `Allocate ₹${Math.floor(cap * 0.4).toLocaleString('en-IN')} for cold room equipment or storage racking`,
+      "Partner with 10-15 local mandi vegetable and fruit traders for monthly storage agreements",
+      "Register on the e-NAM portal and apply for Agriculture Infrastructure Fund (AIF) 3% interest subsidy",
+      "Set up solar or inverter power backup to protect stored produce"
     ];
   } else if (normalizedInterest.includes('oil') || normalizedInterest.includes('flour') || normalizedInterest.includes('chakki') || normalizedInterest.includes('mill') || normalizedInterest.includes('spice') || normalizedInterest.includes('masala')) {
-    recommendation = `Cold-Press Oil Extraction & Clean Flour Mill (${cityName})`;
+    recommendation = `Cold-Pressed Oil & Flour Mill (${cityName})`;
     viabilityScore = cap >= 120000 ? 87 : 78;
-    analysis = `Consumer demand for pure, unadulterated cold-pressed mustard/sesame oil and stone-ground flour is surging across ${normalizedLoc}. Sourcing seeds directly from nearby growers and selling packaged oil with byproduct cattle feed cake (Khali) delivers dual profit streams with break-even within 4 months.`;
+    analysis = `Consumer demand for pure mustard/sesame oil and freshly ground flour is high across ${normalizedLoc}. Sourcing seeds directly from nearby farmers and selling packaged oil with byproduct cattle feed cake (Khali) delivers steady profits with break-even within 4 months.`;
     actionSteps = [
-      `Procure commercial 3HP cold-press expeller and pulverizer (₹${Math.floor(cap * 0.45).toLocaleString('en-IN')})`,
-      "Obtain FSSAI license and Udyam MSME certification online",
-      "Package cold-pressed oil in 1L and 5L transparent food-grade bottles with custom branding",
+      `Procure commercial 3HP oil expeller and flour mill (₹${Math.floor(cap * 0.45).toLocaleString('en-IN')})`,
+      "Obtain FSSAI license and Udyam MSME registration online",
+      "Package oil in 1L and 5L clean food-grade bottles with custom labels",
       "Supply 15-20 neighborhood Kirana stores with introductory retail margins"
     ];
   } else if (normalizedInterest.includes('csc') || normalizedInterest.includes('digital') || normalizedInterest.includes('service') || normalizedInterest.includes('cyber') || normalizedInterest.includes('banking') || normalizedInterest.includes('atm')) {
-    recommendation = `Panchayat Digital Seva & Micro-Banking Hub (${cityName})`;
+    recommendation = `Digital Seva & Banking Kiosk (${cityName})`;
     viabilityScore = 91;
-    analysis = `A digital services and micro-ATM kiosk in ${normalizedLoc} requires low capital (₹${cap.toLocaleString('en-IN')}) with zero inventory risk. Your setup with ${infrastructure || 'power & connectivity'} enables continuous footfall for government scheme benefit filings, banking AEPS cash withdrawals, PAN/Aadhaar updates, and online utility ticketing.`;
+    analysis = `A digital services and micro-ATM kiosk in ${normalizedLoc} requires low capital (₹${cap.toLocaleString('en-IN')}) with zero inventory risk. Your setup with ${infrastructure || 'power & internet'} enables continuous footfall for government scheme applications, banking cash withdrawals (AEPS), and utility bill payments.`;
     actionSteps = [
-      `Invest ₹${Math.floor(Math.min(cap, 60000) * 0.6).toLocaleString('en-IN')} in multi-function duplex printer, PC, and biometric scanner`,
-      "Register for CSC VLE ID and partner with an authorized AEPS banking correspondent (PayPoint/SpiceMoney)",
-      "Place physical signage near Panchayat office and market chowk",
-      "Provide PM Kisan e-KYC, utility bill payment, and passport photo services"
+      `Invest ₹${Math.floor(Math.min(cap, 60000) * 0.6).toLocaleString('en-IN')} in printer, computer, and biometric scanner`,
+      "Register for CSC VLE ID and partner with an authorized AEPS banking partner (PayPoint/SpiceMoney)",
+      "Place clear signage near Panchayat office and market area",
+      "Provide PM Kisan e-KYC, utility bill payment, and photo services"
     ];
   } else if (normalizedInterest.includes('hardware') || normalizedInterest.includes('electrical') || normalizedInterest.includes('pipe') || normalizedInterest.includes('solar') || normalizedInterest.includes('tools')) {
-    recommendation = `Solar Equipment, Hardware & Electrical Point (${cityName})`;
+    recommendation = `Electrical & Hardware Store (${cityName})`;
     viabilityScore = cap >= 150000 ? 86 : 75;
-    analysis = `Agricultural modernization in ${normalizedLoc} is driving unprecedented demand for submersible pump pipes, fittings, solar inverters, and electrical accessories. With your working capital of ₹${cap.toLocaleString('en-IN')}, partnering with wholesale distributors will yield steady 22-30% margins.`;
+    analysis = `Construction and farming in ${normalizedLoc} drive steady demand for water pipes, electrical wiring, solar lights, and tools. With your working capital of ₹${cap.toLocaleString('en-IN')}, partnering with wholesale distributors yields consistent 22-30% margins.`;
     actionSteps = [
-      `Deploy ₹${Math.floor(cap * 0.5).toLocaleString('en-IN')} on fast-moving electrical wire bundles, switches, LED fixtures, and PVC pipe fittings`,
-      "Secure dealership linkage with regional electrical wholesale distributor in nearest district hub",
-      "Offer on-call repair and installation technicians to village households",
-      "Enroll under PM Surya Ghar Muft Bijli Yojana vendor network for rooftop solar installations"
+      `Deploy ₹${Math.floor(cap * 0.5).toLocaleString('en-IN')} on fast-moving electrical wires, switches, LED lights, and PVC pipes`,
+      "Secure dealership connection with electrical wholesale distributor in nearest district market",
+      "Offer on-call repair and installation technicians to local households",
+      "Enroll under PM Surya Ghar Muft Bijli Yojana vendor network for solar installations"
     ];
   } else if (normalizedInterest.includes('pharmacy') || normalizedInterest.includes('medical') || normalizedInterest.includes('health') || normalizedInterest.includes('clinic')) {
-    recommendation = `Rural Health Care & Essential Pharmacy Outlet (${cityName})`;
+    recommendation = `Medical Store & Healthcare Center (${cityName})`;
     viabilityScore = cap >= 200000 ? 92 : 79;
-    analysis = `Access to essential generic medicines and diagnostic test kits in ${normalizedLoc} commands consistent, year-round demand. Sourcing generic pharmaceuticals through Jan Aushadhi Kendra or MSME wholesale provides up to 50% profit margins.`;
+    analysis = `Access to essential medicines and health supplies in ${normalizedLoc} commands constant demand. Sourcing generic pharmaceuticals through Jan Aushadhi Kendra or MSME wholesale provides solid margins and vital community service.`;
     actionSteps = [
-      `Allocate ₹${Math.floor(cap * 0.45).toLocaleString('en-IN')} for licensed generic pharmaceutical inventory and glass display racks`,
-      "Obtain State Drug Controller retail license or apply for Pradhan Mantri Bhartiya Janaushadhi Pariyojana (PMBJP)",
-      "Add digital blood pressure, glucose testing, and telemedicine consultation kiosk",
-      "Establish home delivery services for elderly patients across neighboring villages"
+      `Allocate ₹${Math.floor(cap * 0.45).toLocaleString('en-IN')} for generic pharmaceutical stock and display racks`,
+      "Obtain State Drug Controller retail license or apply for Pradhan Mantri Jan Aushadhi Kendra",
+      "Add digital blood pressure, glucose testing, and online doctor consultation kiosk",
+      "Provide medicine delivery for elderly patients across neighboring villages"
     ];
   } else if (cap < 75000) {
-    recommendation = `Hyper-Local Digital & Fast-Moving Retail Kiosk (${cityName})`;
+    recommendation = `Daily Needs & Essentials Store (${cityName})`;
     viabilityScore = 84;
-    analysis = `With an accessible capital of ₹${cap.toLocaleString('en-IN')} in ${normalizedLoc}, launching a low-capex digital retail and essential goods point offers rapid break-even (under 45 days) and high daily cash velocity.`;
+    analysis = `With an initial capital of ₹${cap.toLocaleString('en-IN')} in ${normalizedLoc}, launching a retail and essential goods store offers fast break-even and reliable daily cash flow.`;
     actionSteps = [
-      `Deploy ₹${Math.floor(cap * 0.4).toLocaleString('en-IN')} into high-turnover fast-moving inventory and packaging staples`,
-      "Set up digital UPI QR billing and WhatsApp catalog for neighboring households",
+      `Deploy ₹${Math.floor(cap * 0.4).toLocaleString('en-IN')} into fast-moving daily grocery and household items`,
+      "Set up digital UPI QR payment and WhatsApp orders for neighborhood families",
       "Apply for PM MUDRA Shishu collateral-free loan (up to ₹50,000)",
-      "Maintain daily digital ledger on Khatabook to monitor gross margin"
+      "Maintain daily sales records on Khatabook to track profits"
     ];
   } else {
-    recommendation = `Specialized Agro-Processing & Commercial Supply Center (${cityName})`;
+    recommendation = `Agri-Processing & Supply Center (${cityName})`;
     viabilityScore = 85;
-    analysis = `Based on your geographic positioning in ${normalizedLoc} and capital base of ₹${cap.toLocaleString('en-IN')}, establishing a commercial supply and processing point delivers resilient returns. Your infrastructure setup (${infrastructure || 'commercial space'}) supports scalable local distribution with 28%-38% operating margins.`;
+    analysis = `Based on your location in ${normalizedLoc} and capital of ₹${cap.toLocaleString('en-IN')}, establishing a local supply and processing unit delivers solid returns. Your infrastructure (${infrastructure || 'commercial space'}) supports steady local sales with 28%-38% operating margins.`;
     actionSteps = [
-      `Allocate ₹${Math.floor(cap * 0.38).toLocaleString('en-IN')} for initial machinery, shop front, and safety equipment`,
-      "Obtain necessary local trade licenses and Udyam MSME registration",
-      "Form direct supplier linkages with regional wholesale mandis",
-      "Leverage PMEGP 35% subsidy to scale working capital buffer"
+      `Allocate ₹${Math.floor(cap * 0.38).toLocaleString('en-IN')} for machinery, shop setup, and initial stock`,
+      "Obtain local trade licenses and Udyam MSME registration",
+      "Form direct purchasing links with nearby wholesale mandis",
+      "Apply for PMEGP 35% subsidy to strengthen working capital"
     ];
   }
 
@@ -133,9 +133,9 @@ export async function POST(req: Request) {
           const model = genAI.getGenerativeModel({ model: modelName });
 
           const prompt = `
-            Act as a highly analytical hyper-local rural & semi-urban business advisor in India.
-            Target Audience: Entrepreneurs, micro-enterprise founders, traders, and small business owners.
-            Analyze the following inputs and generate a highly specific, hyper-accurate business plan tailored strictly to the EXACT location provided.
+            Act as a practical rural and small business advisor in India.
+            Target Audience: Entrepreneurs, micro-enterprise founders, traders, and small shop owners.
+            Analyze the following inputs and generate a specific, realistic business plan tailored strictly to the location provided.
             
             Inputs:
             - Location: ${location || 'India'}

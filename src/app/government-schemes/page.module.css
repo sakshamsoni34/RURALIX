@@ -11,7 +11,7 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
-  background: #f8fafc;
+  background: var(--background);
 }
 
 /* Top Navigation Bar */
@@ -20,12 +20,12 @@
   align-items: center;
   justify-content: space-between;
   padding: 0.85rem 1.75rem;
-  background: #ffffff;
-  border-bottom: 1px solid var(--border-color);
+  background: var(--header-bg);
+  border-bottom: 1px solid var(--header-border);
   position: sticky;
   top: 0;
   z-index: 40;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 1px 3px rgba(6, 78, 59, 0.06);
 }
 
 .topNavLeft {
@@ -200,20 +200,21 @@
 }
 
 .statCard {
-  background: #ffffff;
-  border: 1px solid var(--border-color);
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 1.25rem;
   display: flex;
   align-items: center;
   gap: 1rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 3px rgba(6, 78, 59, 0.05);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .statCard:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 12px rgba(6, 78, 59, 0.1);
+  border-color: var(--primary);
 }
 
 .statIconWrap {
@@ -275,9 +276,9 @@
 .searchInput {
   width: 100%;
   padding: 0.75rem 1rem 0.75rem 2.75rem;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--border);
   border-radius: 10px;
-  background: #ffffff;
+  background: var(--surface);
   font-size: 0.92rem;
   color: var(--text-main);
   outline: none;
@@ -300,9 +301,9 @@
   border-radius: 8px;
   font-size: 0.84rem;
   font-weight: 600;
-  border: 1px solid #cbd5e1;
-  background: #ffffff;
-  color: #475569;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -333,21 +334,21 @@
 }
 
 .schemeCard {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
   border-radius: 14px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 6px rgba(6, 78, 59, 0.04);
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   position: relative;
 }
 
 .schemeCard:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-  border-color: #a7f3d0;
+  box-shadow: 0 8px 24px rgba(6, 78, 59, 0.08);
+  border-color: #059669;
 }
 
 .schemeCardFeatured {
@@ -537,12 +538,12 @@
 
 /* Bottom Subsidy Calculator & Guide */
 .interactiveSection {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
   border-radius: 16px;
   padding: 2.25rem;
   margin-top: 2rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 8px rgba(6, 78, 59, 0.04);
 }
 
 .sectionHeader {
@@ -657,7 +658,8 @@
 }
 
 .modalContent {
-  background: #ffffff;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
   border-radius: 16px;
   max-width: 680px;
   width: 100%;
@@ -670,13 +672,13 @@
 
 .modalHeader {
   padding: 1.5rem 1.75rem;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--header-border);
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   position: sticky;
   top: 0;
-  background: #ffffff;
+  background: var(--header-bg);
   z-index: 10;
 }
 

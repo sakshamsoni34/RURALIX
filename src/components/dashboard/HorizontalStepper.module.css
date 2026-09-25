@@ -128,7 +128,7 @@
 
 /* Individual Step Box */
 .stepCard {
-  background: var(--surface);
+  background: #eef8f2;
   border: 2px solid var(--border);
   border-radius: 16px;
   padding: 1.15rem 1.25rem;
@@ -143,15 +143,15 @@
 }
 
 .stepCard:hover:not(.stepLocked) {
-  border-color: #94a3b8;
+  border-color: #059669;
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 24px rgba(6, 78, 59, 0.08);
 }
 
 .stepCardActive {
-  background: #ffffff;
+  background: #dff4e5 !important;
   border-color: #059669 !important;
-  box-shadow: 0 8px 26px rgba(5, 150, 105, 0.15) !important;
+  box-shadow: 0 8px 26px rgba(5, 150, 105, 0.18) !important;
   transform: translateY(-2px);
 }
 
@@ -165,13 +165,13 @@
 }
 
 .stepCompleted {
-  border-color: #bbf7d0;
-  background: linear-gradient(180deg, #ffffff 0%, #f0fdf4 100%);
+  border-color: #a7f3d0;
+  background: #e6f6ec;
 }
 
 .stepLocked {
-  background: #f8fafc;
-  border-color: #e2e8f0;
+  background: #e2ede5;
+  border-color: #cce0d2;
   opacity: 0.75;
   cursor: not-allowed;
 }

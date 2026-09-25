@@ -177,14 +177,14 @@ export default function DemandPredictorModal({ isOpen, onClose, onPredictionComp
       <div className={styles.header}>
         <div className={styles.titleArea}>
           <div className={styles.badge}>
-            <Sparkles size={13} /> Seasonal & Event AI Forecasting
+            <Sparkles size={13} /> Seasonal & Festival Demand
           </div>
           <h2 className={styles.title}>
             <BarChart3 color="#059669" size={26} />
-            Hyper-Local Demand & Inventory Forecasting
+            Local Demand & Stock Planning
           </h2>
           <p className={styles.subtitle}>
-            Anticipate local customer surges, high-velocity inventory trends, and festive spikes before stocking goods.
+            Plan your inventory for local customer demand, weekly markets (haats), and upcoming festivals.
           </p>
         </div>
         {!inline && (
@@ -332,7 +332,7 @@ export default function DemandPredictorModal({ isOpen, onClose, onPredictionComp
             {/* Submit Action */}
             <button type="submit" className={styles.submitBtn}>
               <Search size={20} />
-              Run AI Hyper-Local Demand Prediction & Inventory Forecast
+              Predict Demand & Stock Needs
             </button>
           </form>
         )}
@@ -342,10 +342,10 @@ export default function DemandPredictorModal({ isOpen, onClose, onPredictionComp
           <div className={styles.loadingState}>
             <div className={styles.spinner}></div>
             <h3 className={styles.loadingTitle}>
-              Correlating Regional Demand Drivers...
+              Forecasting Market Demand...
             </h3>
             <p className={styles.loadingText}>
-              Cross-referencing consumer purchasing patterns in <strong>{formData.location || 'your area'}</strong> with <strong>{formData.season}</strong> climate trends and <strong>{formData.festival || 'upcoming seasonal cycles'}</strong>...
+              Checking buyer trends in <strong>{formData.location || 'your area'}</strong> with <strong>{formData.season}</strong> season and <strong>{formData.festival || 'upcoming events'}</strong>...
             </p>
           </div>
         )}
@@ -355,7 +355,7 @@ export default function DemandPredictorModal({ isOpen, onClose, onPredictionComp
           <div className={styles.resultContainer}>
             {/* Strategic Analysis Box */}
             <div className={styles.analysisBox}>
-              <h4><Sparkles size={16} /> Market Demand Intelligence & Timing Analysis</h4>
+              <h4><Sparkles size={16} /> Market Demand & Best Timing Analysis</h4>
               <p>{result.analysis}</p>
             </div>
 
@@ -363,7 +363,7 @@ export default function DemandPredictorModal({ isOpen, onClose, onPredictionComp
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               <h3 className={styles.sectionTitle}>
                 <Flame size={20} color="#059669" />
-                Top High-Velocity Trending Demand Spikes
+                High Demand Items & Products
               </h3>
 
               <div className={styles.trendList}>
@@ -376,7 +376,7 @@ export default function DemandPredictorModal({ isOpen, onClose, onPredictionComp
                       <div className={styles.trendHeaderRow}>
                         <h4>{item.name}</h4>
                         <span className={styles.trendBadge}>
-                          🔥 Demand Surge
+                          🔥 High Demand
                         </span>
                       </div>
                       <p>{item.reason}</p>
@@ -393,10 +393,10 @@ export default function DemandPredictorModal({ isOpen, onClose, onPredictionComp
                 <span>🎉 Step 3 of 3 Completed • Strategy Ready</span>
               </div>
               <h3 className={styles.unlockTitle}>
-                3-Step Enterprise Strategy Completed!
+                All 3 Steps Completed!
               </h3>
               <p className={styles.unlockSub}>
-                Your AI Business Plan, Feasibility & Reality Check, and Hyper-Local Demand Forecasts have all been generated. You can review or adjust any step in the launchpad at any time.
+                Your Business Plan, Feasibility & Reality Check, and Local Demand Forecasts are ready. You can review or adjust any step at any time.
               </p>
               
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', alignItems: 'center', marginTop: '1.25rem' }}>
@@ -411,7 +411,7 @@ export default function DemandPredictorModal({ isOpen, onClose, onPredictionComp
                       } catch (e) {}
                     }
                     setIsDashboardUnlocked(true);
-                    showToast('🎉 All 3 steps complete! Your live Dashboard is now updated and unlocked.', 'success');
+                    showToast('🎉 All 3 steps complete! Your Dashboard is now updated and unlocked.', 'success');
                     setActiveTab('dashboard', true);
                   }} 
                   className={styles.unlockBtn}
@@ -430,7 +430,7 @@ export default function DemandPredictorModal({ isOpen, onClose, onPredictionComp
                   }}
                 >
                   <CheckCircle2 size={20} color="#ffffff" />
-                  <span>Proceed to Live Dashboard (Launchpad Complete)</span>
+                  <span>Open Live Dashboard</span>
                   <ArrowRight size={19} />
                 </button>
 

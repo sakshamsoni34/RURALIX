@@ -20,23 +20,23 @@ export default function LoanReadinessWidget() {
   return (
     <div className={styles.card}>
       <div className={styles.cardHeader}>
-        <div className={styles.cardTitle}><FileText size={20} color="var(--primary)"/> MUDRA & Bank Loan Readiness</div>
+        <div className={styles.cardTitle}><FileText size={20} color="var(--primary)"/> Loan & Subsidy Readiness</div>
       </div>
       <div className={styles.loanReadiness}>
         <div className={styles.gauge}>
           <span>{readinessScore}<small>/ 100</small></span>
         </div>
         <p style={{ fontSize: '0.9rem', fontWeight: 600, marginBottom: '1.5rem', color: readinessScore >= 75 ? "var(--primary-dark)" : "#d97706" }}>
-          {readinessScore >= 75 ? "You are finance & subsidy ready!" : "Good foundation — needs minor records"}
+          {readinessScore >= 75 ? "Eligible for loans & subsidies!" : "Good foundation — minor documents needed"}
         </p>
         <ul className={styles.checkList}>
           <li>
             <CheckCircle2 size={16} className={styles.checkIcon}/> 
-            {hasGoodCapital ? `Adequate initial capital (₹${capitalNum.toLocaleString('en-IN')})` : 'Eligible for PMEGP 35% subsidy'}
+            {hasGoodCapital ? `Good initial capital (₹${capitalNum.toLocaleString('en-IN')})` : 'Eligible for PMEGP 35% subsidy'}
           </li>
           <li>
             <CheckCircle2 size={16} className={styles.checkIcon}/> 
-            {hasInfra ? `Infrastructure verified (${userProfile.infrastructure})` : 'Infrastructure allocation mapped'}
+            {hasInfra ? `Premises/infrastructure noted (${userProfile.infrastructure})` : 'Basic facilities available'}
           </li>
           <li style={{ color: hasExp ? "var(--text-main)" : "var(--text-muted)" }}>
             {hasExp ? (
@@ -44,11 +44,11 @@ export default function LoanReadinessWidget() {
             ) : (
               <AlertCircle size={16} color="var(--accent-orange)"/>
             )} 
-            {hasExp ? `Prior domain experience noted` : 'Basic trade training recommended'}
+            {hasExp ? `Prior work experience noted` : 'Basic trade training recommended'}
           </li>
           <li>
             <CheckCircle2 size={16} className={styles.checkIcon}/> 
-            Eligible for PM MUDRA Kishore / Shishu Loan
+            Eligible for PM MUDRA & PMEGP schemes
           </li>
         </ul>
         <button 

@@ -222,14 +222,14 @@ export default function RealityCheckModal({ isOpen, onClose, onCheckComplete, in
         <div className={styles.formCardHeader}>
           <div className={styles.headerLeft}>
             <div className={styles.formBadge}>
-              <Sparkles size={13} /> UNCOMPROMISING RISK ENGINE
+              <Sparkles size={13} /> Step 2: Ground Reality Check
             </div>
             <h2 className={styles.formTitle}>
               <Target color="#059669" size={26} />
-              Business Feasibility & Financial Reality Check
+              Business Feasibility & Risk Check
             </h2>
             <p className={styles.formSubtitle}>
-              Stress-test your business model against realistic market saturation, working capital burn, operational constraints, and customer demand.
+              Check if your business idea is practical by evaluating startup budget, facilities, electricity, experience, and local demand.
             </p>
           </div>
           <div className={styles.headerRight}>
@@ -239,7 +239,7 @@ export default function RealityCheckModal({ isOpen, onClose, onCheckComplete, in
               </button>
             )}
             <div className={styles.requiredIndicator}>
-              <span className={styles.requiredStar}>*</span> Required fields for evaluation
+              <span className={styles.requiredStar}>*</span> Required fields
             </div>
           </div>
         </div>
@@ -253,11 +253,11 @@ export default function RealityCheckModal({ isOpen, onClose, onCheckComplete, in
                 <div className={styles.sectionTitleBlock}>
                   <h3 className={styles.sectionHeading}>
                     <span className={styles.sectionStepNum}>1</span>
-                    Target Business Venture / Proposed Setup
+                    Your Business Idea
                     <span className={styles.requiredStar}>*</span>
                   </h3>
                   <p className={styles.sectionDescription}>
-                    Type your specific business idea or click the dropdown arrow to select presets.
+                    Type your business idea or select from common examples.
                   </p>
                 </div>
               </div>
@@ -268,7 +268,7 @@ export default function RealityCheckModal({ isOpen, onClose, onCheckComplete, in
                   <input 
                     type="text" 
                     className={styles.unifiedInput}
-                    placeholder="e.g., Specialized Cold Storage & Logistics Hub"
+                    placeholder="e.g., Dairy Farm & Milk Products Unit"
                     value={formData.idea}
                     onChange={(e) => setFormData({...formData, idea: e.target.value})}
                   />
@@ -298,11 +298,11 @@ export default function RealityCheckModal({ isOpen, onClose, onCheckComplete, in
                 <div className={styles.sectionTitleBlock}>
                   <h3 className={styles.sectionHeading}>
                     <span className={styles.sectionStepNum}>2</span>
-                    Available Capital (₹)
+                    Available Budget (₹)
                     <span className={styles.requiredStar}>*</span>
                   </h3>
                   <p className={styles.sectionDescription}>
-                    Enter available working & seed capital for stress-testing liquidity and runway.
+                    Enter your budget to see if it covers startup and initial operating costs.
                   </p>
                 </div>
                 {formData.capital && (
@@ -330,7 +330,7 @@ export default function RealityCheckModal({ isOpen, onClose, onCheckComplete, in
                       onChange={(e) => {
                         if (e.target.value) setFormData({ ...formData, capital: e.target.value });
                       }}
-                      title="Select capital scale tier"
+                      title="Select budget range"
                     >
                       <option value="" disabled hidden>-- Select --</option>
                       {CAPITAL_PRESETS.map((preset, idx) => (
@@ -349,11 +349,11 @@ export default function RealityCheckModal({ isOpen, onClose, onCheckComplete, in
                 <div className={styles.sectionTitleBlock}>
                   <h3 className={styles.sectionHeading}>
                     <span className={styles.sectionStepNum}>3</span>
-                    Land / Shop Availability
+                    Shop Space / Land Availability
                     <span className={styles.requiredStar}>*</span>
                   </h3>
                   <p className={styles.sectionDescription}>
-                    Specify current commercial real estate status, shop frontage, or land holding.
+                    Tell us if you own a shop, rent a space, or work from home.
                   </p>
                 </div>
               </div>
@@ -398,7 +398,7 @@ export default function RealityCheckModal({ isOpen, onClose, onCheckComplete, in
                     <span className={styles.requiredStar}>*</span>
                   </h3>
                   <p className={styles.sectionDescription}>
-                    Assess electrical reliability against machine loads and commercial uptime requirements.
+                    How many hours of electricity do you get daily?
                   </p>
                 </div>
               </div>
@@ -439,11 +439,11 @@ export default function RealityCheckModal({ isOpen, onClose, onCheckComplete, in
                 <div className={styles.sectionTitleBlock}>
                   <h3 className={styles.sectionHeading}>
                     <span className={styles.sectionStepNum}>5</span>
-                    Founder Domain Experience
+                    Your Prior Experience
                     <span className={styles.requiredStar}>*</span>
                   </h3>
                   <p className={styles.sectionDescription}>
-                    Evaluate management competency, vendor negotiation capability, and operational resilience.
+                    Have you done this work before, or are you starting fresh?
                   </p>
                 </div>
               </div>
@@ -454,7 +454,7 @@ export default function RealityCheckModal({ isOpen, onClose, onCheckComplete, in
                   <input 
                     type="text" 
                     className={styles.unifiedInput}
-                    placeholder="e.g., Agri & Cold Storage, 2 years trade experience"
+                    placeholder="e.g., Grocery store, 2 years trade experience"
                     value={formData.experience}
                     onChange={(e) => setFormData({...formData, experience: e.target.value})}
                   />
@@ -484,11 +484,11 @@ export default function RealityCheckModal({ isOpen, onClose, onCheckComplete, in
                 <div className={styles.sectionTitleBlock}>
                   <h3 className={styles.sectionHeading}>
                     <span className={styles.sectionStepNum}>6</span>
-                    Daily Working Hours
+                    Time You Can Give Daily
                     <span className={styles.requiredStar}>*</span>
                   </h3>
                   <p className={styles.sectionDescription}>
-                    Calculate founder bandwidth and staffing overhead against break-even timelines.
+                    How many hours per day will you dedicate to this business?
                   </p>
                 </div>
               </div>
@@ -529,11 +529,11 @@ export default function RealityCheckModal({ isOpen, onClose, onCheckComplete, in
                 <div className={styles.sectionTitleBlock}>
                   <h3 className={styles.sectionHeading}>
                     <span className={styles.sectionStepNum}>7</span>
-                    Local Customer Reach
+                    Expected Customers / Area Size
                     <span className={styles.requiredStar}>*</span>
                   </h3>
                   <p className={styles.sectionDescription}>
-                    Estimate realistic daily footfall, catchment population, or repeat institutional buyers.
+                    How many daily customers or families can your business reach?
                   </p>
                 </div>
               </div>
@@ -574,7 +574,7 @@ export default function RealityCheckModal({ isOpen, onClose, onCheckComplete, in
                 <ShieldCheck size={20} color="#059669" />
               </div>
               <div className={styles.infoBannerText}>
-                Stress-tested against National MSME Risk Database, Regional Saturation Maps & Consumer Purchasing Indices
+                Analyzed against real rural market factors, competition levels, and utility readiness
               </div>
             </div>
 
@@ -594,7 +594,7 @@ export default function RealityCheckModal({ isOpen, onClose, onCheckComplete, in
                 className={styles.submitBtn}
               >
                 <BrainCircuit size={20} />
-                <span>Calculate Brutal Reality Check & Feasibility Score</span>
+                <span>Calculate Feasibility & Risk Score</span>
                 <ArrowRight size={18} />
               </button>
             </div>
@@ -606,10 +606,10 @@ export default function RealityCheckModal({ isOpen, onClose, onCheckComplete, in
           <div className={styles.loadingState}>
             <div className={styles.spinner}></div>
             <h3 className={styles.loadingTitle}>
-              Simulating Market Stress Test...
+              Analyzing Feasibility & Risks...
             </h3>
             <p className={styles.loadingText}>
-              Evaluating fixed capital runway, demand saturation, local utility reliability, and operational failure risks for <strong>{formData.idea}</strong>...
+              Checking budget requirements, local competition, power availability, and practical risks for <strong>{formData.idea}</strong>...
             </p>
           </div>
         )}
@@ -620,14 +620,14 @@ export default function RealityCheckModal({ isOpen, onClose, onCheckComplete, in
             {/* Hero Result Banner */}
             <div className={styles.overallScoreCard}>
               <div className={styles.scoreInfo}>
-                <h3>✨ Feasibility Verdict</h3>
+                <h3>✨ Feasibility Summary</h3>
                 <h2>{formData.idea}</h2>
-                <p>📍 Evaluated with ₹{Number(formData.capital).toLocaleString('en-IN')} working capital</p>
+                <p>📍 Evaluated with ₹{Number(formData.capital).toLocaleString('en-IN')} budget</p>
               </div>
 
               <div className={styles.scoreGaugeBox}>
                 <div className={styles.scoreGaugeValue}>{result.scores.overall}%</div>
-                <div className={styles.scoreGaugeLabel}>Viability Rating</div>
+                <div className={styles.scoreGaugeLabel}>Viability Score</div>
               </div>
             </div>
 
@@ -635,15 +635,15 @@ export default function RealityCheckModal({ isOpen, onClose, onCheckComplete, in
             <div className={styles.chartsCard}>
               <h4 className={styles.sectionTitle}>
                 <TrendingUp size={20} color="#059669" />
-                Key Metric Breakdown & Risk Indicators
+                Score Breakdown & Risk Indicators
               </h4>
               <div className={styles.chartsWrapper}>
                 {renderBar('Local Market Demand', result.scores.demand, '#10b981')}
-                {renderBar('Competition Resistance', result.scores.competition, '#f59e0b')}
-                {renderBar('Capital Sufficiency', result.scores.capital, '#059669')}
-                {renderBar('Projected Net Margins', result.scores.profit, '#3b82f6')}
-                {renderBar('Infrastructure Fit', result.scores.infra, '#06b6d4')}
-                {renderBar('Operational Risk Index', result.scores.risk, '#ef4444')}
+                {renderBar('Competition Level', result.scores.competition, '#f59e0b')}
+                {renderBar('Budget Sufficiency', result.scores.capital, '#059669')}
+                {renderBar('Profit Margin Potential', result.scores.profit, '#3b82f6')}
+                {renderBar('Facilities & Power Fit', result.scores.infra, '#06b6d4')}
+                {renderBar('Overall Risk Level', result.scores.risk, '#ef4444')}
               </div>
             </div>
 
@@ -651,7 +651,7 @@ export default function RealityCheckModal({ isOpen, onClose, onCheckComplete, in
             <div className={styles.explanationBox}>
               <h4 className={styles.sectionTitle}>
                 <FileText size={20} color="#059669" />
-                Uncompromising Financial & Operational Analysis
+                Detailed Feasibility & Risk Analysis
               </h4>
               <p>{result.explanation}</p>
             </div>
@@ -670,7 +670,7 @@ export default function RealityCheckModal({ isOpen, onClose, onCheckComplete, in
                 onClick={() => setStep('input')} 
                 className={styles.secondaryBtn}
               >
-                Re-Test Constraints
+                Edit Inputs
               </button>
               <button 
                 type="button"
@@ -687,7 +687,7 @@ export default function RealityCheckModal({ isOpen, onClose, onCheckComplete, in
                 }} 
                 className={styles.primaryBtn}
               >
-                <span>Proceed to Step 3: Demand Predictor</span>
+                <span>Proceed to Step 3: Demand Forecast</span>
                 <ArrowRight size={18} />
               </button>
             </div>

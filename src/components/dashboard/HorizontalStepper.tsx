@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Sparkles, Check, Lock, ChevronRight } from 'lucide-react';
 import { useDashboard } from '../../context/DashboardContext';
 import styles from './HorizontalStepper.module.css';
@@ -15,24 +15,36 @@ export default function HorizontalStepper() {
     showToast
   } = useDashboard();
 
-  const isStep1Done = Boolean(userProfile?.businessIdea?.trim());
-  const isStep2Done = Boolean(realityScores?.overall && realityScores.overall > 0);
-  const isStep3Done = Boolean(trendingItems && trendingItems.length > 0);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const currentTab = mounted ? activeTab : 'ai-recommendation';
+  const isStep1Done = mounted && Boolean(userProfile?.businessIdea?.trim());
+  const isStep2Done = mounted && Boolean(realityScores?.overall && realityScores.overall > 0);
+  const isStep3Done = mounted && Boolean(trendingItems && trendingItems.length > 0);
+  const businessIdea = mounted && userProfile?.businessIdea ? userProfile.businessIdea : '';
+  const currentViability = mounted && realityScores?.overall ? realityScores.overall : 0;
 
   const handleStepClick = (stepIndex: 1 | 2 | 3) => {
     if (stepIndex === 1) {
       setActiveTab('ai-recommendation');
     } else if (stepIndex === 2) {
-      if (!isStep1Done) {
-        showToast('Please complete Step 1 (AI Business Planner) first to unlock Feasibility & Reality Check.', 'warning');
+      const hasStep1 = Boolean(userProfile?.businessIdea?.trim());
+      if (!hasStep1) {
+        showToast('Please complete Step 1 (Business Planning) first to check feasibility.', 'warning');
       } else {
         setActiveTab('reality-check');
       }
     } else if (stepIndex === 3) {
-      if (!isStep1Done) {
-        showToast('Please complete Step 1 (AI Business Planner) first before forecasting Market Demand.', 'warning');
-      } else if (!isStep2Done) {
-        showToast('Please complete Step 2 (Reality Check) first to unlock Market Demand & Inventory Forecast.', 'warning');
+      const hasStep1 = Boolean(userProfile?.businessIdea?.trim());
+      const hasStep2 = Boolean(realityScores?.overall && realityScores.overall > 0);
+      if (!hasStep1) {
+        showToast('Please complete Step 1 (Business Planning) first before checking market demand.', 'warning');
+      } else if (!hasStep2) {
+        showToast('Please complete Step 2 (Reality Check) first to check market demand.', 'warning');
       } else {
         setActiveTab('demand');
       }
@@ -46,20 +58,20 @@ export default function HorizontalStepper() {
         <div className={styles.titleGroup}>
           <div className={styles.badgePill}>
             <Sparkles size={13} />
-            <span>3-Step Enterprise Launchpad</span>
+            <span>3 Simple Steps to Start</span>
           </div>
           <h2 className={styles.stageHeading}>
-            {activeTab === 'ai-recommendation' && 'Step 1: AI Business Plan Studio'}
-            {activeTab === 'reality-check' && 'Step 2: Feasibility & Reality Diagnostics'}
-            {activeTab === 'demand' && 'Step 3: Market Demand & Inventory Forecast'}
-            {activeTab === 'dashboard' && 'Enterprise Journey Progress'}
-            {activeTab === 'map' && 'Market Opportunity Radar'}
-            {activeTab === 'help' && 'Entrepreneur Support Center'}
+            {currentTab === 'ai-recommendation' && 'Step 1: Business Idea & Plan'}
+            {currentTab === 'reality-check' && 'Step 2: Reality & Feasibility Check'}
+            {currentTab === 'demand' && 'Step 3: Local Demand & Stock Planning'}
+            {currentTab === 'dashboard' && 'My Business Dashboard'}
+            {currentTab === 'map' && 'Village Opportunity Map'}
+            {currentTab === 'help' && 'Help & Support'}
           </h2>
         </div>
 
         <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center', flexWrap: 'wrap' }}>
-          {isStep1Done && isStep2Done && isStep3Done && activeTab !== 'dashboard' && (
+          {isStep1Done && isStep2Done && isStep3Done && currentTab !== 'dashboard' && (
             <button
               type="button"
               onClick={() => setActiveTab('dashboard')}
@@ -78,24 +90,23 @@ export default function HorizontalStepper() {
                 boxShadow: '0 3px 10px rgba(5, 150, 105, 0.35)',
                 transition: 'transform 0.2s ease'
               }}
-              title="All 3 steps complete! Click to view your live enterprise dashboard"
+              title="All 3 steps complete! Click to view your dashboard"
             >
-              <span>🎉 Open Live Dashboard</span>
+              <span>🎉 Open Dashboard</span>
               <ChevronRight size={16} />
             </button>
           )}
 
-          {userProfile?.businessIdea && (
+          {businessIdea && (
             <div 
               className={styles.activeFocusPill} 
               onClick={() => setActiveTab('ai-recommendation')} 
               title="Click to review or modify business idea"
-              suppressHydrationWarning
             >
               <span className={styles.focusDot}></span>
-              <span className={styles.focusLabel}>Active Focus:</span>
-              <strong className={styles.focusText} suppressHydrationWarning>
-                {userProfile.businessIdea}
+              <span className={styles.focusLabel}>Selected Business:</span>
+              <strong className={styles.focusText}>
+                {businessIdea}
               </strong>
             </div>
           )}
@@ -108,11 +119,11 @@ export default function HorizontalStepper() {
         {/* STEP 1: AI Business Planner */}
         <div 
           onClick={() => handleStepClick(1)}
-          className={`
-            ${styles.stepCard} 
-            ${activeTab === 'ai-recommendation' ? styles.stepCardActive : ''} 
-            ${isStep1Done ? styles.stepCompleted : ''}
-          `}
+          className={[
+            styles.stepCard,
+            currentTab === 'ai-recommendation' ? styles.stepCardActive : '',
+            isStep1Done ? styles.stepCompleted : ''
+          ].filter(Boolean).join(' ')}
           role="button"
           tabIndex={0}
           onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && handleStepClick(1)}
@@ -136,15 +147,15 @@ export default function HorizontalStepper() {
             <div className={styles.metaRow}>
               <span className={styles.stepCategoryTag}>Step 1</span>
               {isStep1Done ? (
-                <span className={`${styles.statusPill} ${styles.statusPillDone}`}>Selected ✓</span>
-              ) : activeTab === 'ai-recommendation' ? (
+                <span className={`${styles.statusPill} ${styles.statusPillDone}`}>Completed ✓</span>
+              ) : currentTab === 'ai-recommendation' ? (
                 <span className={`${styles.statusPill} ${styles.statusPillActive}`}>In Progress</span>
               ) : (
                 <span className={`${styles.statusPill} ${styles.statusPillActive}`}>Start Here</span>
               )}
             </div>
-            <h3 className={styles.cardTitle}>AI Business Planner</h3>
-            <span className={styles.cardSubtitle}>Model & Capital Formulation</span>
+            <h3 className={styles.cardTitle}>Business Idea & Plan</h3>
+            <span className={styles.cardSubtitle}>Plan your budget & business idea</span>
           </div>
         </div>
 
@@ -162,16 +173,16 @@ export default function HorizontalStepper() {
         {/* STEP 2: Reality Check */}
         <div 
           onClick={() => handleStepClick(2)}
-          className={`
-            ${styles.stepCard} 
-            ${activeTab === 'reality-check' ? styles.stepCardActive : ''} 
-            ${isStep2Done ? styles.stepCompleted : ''}
-            ${!isStep1Done ? styles.stepLocked : ''}
-          `}
+          className={[
+            styles.stepCard,
+            currentTab === 'reality-check' ? styles.stepCardActive : '',
+            isStep2Done ? styles.stepCompleted : '',
+            !isStep1Done ? styles.stepLocked : ''
+          ].filter(Boolean).join(' ')}
           role="button"
           tabIndex={0}
           onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && handleStepClick(2)}
-          title={!isStep1Done ? 'Complete Step 1 (AI Business Planner) to unlock' : 'Feasibility & Reality Check'}
+          title={!isStep1Done ? 'Complete Step 1 (Business Planning) to unlock' : 'Reality & Feasibility Check'}
         >
           {/* 3D Glossy Red/Crimson Circular Badge */}
           <div className={styles.glossyNode}>
@@ -198,13 +209,13 @@ export default function HorizontalStepper() {
               {!isStep1Done ? (
                 <span className={`${styles.statusPill} ${styles.statusPillLocked}`}>🔒 Locked</span>
               ) : isStep2Done ? (
-                <span className={`${styles.statusPill} ${styles.statusPillDone}`}>{realityScores.overall}% Viability</span>
+                <span className={`${styles.statusPill} ${styles.statusPillDone}`}>{currentViability}% Viable</span>
               ) : (
                 <span className={`${styles.statusPill} ${styles.statusPillActive}`}>Ready</span>
               )}
             </div>
             <h3 className={styles.cardTitle}>Reality Check</h3>
-            <span className={styles.cardSubtitle}>Risk & Stress-Testing</span>
+            <span className={styles.cardSubtitle}>Check risks & ground realities</span>
           </div>
         </div>
 
@@ -221,16 +232,16 @@ export default function HorizontalStepper() {
         {/* STEP 3: Demand Predictor */}
         <div 
           onClick={() => handleStepClick(3)}
-          className={`
-            ${styles.stepCard} 
-            ${activeTab === 'demand' ? styles.stepCardActive : ''} 
-            ${isStep3Done ? styles.stepCompleted : ''}
-            ${!isStep2Done ? styles.stepLocked : ''}
-          `}
+          className={[
+            styles.stepCard,
+            currentTab === 'demand' ? styles.stepCardActive : '',
+            isStep3Done ? styles.stepCompleted : '',
+            !isStep2Done ? styles.stepLocked : ''
+          ].filter(Boolean).join(' ')}
           role="button"
           tabIndex={0}
           onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && handleStepClick(3)}
-          title={!isStep2Done ? 'Complete Step 2 (Reality Check) to unlock' : 'Market Demand & Inventory Forecast'}
+          title={!isStep2Done ? 'Complete Step 2 (Reality Check) to unlock' : 'Local Demand & Stock Planning'}
         >
           {/* 3D Glossy Green Circular Badge */}
           <div className={styles.glossyNode}>
@@ -257,13 +268,13 @@ export default function HorizontalStepper() {
               {!isStep2Done ? (
                 <span className={`${styles.statusPill} ${styles.statusPillLocked}`}>🔒 Locked</span>
               ) : isStep3Done ? (
-                <span className={`${styles.statusPill} ${styles.statusPillDone}`}>Predicted ✓</span>
+                <span className={`${styles.statusPill} ${styles.statusPillDone}`}>Completed ✓</span>
               ) : (
                 <span className={`${styles.statusPill} ${styles.statusPillActive}`}>Ready</span>
               )}
             </div>
-            <h3 className={styles.cardTitle}>Demand Predictor</h3>
-            <span className={styles.cardSubtitle}>Market & Inventory Forecast</span>
+            <h3 className={styles.cardTitle}>Demand Forecast</h3>
+            <span className={styles.cardSubtitle}>Check local demand & stock needs</span>
           </div>
         </div>
 

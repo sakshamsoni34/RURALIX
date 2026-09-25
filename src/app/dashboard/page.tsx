@@ -119,15 +119,15 @@ function DashboardContent() {
                 </div>
                 <div className={styles.heroOverlay}></div>
                 <div className={styles.heroContent}>
-                  <p>{userProfile.hasBusiness ? "Welcome to your active enterprise hub!" : "Welcome back, Entrepreneur!"}</p>
+                  <p>{userProfile.hasBusiness ? "Welcome to your business dashboard" : "Welcome back!"}</p>
                   <h1 style={{ fontSize: userProfile.businessIdea ? '2.1rem' : '2.5rem' }}>
-                    {userProfile.businessIdea ? `Your ${userProfile.businessIdea} Hub` : "Rural Enterprise Hub"}
+                    {userProfile.businessIdea ? `Your ${userProfile.businessIdea}` : "Rural Business Dashboard"}
                   </h1>
                   <div className={styles.heroQuote}>
                     "छोटे कदम, बड़ी सफलता की ओर"
                   </div>
                   <p style={{ marginTop: '0.5rem', color: 'var(--text-main)', fontSize: '0.92rem' }}>
-                    Location: <strong>{userProfile.location || 'Local Area'}</strong> • Capital: <strong>₹{userProfile.capital || '1,50,000'}</strong>
+                    Location: <strong>{userProfile.location || 'Local Area'}</strong> • Budget: <strong>₹{userProfile.capital || '1,50,000'}</strong>
                   </p>
                 </div>
               </div>
@@ -207,7 +207,7 @@ export default function Dashboard() {
           fontSize: '1.1rem',
           fontWeight: 600
         }}>
-          Loading GrameenSathi Enterprise Studio...
+          Loading GrameenSathi...
         </div>
       }>
         <DashboardContent />

@@ -6,7 +6,7 @@ const outfit = Outfit({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "GrameenSathi | Empowering Rural Entrepreneurs",
-  description: "AI-Driven Hyper-Local Business Advisory and Financial Structuring Assistant",
+  description: "Simple business planning, government schemes, and financial guidance for rural entrepreneurs",
 };
 
 export default function RootLayout({

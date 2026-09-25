@@ -110,7 +110,7 @@ export async function POST(req: Request) {
           const model = genAI.getGenerativeModel({ model: modelName });
 
           const prompt = `
-            Act as an uncompromising, highly analytical business feasibility auditor.
+            Act as an honest and practical business feasibility expert in India.
             Analyze the feasibility of the following business idea:
             - Business Idea: ${idea}
             - Capital: ₹${capital}

@@ -374,10 +374,10 @@ function GovernmentSchemesContent() {
 
   // Fallback to localStorage if context is still hydrating
   const activeProfile = useMemo(() => {
-    if (mounted && userProfile?.businessIdea?.trim()) {
-      return userProfile;
-    }
-    if (typeof window !== 'undefined') {
+    if (mounted) {
+      if (userProfile?.businessIdea?.trim()) {
+        return userProfile;
+      }
       try {
         const saved = localStorage.getItem('ruralix_user_profile');
         if (saved) return JSON.parse(saved);
@@ -522,7 +522,7 @@ function GovernmentSchemesContent() {
           <div className={styles.topNavRight}>
             <div className={styles.profileBadge}>
               <Award size={16} color="#059669" />
-              <span>Tailored for: <strong>{businessName}</strong></span>
+              <span>Suggested for: <strong>{businessName}</strong></span>
             </div>
           </div>
         </header>
@@ -532,18 +532,18 @@ function GovernmentSchemesContent() {
           <div className={styles.heroCard}>
             <div className={styles.heroGlow} />
             <div className={styles.heroTag}>
-              <Sparkles size={14} /> National MSME & Agriculture Schemes Portal
+              <Sparkles size={14} /> Government Schemes & Subsidies
             </div>
             <h1 className={styles.heroTitle}>
-              Government Subsidies & Credit Schemes
+              Government Subsidies & Loans
             </h1>
             <p className={styles.heroSubtitle}>
-              Verified central and state government benefit schemes genuinely matched to your enterprise profile. Apply directly to official government portals with single-click verification.
+              Find verified central and state government schemes, subsidies, and bank loan programs matched to your business idea. Check eligibility and apply on official portals.
             </p>
 
             <div className={styles.profilePillRow}>
               <div className={styles.pillItem}>
-                <span>Enterprise:</span>
+                <span>Business:</span>
                 <strong>{businessName}</strong>
               </div>
               <div className={styles.pillItem}>
@@ -551,12 +551,12 @@ function GovernmentSchemesContent() {
                 <strong>{locationName}</strong>
               </div>
               <div className={styles.pillItem}>
-                <span>Capital Base:</span>
+                <span>Budget:</span>
                 <strong>{capitalDisplay}</strong>
               </div>
               <div className={styles.pillItem}>
-                <span>Readiness Rating:</span>
-                <strong>92% (Subsidy Eligible)</strong>
+                <span>Status:</span>
+                <strong>Subsidy & Loan Eligible</strong>
               </div>
             </div>
           </div>
@@ -569,7 +569,7 @@ function GovernmentSchemesContent() {
               </div>
               <div className={styles.statInfo}>
                 <span className={styles.statLabel}>Available Schemes</span>
-                <span className={styles.statValue}>10 Official Portals</span>
+                <span className={styles.statValue}>10 Verified Schemes</span>
               </div>
             </div>
 
@@ -579,7 +579,7 @@ function GovernmentSchemesContent() {
               </div>
               <div className={styles.statInfo}>
                 <span className={styles.statLabel}>Max Rural Subsidy</span>
-                <span className={styles.statValue}>35% to 50% Grant</span>
+                <span className={styles.statValue}>35% to 50% Subsidy</span>
               </div>
             </div>
 
@@ -598,7 +598,7 @@ function GovernmentSchemesContent() {
                 <CheckCircle2 size={22} />
               </div>
               <div className={styles.statInfo}>
-                <span className={styles.statLabel}>Verified Portals</span>
+                <span className={styles.statLabel}>Official Portals</span>
                 <span className={styles.statValue}>Direct .gov.in Links</span>
               </div>
             </div>

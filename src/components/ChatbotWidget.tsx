@@ -16,12 +16,12 @@ interface Message {
 }
 
 const QUICK_PROMPTS = [
-  '🔄 Step-by-Step Business Workflow',
-  '📋 Daily Operations & SOP Guide',
-  '💡 How to increase profit margin?',
-  '📋 Which govt schemes can I get?',
-  '📊 Explain my reality check score',
-  '🎯 Customer acquisition in my area'
+  '📋 Step-by-Step Business Plan',
+  '⏰ Daily Shop Routine Checklist',
+  '💡 How to improve profit margin?',
+  '🏛️ Which government schemes can I get?',
+  '📊 Explain my feasibility score',
+  '👥 How to get more customers locally'
 ];
 
 export default function ChatbotWidget() {
@@ -31,7 +31,7 @@ export default function ChatbotWidget() {
     {
       id: '1',
       role: 'assistant',
-      content: '👋 Namaste! I am your **Grameen Mentor AI**.\n\nYou can ask me for a **complete step-by-step business workflow**, daily operational SOPs, government subsidies, profit models, marketing tactics, or feasibility analysis. How can I help your business grow today?',
+      content: '👋 Namaste! I am your **GrameenSathi Assistant**.\n\nYou can ask me about business planning, government loans & subsidies, daily shop routines, pricing, or local customer demand. How can I help you today?',
       timestamp: 'Just now'
     }
   ]);
@@ -457,10 +457,10 @@ export default function ChatbotWidget() {
               </div>
               <div>
                 <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 700, color: '#ffffff', letterSpacing: '-0.01em' }}>
-                  Grameen Mentor AI
+                  GrameenSathi Assistant
                 </h3>
                 <p style={{ margin: 0, fontSize: '0.75rem', color: '#d1fae5', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <Sparkles size={11} /> Business Workflow & Strategy Expert
+                  <Sparkles size={11} /> Rural Business & Schemes Guide
                 </p>
               </div>
             </div>

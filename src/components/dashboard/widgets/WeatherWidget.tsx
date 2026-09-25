@@ -52,7 +52,7 @@ export default function WeatherWidget() {
             } else if (code === 0) {
               setWeatherCondition('Clear & Sunny');
             } else {
-              setWeatherCondition('Optimal Trade Weather');
+              setWeatherCondition('Good Weather for Business');
             }
           }
         }
@@ -78,7 +78,7 @@ export default function WeatherWidget() {
             <MapPin size={14} color="var(--primary)" /> {locationDisplay}
           </div>
           <div style={{ fontSize: '0.85rem', color: "var(--text-muted)" }}>
-            {humidity !== null ? `Humidity: ${humidity}%` : 'Live Sensors'}
+            {humidity !== null ? `Humidity: ${humidity}%` : 'Live Weather'}
           </div>
         </div>
         <div className={styles.temp}>
@@ -96,7 +96,7 @@ export default function WeatherWidget() {
         </div>
         <div className={styles.weatherInsight}>
           <CheckCircle2 size={16} style={{ display: 'inline', marginBottom: '-3px', marginRight: '4px' }} />
-          Footfall and supply chain conditions in <strong>{locationDisplay.split(',')[0]}</strong> are currently favorable for <strong>{businessName}</strong>.
+          Local customer movement and transport conditions in <strong>{locationDisplay.split(',')[0]}</strong> are currently favorable for <strong>{businessName}</strong>.
         </div>
       </div>
     </div>

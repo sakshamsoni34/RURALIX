@@ -95,11 +95,11 @@ export default function HelpSupportSection() {
       <div className={styles.heroCard}>
         <div className={styles.badge}>
           <Headphones size={13} />
-          <span>GrameenSathi Support Desk</span>
+          <span>GrameenSathi Help Desk</span>
         </div>
-        <h1 className={styles.heroTitle}>Help, Advisory & Contact Center</h1>
+        <h1 className={styles.heroTitle}>Help & Support Center</h1>
         <p className={styles.heroSubtitle}>
-          Connect directly with rural business advisors, government subsidy specialists, and technical officers. We are dedicated to ensuring your enterprise succeeds from day one.
+          Have questions or need guidance with your business plan, government schemes, or subsidies? We are here to help.
         </p>
       </div>
 
@@ -110,11 +110,11 @@ export default function HelpSupportSection() {
           <div className={`${styles.cardIconWrap} ${styles.iconCall}`}>
             <PhoneCall size={26} />
           </div>
-          <span className={styles.cardTag}>Toll-Free Tele-Advisory</span>
+          <span className={styles.cardTag}>Toll-Free Helpline</span>
           <h3 className={styles.cardHeading}>Toll-Free Helpline</h3>
           <p className={styles.cardValue}>1800-889-2040</p>
           <p className={styles.cardDesc}>
-            Speak directly with an enterprise officer. Mon – Sat (8:00 AM – 8:00 PM IST). Multi-lingual assistance.
+            Speak directly with a support officer. Mon – Sat (8:00 AM – 8:00 PM IST). Multi-lingual assistance.
           </p>
           <div style={{ display: 'flex', gap: '0.5rem', marginTop: 'auto' }}>
             <a href="tel:18008892040" className={`${styles.actionBtn} ${styles.btnPrimary}`}>
@@ -136,11 +136,11 @@ export default function HelpSupportSection() {
           <div className={`${styles.cardIconWrap} ${styles.iconWhatsapp}`}>
             <MessageSquare size={26} />
           </div>
-          <span className={styles.cardTag}>Instant Messaging</span>
-          <h3 className={styles.cardHeading}>WhatsApp Advisory</h3>
+          <span className={styles.cardTag}>WhatsApp Support</span>
+          <h3 className={styles.cardHeading}>WhatsApp Helpline</h3>
           <p className={styles.cardValue}>+91 98765 43210</p>
           <p className={styles.cardDesc}>
-            Chat with our enterprise bot & officers for document checklists, subsidy guidelines, and quick answers.
+            Chat for document checklists, government subsidy guidelines, and quick answers.
           </p>
           <div style={{ display: 'flex', gap: '0.5rem', marginTop: 'auto' }}>
             <a 

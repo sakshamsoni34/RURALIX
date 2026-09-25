@@ -96,7 +96,7 @@ export default function OnboardingModal() {
                 </div>
                 <div>
                   <h3 style={{ fontSize: '1.2rem', marginBottom: '0.25rem' }}>I need a business idea</h3>
-                  <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', margin: 0 }}>Let our AI recommend hyper-local businesses for your area.</p>
+                  <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', margin: 0 }}>Let our assistant recommend practical business ideas for your area.</p>
                 </div>
               </button>
             </div>

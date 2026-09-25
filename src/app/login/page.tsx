@@ -41,7 +41,7 @@ export default function Login() {
             for <span className={styles.highlight}>Brighter Villages</span>
           </h1>
           <p className={styles.subHeadline}>
-            AI-powered guidance, financial planning, and business support — right at your doorstep.
+            Practical business guidance, government schemes & loans, and financial planning.
           </p>
 
           <div className={styles.features}>
@@ -55,7 +55,7 @@ export default function Login() {
               <div className={styles.featureIconWrapper}>
                 <IndianRupee size={24} />
               </div>
-              <span className={styles.featureText}>Financial<br/>Structuring</span>
+              <span className={styles.featureText}>Budget &<br/>Planning</span>
             </div>
             <div className={styles.feature}>
               <div className={styles.featureIconWrapper}>
@@ -91,7 +91,7 @@ export default function Login() {
             Grameen<span>Sathi</span>
           </div>
           <p className={styles.brandSubtext}>
-            AI-Driven Hyper-Local Business Advisory and Financial Structuring Assistant for Rural Micro-Entrepreneurs
+            Simple business planning, government schemes, and financial guidance for rural entrepreneurs
           </p>
 
           <h2 className={styles.welcomeHeading}>Welcome Back</h2>

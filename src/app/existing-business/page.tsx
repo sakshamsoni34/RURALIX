@@ -272,10 +272,10 @@ function ExistingBusinessContent() {
                 <span className={styles.titleIcon}>
                   <Building2 size={26} />
                 </span>
-                Existing Business Hub
+                Existing Business Setup
               </h1>
               <p className={styles.subtitle}>
-                Manage your enterprise profile, check loan & subsidy eligibility, evaluate operational risks, and simulate revenue growth.
+                Manage your business details, check eligible government schemes, and calculate revenue projections.
               </p>
             </div>
 
@@ -292,7 +292,7 @@ function ExistingBusinessContent() {
                 className={styles.dashboardBtn}
                 onClick={handleNavigateToPlanner}
               >
-                <Sparkles size={18} /> Proceed to AI Business Planner
+                <Sparkles size={18} /> Go to Business Planner
               </button>
             </div>
           </div>
@@ -304,7 +304,7 @@ function ExistingBusinessContent() {
               <div className={styles.cardTitleRow}>
                 <div className={styles.cardTitle}>
                   <Building2 size={22} color="var(--primary)" />
-                  Enterprise Details & Operations
+                  Business Details
                 </div>
                 <div className={styles.progressPill}>
                   <span className={styles.progressDot} style={{ background: completionPercentage === 100 ? '#10b981' : '#f59e0b' }}></span>
@@ -313,7 +313,7 @@ function ExistingBusinessContent() {
               </div>
               
               <p className={styles.cardSubtitle}>
-                Please fill in all compulsory details marked with (*) for accurate AI financial predictions, bank loan readiness, and scheme matching.
+                Please fill in the required details (*) so we can match the best schemes and calculate accurate forecasts.
               </p>
 
               <form onSubmit={handleSave} className={styles.formGrid}>
@@ -321,7 +321,7 @@ function ExistingBusinessContent() {
                 <div className={styles.twoCol}>
                   <div className={styles.fieldGroup}>
                     <label className={styles.label}>
-                      <span>Business Name / Unit Name <strong className={styles.requiredStar}>*</strong></span>
+                      <span>Business Name <strong className={styles.requiredStar}>*</strong></span>
                     </label>
                     <input 
                       ref={businessNameRef}

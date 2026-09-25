@@ -15,8 +15,8 @@
 
 .header {
   height: 72px;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
+  background: var(--header-bg);
+  border-bottom: 1px solid var(--header-border);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -42,7 +42,7 @@
 }
 
 .badge {
-  background: var(--background);
+  background: var(--surface);
   border: 1px solid var(--border);
   padding: 0.45rem 1.1rem;
   border-radius: 9999px;
@@ -301,8 +301,8 @@
   padding: 1.5rem;
   color: var(--text-muted);
   font-size: 0.85rem;
-  border-top: 1px solid var(--border);
-  background: var(--surface);
+  border-top: 1px solid var(--header-border);
+  background: var(--header-bg);
   z-index: 10;
 }
 

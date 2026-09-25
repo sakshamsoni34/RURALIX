@@ -49,13 +49,13 @@
 
 /* Elevated Modern Studio Card */
 .formCard {
-  background: #ffffff;
-  border: 1.5px solid #e2e8f0;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
   border-radius: 24px;
   width: 100%;
   max-width: 920px;
   padding: 2.25rem 2.5rem;
-  box-shadow: 0 12px 36px -6px rgba(0, 0, 0, 0.06), 0 4px 12px -2px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 12px 36px -6px rgba(6, 78, 59, 0.08), 0 4px 12px -2px rgba(6, 78, 59, 0.04);
   position: relative;
   animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   box-sizing: border-box;

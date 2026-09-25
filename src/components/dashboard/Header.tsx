@@ -61,7 +61,7 @@ export default function Header() {
             setActiveTab(target);
             router.push(`/dashboard?tab=${target}`);
           }}
-          title="GrameenSathi - Rural Enterprise Platform"
+          title="GrameenSathi - Rural Business Guide"
           style={{ cursor: 'pointer' }}
         >
           <Sprout size={24} color="#059669" />
@@ -72,7 +72,7 @@ export default function Header() {
           <Search size={18} color="var(--text-muted)" style={{ cursor: 'pointer' }} onClick={handleSearchSubmit} />
           <input 
             type="text" 
-            placeholder="Ask anything... (e.g. 'Dairy business profit')" 
+            placeholder="Ask anything... (e.g. 'Dairy business profit', 'Mudra loan')" 
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
             onKeyDown={handleSearchSubmit}
@@ -117,7 +117,7 @@ export default function Header() {
           onClick={() => {
             router.push('/opportunity-map');
           }}
-          title="Open Market Opportunity Map"
+          title="Open Village Opportunity Map"
           style={{ cursor: 'pointer', border: '1px solid var(--border)', background: 'var(--surface)', fontFamily: 'inherit' }}
           suppressHydrationWarning
         >
@@ -160,7 +160,7 @@ export default function Header() {
             }}>
               <div style={{ borderBottom: '1px solid var(--border)', paddingBottom: '0.75rem', marginBottom: '0.25rem' }}>
                 <h4 style={{ color: 'var(--text-main)', fontSize: '1rem', marginBottom: '0.25rem' }}>Your Business Profile</h4>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>View and manage your startup details.</p>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>View and manage your business details.</p>
               </div>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', color: 'var(--text-main)' }} suppressHydrationWarning>
@@ -200,7 +200,7 @@ export default function Header() {
                 }}
               >
                 <Briefcase size={15} />
-                Manage Business Hub
+                Edit Business Details
               </button>
 
               <button 
