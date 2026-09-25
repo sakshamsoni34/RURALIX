@@ -12,10 +12,12 @@ import {
   Sparkles, 
   ChevronRight,
   ShieldCheck,
-  Building2
+  Building2,
+  ArrowRight
 } from 'lucide-react';
 import Image from 'next/image';
 import styles from './SchemeMatcherModal.module.css';
+import { useDashboard } from '../context/DashboardContext';
 
 export interface Scheme {
   name: string;
@@ -48,7 +50,7 @@ interface GovtScheme {
   eligibility: string[];
 }
 
-const mockSchemes: GovtScheme[] = [
+const GOVERNMENT_SCHEMES: GovtScheme[] = [
   {
     id: '1',
     name: 'PM-Kisan Samman Nidhi',
@@ -112,12 +114,13 @@ const mockSchemes: GovtScheme[] = [
 ];
 
 export default function SchemeMatcherModal({ isOpen, onClose, inline = false }: SchemeMatcherModalProps) {
+  const { setActiveTab: setDashboardTab } = useDashboard();
   const [activeTab, setActiveTab] = useState<SchemeCategory>('active');
   const [selectedScheme, setSelectedScheme] = useState<GovtScheme | null>(null);
 
   if (!isOpen && !inline) return null;
 
-  const filteredSchemes = mockSchemes.filter(s => s.category === activeTab);
+  const filteredSchemes = GOVERNMENT_SCHEMES.filter(s => s.category === activeTab);
 
   const handleApply = (url: string) => {
     window.open(url, '_blank');
@@ -147,25 +150,25 @@ export default function SchemeMatcherModal({ isOpen, onClose, inline = false }: 
           className={`${styles.tabBtn} ${activeTab === 'active' ? styles.activeTab : ''}`}
           onClick={() => setActiveTab('active')}
         >
-          Active Schemes ({mockSchemes.filter(s => s.category === 'active').length})
+          Active Schemes ({GOVERNMENT_SCHEMES.filter(s => s.category === 'active').length})
         </button>
         <button 
           className={`${styles.tabBtn} ${activeTab === 'upcoming' ? styles.activeTab : ''}`}
           onClick={() => setActiveTab('upcoming')}
         >
-          Upcoming ({mockSchemes.filter(s => s.category === 'upcoming').length})
+          Upcoming ({GOVERNMENT_SCHEMES.filter(s => s.category === 'upcoming').length})
         </button>
         <button 
           className={`${styles.tabBtn} ${activeTab === 'applied' ? styles.activeTab : ''}`}
           onClick={() => setActiveTab('applied')}
         >
-          Applied ({mockSchemes.filter(s => s.category === 'applied').length})
+          Applied ({GOVERNMENT_SCHEMES.filter(s => s.category === 'applied').length})
         </button>
         <button 
           className={`${styles.tabBtn} ${activeTab === 'closed' ? styles.activeTab : ''}`}
           onClick={() => setActiveTab('closed')}
         >
-          Closed ({mockSchemes.filter(s => s.category === 'closed').length})
+          Closed ({GOVERNMENT_SCHEMES.filter(s => s.category === 'closed').length})
         </button>
       </div>
 
@@ -219,6 +222,23 @@ export default function SchemeMatcherModal({ isOpen, onClose, inline = false }: 
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Guided Next Step Banner */}
+      <div className={styles.guidedFooterBar}>
+        <div className={styles.guidedFooterLeft}>
+          <span className={styles.guidedStepBadge}>Step 3 of 4 Completed</span>
+          <p className={styles.guidedStepText}>
+            Subsidies & schemes reviewed. Next, predict seasonal demand surges & product spikes.
+          </p>
+        </div>
+        <button 
+          type="button"
+          className={styles.proceedNextBtn}
+          onClick={() => setDashboardTab('demand')}
+        >
+          Proceed to Step 4: Demand Predictor <ArrowRight size={18} />
+        </button>
       </div>
 
       {/* Scheme Detail Modal */}

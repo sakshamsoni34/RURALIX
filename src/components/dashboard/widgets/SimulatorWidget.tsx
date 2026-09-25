@@ -7,10 +7,11 @@ import { useDashboard } from '../../../context/DashboardContext';
 export default function SimulatorWidget() {
   const { customers, setCustomers, userProfile } = useDashboard();
   
-  const capitalNum = parseInt(userProfile.capital as string) || 60000;
-  // Dynamic unit economics
-  const marginPerTransaction = Math.max(350, Math.round(capitalNum * 0.008));
-  const monthlyProfit = customers * 30 * marginPerTransaction;
+  const capitalNum = parseInt(userProfile.capital as string) || 0;
+  const activeCustomers = customers || 0;
+  // Dynamic unit economics based on capital scale
+  const marginPerTransaction = capitalNum > 0 ? Math.max(150, Math.round(capitalNum * 0.008)) : 250;
+  const monthlyProfit = activeCustomers * 30 * marginPerTransaction;
   const businessName = userProfile.businessIdea || 'Your Enterprise';
 
   return (

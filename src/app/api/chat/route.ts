@@ -250,7 +250,7 @@ function generateBusinessWorkflow(idea: string, loc: string, cap: string, infra:
 • Leverage your background (${exp || 'practical experience'}) to train one local helper within your first 30 days, freeing your time to focus on sales and supplier bargaining!`;
 }
 
-function generateContextualMockResponse(message: string, context: UserContext): string {
+function generateContextualKnowledgeResponse(message: string, context: UserContext): string {
   const query = message.toLowerCase();
   const idea = context.userProfile?.businessIdea || 'your business venture';
   const loc = context.userProfile?.location || 'your local region';
@@ -332,75 +332,93 @@ export async function POST(req: Request) {
 
     const { userProfile, realityScores, schemes } = (context || {}) as UserContext;
 
-    if (!process.env.GEMINI_API_KEY) {
-      // Dynamic Mock Response tailored to any user query
-      const reply = generateContextualMockResponse(message, { userProfile, realityScores, schemes });
-      return NextResponse.json({ reply });
+    const mistralKey = process.env.MISTRAL_API_KEY;
+
+    if (mistralKey) {
+      try {
+        const mistralRes = await fetch('https://api.mistral.ai/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${mistralKey.trim()}`
+          },
+          body: JSON.stringify({
+            model: 'mistral-small-latest',
+            temperature: 0.7,
+            max_tokens: 1200,
+            messages: [
+              {
+                role: 'system',
+                content: `You are "Grameen Mentor AI", an empathetic, highly knowledgeable, and practical business mentor in India.\nContext: Business: ${userProfile?.businessIdea || 'Rural Enterprise'}, Location: ${userProfile?.location || 'India'}, Capital: ₹${userProfile?.capital || '0'}. Provide clear, actionable advice.`
+              },
+              { role: 'user', content: message }
+            ]
+          })
+        });
+
+        if (mistralRes.ok) {
+          const data = await mistralRes.json();
+          const reply = data.choices?.[0]?.message?.content;
+          if (reply) {
+            return NextResponse.json({ reply, provider: 'mistral' });
+          }
+        }
+      } catch (mistralErr) {
+        console.warn('Mistral error in chat route:', mistralErr);
+      }
     }
 
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    // Use gemini-1.5-flash for ultra fast interactive chat
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    if (process.env.GEMINI_API_KEY) {
+      try {
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    const systemInstruction = `
-      You are "Grameen Mentor AI", an empathetic, highly knowledgeable, and practical business mentor in India.
-      You are speaking to an entrepreneur via a WhatsApp-style chat interface.
-      
-      The user can ask ANY question, assign ANY business task, or discuss ANY topic related to their enterprise.
-      Always respond directly, accurately, and actionably to the user's specific query.
-      
-      USER CONTEXT (Lightweight RAG):
-      - Business Idea: ${userProfile?.businessIdea || 'Rural Enterprise'}
-      - Target Location: ${userProfile?.location || 'India'}
-      - Working Capital: ₹${userProfile?.capital || '0'}
-      - Available Infrastructure: ${userProfile?.infrastructure || 'Standard'}
-      - Prior Experience: ${userProfile?.experience || 'Not specified'}
-      - Feasibility Score: ${realityScores?.overall || 'N/A'}/100
-      - Market Demand Score: ${realityScores?.demand || 'N/A'}/100
-      - Operational Risk: ${realityScores?.risk || 'N/A'}%
-      
-      SPECIAL WORKFLOW DIRECTIVE:
-      If the user asks for a "workflow", "process", "SOP", "how to operate", "daily schedule", "supply chain", or "step by step guide to run this business":
-      - Provide a comprehensive, end-to-end 6-Phase Operational Workflow:
-        • Phase 1: 🏗️ Setup & Legal Compliance (Week 1–2)
-        • Phase 2: 📦 Sourcing & Raw Material Supply Chain (Week 2–3)
-        • Phase 3: ⚙️ Daily Operations & Production/Service Cycle (Daily SOP)
-        • Phase 4: 🏷️ Quality Assurance, Packaging & Storage (Continuous)
-        • Phase 5: 🚚 Hyperlocal Marketing, Distribution & Sales (Ongoing)
-        • Phase 6: 📈 Financial Control, Working Capital & Scaling (Weekly/Monthly)
-      - Include timelines, daily hours/shifts, essential equipment list, critical risk & mitigation checkpoints, and a practical mentor tip.
-      
-      GUIDELINES:
-      - Answer the user's query specifically with high precision.
-      - Use clear Markdown formatting with bullet points and bold headers.
-      - Keep responses crisp, actionable, and encouraging.
-      - Ground your advice in real-world Indian business realities (MSME schemes, local marketing, logistics, unit economics).
-    `;
+        const systemInstruction = `
+          You are "Grameen Mentor AI", an empathetic, highly knowledgeable, and practical business mentor in India.
+          You are speaking to an entrepreneur via a WhatsApp-style chat interface.
+          
+          The user can ask ANY question, assign ANY business task, or discuss ANY topic related to their enterprise.
+          Always respond directly, accurately, and actionably to the user's specific query.
+          
+          USER CONTEXT (Lightweight RAG):
+          - Business Idea: ${userProfile?.businessIdea || 'Rural Enterprise'}
+          - Target Location: ${userProfile?.location || 'India'}
+          - Working Capital: ₹${userProfile?.capital || '0'}
+          - Available Infrastructure: ${userProfile?.infrastructure || 'Standard'}
+          - Prior Experience: ${userProfile?.experience || 'Not specified'}
+          - Feasibility Score: ${realityScores?.overall || 'N/A'}/100
+          - Market Demand Score: ${realityScores?.demand || 'N/A'}/100
+          - Operational Risk: ${realityScores?.risk || 'N/A'}%
+        `;
 
-    const chatSession = model.startChat({
-      history: [
-        {
-          role: "user",
-          parts: [{ text: systemInstruction }],
-        },
-        {
-          role: "model",
-          parts: [{ text: "Understood. I am Grameen Mentor AI. I have the user's full context and will provide direct, actionable answers, comprehensive 6-phase operational workflows, and practical guidance." }],
-        },
-      ],
-    });
+        const chatSession = model.startChat({
+          history: [
+            {
+              role: "user",
+              parts: [{ text: systemInstruction }],
+            },
+            {
+              role: "model",
+              parts: [{ text: "Understood. I am Grameen Mentor AI. I have the user's full context and will provide direct, actionable answers." }],
+            },
+          ],
+        });
 
-    const result = await chatSession.sendMessage(message);
-    const reply = result.response.text();
+        const result = await chatSession.sendMessage(message);
+        const reply = result.response.text();
 
-    return NextResponse.json({ reply });
+        return NextResponse.json({ reply, provider: 'gemini' });
+      } catch (geminiErr) {
+        console.warn('Gemini chat error:', geminiErr);
+      }
+    }
+
+    // Dynamic AI Knowledge Response tailored to any user query
+    const reply = generateContextualKnowledgeResponse(message, { userProfile, realityScores, schemes });
+    return NextResponse.json({ reply, provider: 'offline_engine' });
   } catch (error) {
     console.error("Chat API Error:", error);
-    // Fallback to contextual generator on error
-    const fallbackReply = generateContextualMockResponse(
-      "workflow",
-      {}
-    );
+    const fallbackReply = generateContextualKnowledgeResponse("workflow", {});
     return NextResponse.json({ reply: fallbackReply });
   }
 }

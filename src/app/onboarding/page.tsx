@@ -19,11 +19,13 @@ export default function Onboarding() {
 
   const handleSelectExisting = () => {
     try {
-      const savedProfile = localStorage.getItem('ruralix_user_profile');
-      const profile = savedProfile ? JSON.parse(savedProfile) : {};
       localStorage.setItem('ruralix_user_profile', JSON.stringify({
-        ...profile,
-        hasBusiness: true
+        hasBusiness: true,
+        businessIdea: '',
+        location: '',
+        capital: '',
+        infrastructure: '',
+        experience: ''
       }));
     } catch (e) {
       console.error('Error saving onboarding choice:', e);
@@ -33,16 +35,20 @@ export default function Onboarding() {
 
   const handleSelectNewIdea = () => {
     try {
-      const savedProfile = localStorage.getItem('ruralix_user_profile');
-      const profile = savedProfile ? JSON.parse(savedProfile) : {};
       localStorage.setItem('ruralix_user_profile', JSON.stringify({
-        ...profile,
-        hasBusiness: false
+        hasBusiness: false,
+        businessIdea: '',
+        location: '',
+        capital: '',
+        infrastructure: '',
+        experience: ''
       }));
+      localStorage.setItem('ruralix_dashboard_unlocked', 'false');
+      localStorage.setItem('ruralix_active_tab', 'ai-recommendation');
     } catch (e) {
       console.error('Error saving onboarding choice:', e);
     }
-    router.push('/dashboard');
+    router.push('/dashboard?tab=ai-recommendation');
   };
 
   return (

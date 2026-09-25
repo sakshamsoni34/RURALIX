@@ -24,6 +24,8 @@ interface DashboardContextType {
   isLoaded: boolean;
   isMenuOpen: boolean;
   setIsMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  isDashboardUnlocked: boolean;
+  setIsDashboardUnlocked: (unlocked: boolean) => void;
 }
 
 const defaultUserProfile: UserProfile = {
@@ -36,32 +38,82 @@ const defaultUserProfile: UserProfile = {
 };
 
 const defaultRealityScores: RealityCheckScores = {
-  demand: 82,
-  competition: 65,
-  infra: 88,
-  risk: 32,
-  overall: 78
+  demand: 0,
+  competition: 0,
+  infra: 0,
+  risk: 0,
+  overall: 0
 };
 
 const DashboardContext = createContext<DashboardContextType | undefined>(undefined);
 
 export function DashboardProvider({ children }: { children: ReactNode }) {
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const [activeTab, setActiveTabState] = useState('ai-recommendation');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [userProfile, setUserProfile] = useState<UserProfile>(defaultUserProfile);
   const [realityScores, setRealityScores] = useState<RealityCheckScores>(defaultRealityScores);
+  const [isDashboardUnlocked, setIsDashboardUnlockedState] = useState(true);
   const [isLoaded, setIsLoaded] = useState(false);
+
+  const setActiveTab = (tab: string) => {
+    setActiveTabState(tab);
+    try {
+      localStorage.setItem('ruralix_active_tab', tab);
+      if (typeof window !== 'undefined') {
+        const url = new URL(window.location.href);
+        url.searchParams.set('tab', tab);
+        window.history.pushState({}, '', url.toString());
+      }
+    } catch (e) {}
+  };
+
+  const setIsDashboardUnlocked = (unlocked: boolean) => {
+    setIsDashboardUnlockedState(unlocked);
+    try {
+      localStorage.setItem('ruralix_dashboard_unlocked', unlocked ? 'true' : 'false');
+    } catch (e) {}
+  };
 
   // Load from localStorage on client mount to prevent SSR hydration mismatch
   React.useEffect(() => {
     try {
-      const savedProfile = localStorage.getItem('ruralix_user_profile');
-      if (savedProfile) {
-        setUserProfile(JSON.parse(savedProfile));
+      const savedProfileStr = localStorage.getItem('ruralix_user_profile');
+      let parsedProfile: UserProfile = defaultUserProfile;
+      if (savedProfileStr) {
+        parsedProfile = JSON.parse(savedProfileStr);
+        setUserProfile(parsedProfile);
       }
+
+      setIsDashboardUnlockedState(true);
+
+      const urlParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+      const urlTab = urlParams ? urlParams.get('tab') : null;
+
+      const savedTab = localStorage.getItem('ruralix_active_tab');
+      const validTabs = ['ai-recommendation', 'reality-check', 'demand'];
+      if (urlTab && validTabs.includes(urlTab)) {
+        setActiveTabState(urlTab);
+      } else if (savedTab && validTabs.includes(savedTab)) {
+        setActiveTabState(savedTab);
+      } else {
+        setActiveTabState('ai-recommendation');
+      }
+
       const savedScores = localStorage.getItem('ruralix_reality_scores');
       if (savedScores) {
         setRealityScores(JSON.parse(savedScores));
+      }
+      const savedCustomers = localStorage.getItem('ruralix_customers');
+      if (savedCustomers) {
+        setCustomers(Number(savedCustomers));
+      }
+      const savedSchemes = localStorage.getItem('ruralix_schemes');
+      if (savedSchemes) {
+        setSchemes(JSON.parse(savedSchemes));
+      }
+      const savedTrending = localStorage.getItem('ruralix_trending_items');
+      if (savedTrending) {
+        setTrendingItems(JSON.parse(savedTrending));
       }
     } catch (e) {
       console.error('Failed to load from localStorage:', e);
@@ -80,7 +132,7 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
     }
   }, [userProfile, isLoaded]);
 
-  const [customers, setCustomers] = useState(25);
+  const [customers, setCustomers] = useState<number>(0);
   const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
   const [voiceInitialQuery, setVoiceInitialQuery] = useState('');
 
@@ -88,51 +140,54 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
     setVoiceInitialQuery(query);
     setIsVoiceModalOpen(true);
   };
-  
-  const [schemes, setSchemes] = useState<Scheme[]>([
-    {
-      name: "PMEGP (Prime Minister's Employment Gen.)",
-      description: "Subsidy up to 35% for rural businesses",
-      matchPercentage: 92,
-      eligibilityFactors: ["Location Eligible", "Business Type Eligible"],
-      documents: [],
-      missingRequirements: []
-    },
-    {
-      name: "MUDRA Loan (Shishu/Kishor)",
-      description: "Collateral-free loan up to ₹10 lakh",
-      matchPercentage: 85,
-      eligibilityFactors: ["Easy Process", "Rural Focused"],
-      documents: [],
-      missingRequirements: []
-    }
-  ]);
-  
-  const [trendingItems, setTrendingItems] = useState<TrendingItem[]>([
-    { name: "Packaging & Supplies", trend: "UP", reason: "Rising local commercial demand" },
-    { name: "Seasonal Goods", trend: "UP", reason: "Approaching market cycle" }
-  ]);
 
-  React.useEffect(() => {
-    if (!isLoaded) return;
+  const setSchemes = (newSchemes: Scheme[]) => {
+    setSchemesState(newSchemes);
     try {
-      localStorage.setItem('ruralix_reality_scores', JSON.stringify(realityScores));
+      localStorage.setItem('ruralix_schemes', JSON.stringify(newSchemes));
     } catch (e) {}
-  }, [realityScores, isLoaded]);
+  };
+  const [schemes, setSchemesState] = useState<Scheme[]>([]);
+
+  const setTrendingItems = (newTrending: TrendingItem[]) => {
+    setTrendingItemsState(newTrending);
+    try {
+      localStorage.setItem('ruralix_trending_items', JSON.stringify(newTrending));
+    } catch (e) {}
+  };
+  const [trendingItems, setTrendingItemsState] = useState<TrendingItem[]>([]);
+
+  const setRealityScoresWrapper = (newScores: RealityCheckScores) => {
+    setRealityScores(newScores);
+    try {
+      localStorage.setItem('ruralix_reality_scores', JSON.stringify(newScores));
+    } catch (e) {}
+  };
 
   return (
     <DashboardContext.Provider value={{
-      activeTab, setActiveTab,
-      userProfile, setUserProfile,
-      customers, setCustomers,
-      isVoiceModalOpen, setIsVoiceModalOpen,
-      voiceInitialQuery, setVoiceInitialQuery,
+      activeTab,
+      setActiveTab,
+      userProfile,
+      setUserProfile,
+      customers,
+      setCustomers,
+      isVoiceModalOpen,
+      setIsVoiceModalOpen,
+      voiceInitialQuery,
+      setVoiceInitialQuery,
       openVoiceAssistantWithQuery,
-      schemes, setSchemes,
-      trendingItems, setTrendingItems,
-      realityScores, setRealityScores,
+      schemes,
+      setSchemes,
+      trendingItems,
+      setTrendingItems,
+      realityScores,
+      setRealityScores: setRealityScoresWrapper,
       isLoaded,
-      isMenuOpen, setIsMenuOpen
+      isMenuOpen,
+      setIsMenuOpen,
+      isDashboardUnlocked,
+      setIsDashboardUnlocked
     }}>
       {children}
     </DashboardContext.Provider>
@@ -141,7 +196,7 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
 
 export function useDashboard() {
   const context = useContext(DashboardContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useDashboard must be used within a DashboardProvider');
   }
   return context;

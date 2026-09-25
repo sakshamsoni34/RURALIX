@@ -1,19 +1,29 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, Mic, MapPin, Bell, LogOut, Briefcase, IndianRupee, Menu, Sprout } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import styles from '../../app/dashboard/page.module.css';
 import { useDashboard } from '../../context/DashboardContext';
 
 export default function Header() {
-  const { setIsVoiceModalOpen, openVoiceAssistantWithQuery, userProfile, setIsMenuOpen, setActiveTab } = useDashboard();
+  const { 
+    setIsVoiceModalOpen, 
+    openVoiceAssistantWithQuery, 
+    userProfile, 
+    setIsMenuOpen, 
+    setActiveTab
+  } = useDashboard();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [searchText, setSearchText] = useState('');
+  const [mounted, setMounted] = useState(false);
   const router = useRouter();
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const handleSignOut = () => {
-    // Basic redirect for now
     router.push('/login');
   };
 
@@ -27,6 +37,9 @@ export default function Header() {
       setIsVoiceModalOpen(true);
     }
   };
+
+  const displayLocation = mounted && userProfile.location ? userProfile.location : 'Location Not Set';
+  const displayIdea = mounted && userProfile.businessIdea ? userProfile.businessIdea : 'No Idea Selected';
 
   return (
     <header className={styles.header}>
@@ -43,10 +56,10 @@ export default function Header() {
         <div 
           className={styles.brandTitle}
           onClick={() => {
-            setActiveTab('dashboard');
-            router.push('/dashboard');
+            setActiveTab('ai-recommendation');
+            router.push('/dashboard?tab=ai-recommendation');
           }}
-          title="Grameen Sathi Dashboard"
+          title="Grameen Sathi - AI Business Planner"
           style={{ cursor: 'pointer' }}
         >
           <Sprout size={24} color="#059669" />
@@ -102,8 +115,9 @@ export default function Header() {
           onClick={() => setActiveTab('map')}
           title="Open Market Opportunity Map"
           style={{ cursor: 'pointer', border: '1px solid var(--border)', background: 'var(--surface)', fontFamily: 'inherit' }}
+          suppressHydrationWarning
         >
-          <MapPin size={16} /> {userProfile.location || 'Location Not Set'}
+          <MapPin size={16} /> <span suppressHydrationWarning>{displayLocation}</span>
         </button>
 
         <div className={styles.notification}>
@@ -117,9 +131,9 @@ export default function Header() {
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             style={{ cursor: 'pointer' }}
           >
-            <div className={styles.avatarText} style={{ textAlign: 'right' }}>
+            <div className={styles.avatarText} style={{ textAlign: 'right' }} suppressHydrationWarning>
               <h4>User Profile</h4>
-              <p>{userProfile.businessIdea || 'No Idea Selected'}</p>
+              <p suppressHydrationWarning>{displayIdea}</p>
             </div>
             <div className={styles.avatar}>U</div>
           </div>
@@ -145,17 +159,17 @@ export default function Header() {
                 <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>View and manage your startup details.</p>
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', color: 'var(--text-main)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', color: 'var(--text-main)' }} suppressHydrationWarning>
                 <Briefcase size={16} color="var(--primary)" />
-                <strong>Idea:</strong> {userProfile.businessIdea || 'N/A'}
+                <strong>Idea:</strong> <span suppressHydrationWarning>{mounted && userProfile.businessIdea ? userProfile.businessIdea : 'N/A'}</span>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', color: 'var(--text-main)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', color: 'var(--text-main)' }} suppressHydrationWarning>
                 <MapPin size={16} color="var(--primary)" />
-                <strong>Location:</strong> {userProfile.location || 'N/A'}
+                <strong>Location:</strong> <span suppressHydrationWarning>{mounted && userProfile.location ? userProfile.location : 'N/A'}</span>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', color: 'var(--text-main)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', color: 'var(--text-main)' }} suppressHydrationWarning>
                 <IndianRupee size={16} color="var(--primary)" />
-                <strong>Capital:</strong> ₹{userProfile.capital || '0'}
+                <strong>Capital:</strong> <span suppressHydrationWarning>₹{mounted && userProfile.capital ? userProfile.capital : '0'}</span>
               </div>
 
               <button 

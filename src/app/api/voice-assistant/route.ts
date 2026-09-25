@@ -819,11 +819,9 @@ export async function POST(req: Request) {
       return NextResponse.json(normalizeResponse(dynamicResponse));
     }
   } catch (error) {
-    console.error("Voice Assistant Route Error:", error);
-    return NextResponse.json(
-      { error: 'Failed to process voice request' },
-      { status: 500 }
-    );
+    console.error("Voice Assistant Route Error, returning fallback:", error);
+    const dynamicResponse = generateDynamicKnowledgeResponse('Business Plan Guidance', undefined);
+    return NextResponse.json(normalizeResponse(dynamicResponse));
   }
 }
 

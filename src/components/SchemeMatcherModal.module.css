@@ -428,6 +428,64 @@
   box-shadow: none;
 }
 
+/* Step 3 Guided Footer Bar */
+.guidedFooterBar {
+  padding: 1.25rem 2rem;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 0 0 16px 16px;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.03);
+  margin-top: auto;
+}
+
+.guidedFooterLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.guidedStepBadge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #059669;
+  background: #d1fae5;
+  padding: 0.15rem 0.5rem;
+  border-radius: 12px;
+  width: fit-content;
+}
+
+.guidedStepText {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.proceedNextBtn {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  color: white;
+  border: none;
+  padding: 0.85rem 1.75rem;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 15px rgba(5, 150, 105, 0.3);
+}
+
+.proceedNextBtn:hover {
+  background: #047857;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(5, 150, 105, 0.4);
+}
+
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }

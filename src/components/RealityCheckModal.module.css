@@ -287,6 +287,17 @@
   outline: none;
   font-family: inherit;
   min-width: 0;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.unifiedInput::-webkit-calendar-picker-indicator {
+  display: none !important;
+  -webkit-appearance: none !important;
+  opacity: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+  pointer-events: none !important;
 }
 
 .unifiedInput::placeholder {

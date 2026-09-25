@@ -472,3 +472,67 @@
   background: #047857;
   transform: translateY(-1px);
 }
+
+.unlockBanner {
+  background: linear-gradient(135deg, #064e3b 0%, #065f46 50%, #047857 100%);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 16px;
+  padding: 1.5rem 1.75rem;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  box-shadow: 0 10px 30px rgba(6, 78, 59, 0.3);
+}
+
+.unlockBadge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.2);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  width: fit-content;
+  letter-spacing: 0.04em;
+}
+
+.unlockTitle {
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin: 0;
+  color: #ffffff;
+}
+
+.unlockSub {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.unlockBtn {
+  background: #ffffff;
+  color: #064e3b;
+  border: none;
+  padding: 0.95rem 1.75rem;
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: 1.02rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  transition: all 0.25s ease;
+  width: 100%;
+}
+
+.unlockBtn:hover {
+  background: #ecfdf5;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}

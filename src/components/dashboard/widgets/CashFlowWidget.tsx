@@ -7,10 +7,11 @@ import { useDashboard } from '../../../context/DashboardContext';
 export default function CashFlowWidget() {
   const { userProfile, customers } = useDashboard();
 
-  const capitalNum = parseInt(userProfile.capital as string) || 60000;
+  const capitalNum = parseInt(userProfile.capital as string) || 0;
+  const activeCustomers = customers || 0;
   // Dynamic daily financial projections
-  const dailyBase = Math.round((capitalNum * 0.4) / 30);
-  const dailySales = Math.max(1200, dailyBase + (customers * 120));
+  const dailyBase = capitalNum > 0 ? Math.round((capitalNum * 0.35) / 30) : 0;
+  const dailySales = Math.max(0, dailyBase + (activeCustomers * 120));
   const dailyExpenses = Math.round(dailySales * 0.45);
   const dailyNetCash = dailySales - dailyExpenses;
 
